@@ -72,19 +72,14 @@ class User extends Authenticatable
         return $this->hasRole('super-admin');
     }
 
-    public function isAdmin(): bool
+    public function isCompany(): bool
     {
-        return $this->hasRole('admin');
+        return $this->hasRole('company');
     }
 
-    public function isManager(): bool
+    public function isCustomer(): bool
     {
-        return $this->hasRole('manager');
-    }
-
-    public function isEmployee(): bool
-    {
-        return $this->hasRole('employee');
+        return $this->hasRole('customer');
     }
 
     /**

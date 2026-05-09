@@ -2,9 +2,10 @@
 
 namespace App\Policies;
 
+use App\Models\Company;
 use App\Models\User;
 
-class UserPolicy
+class CompanyPolicy
 {
     /*
     |--------------------------------------------------------------------------
@@ -25,22 +26,21 @@ class UserPolicy
     |--------------------------------------------------------------------------
     */
 
-    public function view(User $user, User $model): bool
+    public function view(User $user, Company $company): bool
     {
-        // Super Admin vê todos
+        // Super admin vê tudo
         if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Empresa vê usuários da própria empresa
+        // Empresa vê apenas a própria empresa
         if ($user->isCompany()) {
 
             return
-                $user->company_id === $model->company_id;
+                $user->company_id === $company->id;
         }
 
-        // Cliente vê apenas ele mesmo
-        return $user->id === $model->id;
+        return false;
     }
 
     /*
@@ -51,9 +51,7 @@ class UserPolicy
 
     public function create(User $user): bool
     {
-        return
-            $user->isSuperAdmin()
-            || $user->isCompany();
+        return $user->isSuperAdmin();
     }
 
     /*
@@ -62,22 +60,21 @@ class UserPolicy
     |--------------------------------------------------------------------------
     */
 
-    public function update(User $user, User $model): bool
+    public function update(User $user, Company $company): bool
     {
-        // Super Admin pode tudo
+        // Super admin pode tudo
         if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Empresa edita apenas usuários dela
+        // Empresa edita apenas ela mesma
         if ($user->isCompany()) {
 
             return
-                $user->company_id === $model->company_id;
+                $user->company_id === $company->id;
         }
 
-        // Cliente apenas próprio perfil
-        return $user->id === $model->id;
+        return false;
     }
 
     /*
@@ -86,25 +83,8 @@ class UserPolicy
     |--------------------------------------------------------------------------
     */
 
-    public function delete(User $user, User $model): bool
+    public function delete(User $user, Company $company): bool
     {
-        // Não pode deletar a si mesmo
-        if ($user->id === $model->id) {
-            return false;
-        }
-
-        // Super Admin pode tudo
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        // Empresa deleta apenas usuários dela
-        if ($user->isCompany()) {
-
-            return
-                $user->company_id === $model->company_id;
-        }
-
-        return false;
+        return $user->isSuperAdmin();
     }
 }

@@ -31,10 +31,14 @@ class SideNavigation extends Component
         //$manifestFinishCount = Manifest::where([
         //    ['status', '=', 'entregue'],
         //    ['section', '=', 'finalizado'],
-        //])->count();        
+        //])->count();  
+        
+        $companiesCount = Company::count();
+        $config = Config::first();
 
         return view('livewire.navigation.side-navigation',[
-           
+            'companiesCount' => $companiesCount,
+            'config' => $config
         ]);
     }
 }

@@ -27,6 +27,20 @@
             <div class="row">
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="info-box">
+                        <span class="info-box-icon bg-info">
+                            <a href="{{ route('companies.index') }}" title="Empresas">
+                                <i class="fa far fa-industry"></i>
+                            </a>
+                        </span>            
+                        <div class="info-box-content">
+                            <span class="info-box-text"><b>Empresas</b></span>
+                            <span class="info-box-text">{{ now()->year }}: {{ $companyYearCount }}</span>
+                            <span class="info-box-text">Total: {{ $companyCount }}</span>
+                        </div>            
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="info-box">
                         <span class="info-box-icon bg-teal">
                             <a href="{{ route('posts.index') }}" title="Notícias">
                                 <i class="fa far fa-pencil-alt"></i>

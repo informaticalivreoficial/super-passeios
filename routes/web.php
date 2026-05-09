@@ -3,6 +3,9 @@
 use App\Http\Controllers\Web\SiteController;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\Dashboard\Companies\CatCompanies;
+use App\Livewire\Dashboard\Companies\Companies;
+use App\Livewire\Dashboard\Companies\CompanyForm;
 use App\Livewire\Dashboard\Dashboard;
 use App\Livewire\Dashboard\Posts\CatPosts;
 use App\Livewire\Dashboard\Posts\Lixeira;
@@ -54,8 +57,13 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('posts/categorias', CatPosts::class)->name('posts.categories.index');
     Route::get('/posts/lixeira', Lixeira::class)->name('posts.lixeira');
     Route::get('posts', Posts::class)->name('posts.index');
-
     Route::get('posts/reports', ReportsPosts::class)->name('posts.reports');
+
+    //*********************** Empresas **********************************************/
+    Route::get('empresas', Companies::class)->name('companies.index');
+    Route::get('empresas/cadastrar-empresa', CompanyForm::class)->name('companies.create');
+    Route::get('empresas/{company}/editar-empresa', CompanyForm::class)->name('companies.edit');
+    Route::get('empresas/categorias', CatCompanies::class)->name('companies.categories.index');
 
 });
 

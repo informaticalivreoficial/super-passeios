@@ -26,6 +26,7 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
+            'company_id' => null,
             'name' => $this->faker->name(),
             'cpf' => fake()->cpf,
             'rg' => fake()->rg,

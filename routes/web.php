@@ -3,6 +3,7 @@
 use App\Http\Controllers\Web\SiteController;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\Dashboard\Bookings\BookingForm;
 use App\Livewire\Dashboard\Companies\CatCompanies;
 use App\Livewire\Dashboard\Companies\Companies;
 use App\Livewire\Dashboard\Companies\CompanyForm;
@@ -14,10 +15,15 @@ use App\Livewire\Dashboard\Posts\Posts;
 use App\Livewire\Dashboard\Reports\Posts as ReportsPosts;
 use App\Livewire\Dashboard\Settings;
 use App\Livewire\Dashboard\Sitemap\SitemapGenerator;
+use App\Livewire\Dashboard\Tours\TourForm;
 use App\Livewire\Dashboard\Users\Form;
 use App\Livewire\Dashboard\Users\Time;
 use App\Livewire\Dashboard\Users\Users;
 use App\Livewire\Dashboard\Users\ViewUser;
+use App\Livewire\Dashboard\Vessels\VesselForm;
+use App\Models\Booking;
+use App\Models\Tour;
+use App\Models\Vessel;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
@@ -44,6 +50,31 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('configuracoes', Settings::class)->name('settings');
     Route::get('sitemap-generator', SitemapGenerator::class)->name('sitemap.generator');
 
+    Route::prefix('empresas')->middleware('role:super-admin|company')->name('companies.')->group(function () {
+        Route::get('/', Companies::class)->name('index');
+        Route::get('/cadastrar', CompanyForm::class)->name('create');
+        Route::get('/{company}/editar', CompanyForm::class)->name('edit');
+        Route::get('/categorias', CatCompanies::class)->name('categories.index');
+    });
+
+    Route::prefix('embarcacoes')->middleware('role:super-admin|company')->name('vessels.')->group(function () {
+        Route::get('/', Vessel::class)->name('index');
+        Route::get('/cadastrar', VesselForm::class)->name('create');
+        Route::get('/{vessel}/editar', VesselForm::class)->name('edit');
+    });
+
+    Route::prefix('passeios')->middleware('role:super-admin|company')->name('tours.')->group(function () {
+        Route::get('/', Tour::class)->name('index');
+        Route::get('/cadastrar', TourForm::class)->name('create');
+        Route::get('/{tour}/editar', TourForm::class)->name('edit');
+    });
+
+    Route::prefix('reservas')->middleware('role:super-admin|company')->name('bookings.')->group(function () {
+        Route::get('/', Booking::class)->name('index'); 
+        Route::get('/cadastrar', BookingForm::class)->name('create');
+        Route::get('/{booking}/editar', BookingForm::class)->name('edit');
+    });
+
     //*********************** Usuários **********************************************/
     Route::get('usuarios/clientes', Users::class)->name('users.index');
     Route::get('usuarios/time', Time::class)->name('users.time');
@@ -57,13 +88,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], functi
     Route::get('posts/categorias', CatPosts::class)->name('posts.categories.index');
     Route::get('/posts/lixeira', Lixeira::class)->name('posts.lixeira');
     Route::get('posts', Posts::class)->name('posts.index');
-    Route::get('posts/reports', ReportsPosts::class)->name('posts.reports');
-
-    //*********************** Empresas **********************************************/
-    Route::get('empresas', Companies::class)->name('companies.index');
-    Route::get('empresas/cadastrar-empresa', CompanyForm::class)->name('companies.create');
-    Route::get('empresas/{company}/editar-empresa', CompanyForm::class)->name('companies.edit');
-    Route::get('empresas/categorias', CatCompanies::class)->name('companies.categories.index');
+    Route::get('posts/reports', ReportsPosts::class)->name('posts.reports');         
 
 });
 

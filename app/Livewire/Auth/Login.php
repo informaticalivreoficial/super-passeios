@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Auth;
 
+use App\Helpers\Renato;
 use App\Models\User;
 use App\Traits\WithToastr;
 use Illuminate\Support\Facades\Auth;
@@ -80,10 +81,24 @@ class Login extends Component
         // ✅ Toast pós-login (via session)
         session()->flash('toast', [
             'type' => 'success',
-            'message' => 'Bem-vindo de volta, ' . \App\Helpers\Renato::getPrimeiroNome($user->name) . '!',
+            'message' => 'Bem-vindo de volta, ' . Renato::getPrimeiroNome($user->name) . '!',
         ]);
 
-        return redirect()->route('admin');
+        // ✅ Redireciona por role
+        if ($user->isSuperAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        if ($user->isCompany()) {
+            return redirect()->route('company.dashboard');
+        }
+
+        if ($user->isCustomer()) {
+            return redirect()->route('customer.dashboard');
+        }
+
+        // Fallback
+        return redirect()->route('admin.dashboard');
     }
 
 

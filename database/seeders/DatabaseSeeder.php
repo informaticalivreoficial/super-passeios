@@ -17,10 +17,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ConfigTableSeeder::class,
             RolesAndPermissionsSeeder::class,
-            CatCompanySeeder::class,
-            CatPostsTableSeeder::class,
-            CompanySeeder::class,
             UsersTableSeeder::class, 
+            CatPostsTableSeeder::class,
+            CompanySeeder::class,            
             TourDateSeeder::class,
             BookingSeeder::class,            
             PostsTableSeeder::class,

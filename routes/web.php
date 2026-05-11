@@ -3,7 +3,12 @@
 use App\Http\Controllers\Web\SiteController;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\Auth\RegisterCompany;
+use App\Livewire\Company\Company\CompanyForm as CompanyCompanyForm;
+use App\Livewire\Company\Dashboard as CompanyDashboard;
+use App\Livewire\Company\User\UserForm;
 use App\Livewire\Dashboard\Bookings\BookingForm;
+use App\Livewire\Dashboard\Bookings\Bookings;
 use App\Livewire\Dashboard\Companies\CatCompanies;
 use App\Livewire\Dashboard\Companies\Companies;
 use App\Livewire\Dashboard\Companies\CompanyForm;
@@ -16,15 +21,16 @@ use App\Livewire\Dashboard\Reports\Posts as ReportsPosts;
 use App\Livewire\Dashboard\Settings;
 use App\Livewire\Dashboard\Sitemap\SitemapGenerator;
 use App\Livewire\Dashboard\Tours\TourForm;
+use App\Livewire\Dashboard\Tours\Tours;
 use App\Livewire\Dashboard\Users\Form;
 use App\Livewire\Dashboard\Users\Time;
 use App\Livewire\Dashboard\Users\Users;
 use App\Livewire\Dashboard\Users\ViewUser;
 use App\Livewire\Dashboard\Vessels\VesselForm;
-use App\Models\Booking;
-use App\Models\Tour;
-use App\Models\Vessel;
+use App\Livewire\Dashboard\Vessels\Vessels;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/cadastro', RegisterCompany::class)->name('register.company');
 
 Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
 
@@ -42,58 +48,84 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
 
     Route::get('/pagina/{slug}', [SiteController::class, 'page'])->name('pagina');
 
+    Route::get('/embarcacao/{slug}', [SiteController::class, 'vessel'])->name('vessel');
+
+    
+
 });
 
-Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin'], function () {
+Route::group(['middleware' => ['auth', 'verified', 'role:customer'], 'prefix' => 'minha-conta', 'as' => 'customer.'], function () {
+    Route::get('/', CompanyDashboard::class)->name('dashboard');
+});
 
-    Route::get('/', Dashboard::class)->name('admin');
-    Route::get('configuracoes', Settings::class)->name('settings');
-    Route::get('sitemap-generator', SitemapGenerator::class)->name('sitemap.generator');
+Route::group(['middleware' => ['auth', 'verified', 'role:company'], 'prefix' => 'painel', 'as' => 'company.'], function () {
 
-    Route::prefix('empresas')->middleware('role:super-admin|company')->name('companies.')->group(function () {
-        Route::get('/', Companies::class)->name('index');
-        Route::get('/cadastrar', CompanyForm::class)->name('create');
-        Route::get('/{company}/editar', CompanyForm::class)->name('edit');
-        Route::get('/categorias', CatCompanies::class)->name('categories.index');
-    });
+    Route::get('/', CompanyDashboard::class)->name('dashboard');
 
-    Route::prefix('embarcacoes')->middleware('role:super-admin|company')->name('vessels.')->group(function () {
-        Route::get('/', Vessel::class)->name('index');
+    Route::get('empresa/{company}/editar', CompanyCompanyForm::class)->name('company.edit');
+    Route::get('/cadastrar-empresa', CompanyCompanyForm::class)->middleware('company.not.exists')->name('company.create');
+    Route::get('usuarios/{user}/editar', UserForm::class)->name('company.users.edit');
+
+    Route::prefix('embarcacoes')->middleware('company.created')->name('vessels.')->group(function () {
+        Route::get('/', Vessels::class)->name('index');
         Route::get('/cadastrar', VesselForm::class)->name('create');
         Route::get('/{vessel}/editar', VesselForm::class)->name('edit');
     });
 
-    Route::prefix('passeios')->middleware('role:super-admin|company')->name('tours.')->group(function () {
-        Route::get('/', Tour::class)->name('index');
+    Route::prefix('passeios')->middleware('company.created')->name('tours.')->group(function () {
+        Route::get('/', Tours::class)->name('index');
         Route::get('/cadastrar', TourForm::class)->name('create');
         Route::get('/{tour}/editar', TourForm::class)->name('edit');
     });
 
-    Route::prefix('reservas')->middleware('role:super-admin|company')->name('bookings.')->group(function () {
-        Route::get('/', Booking::class)->name('index'); 
+    Route::prefix('reservas')->middleware('company.created')->name('bookings.')->group(function () {
+        Route::get('/', Bookings::class)->name('index'); 
         Route::get('/cadastrar', BookingForm::class)->name('create');
         Route::get('/{booking}/editar', BookingForm::class)->name('edit');
     });
 
-    //*********************** Usuários **********************************************/
+});
+
+
+
+
+
+
+
+Route::group(['middleware' => ['auth', 'verified', 'role:super-admin'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
+
+    Route::get('/', Dashboard::class)->name('dashboard');
+    Route::get('configuracoes', Settings::class)->name('settings');
+    Route::get('sitemap-generator', SitemapGenerator::class)->name('sitemap.generator');
+
+    Route::get('/empresas', Companies::class)->name('companies.index');
+    Route::get('/cadastrar', CompanyForm::class)->name('companies.create');
+    Route::get('/{company}/editar', CompanyForm::class)->name('companies.edit');
+
+    Route::get('/embarcacoes', Vessels::class)->name('vessels.index');
+    Route::get('/cadastrar', VesselForm::class)->name('vessels.create');
+    Route::get('/{vessel}/editar', VesselForm::class)->name('vessels.edit');
+
+    Route::get('/passeios', Tours::class)->name('tours.index');
+    Route::get('/cadastrar', TourForm::class)->name('tours.create');
+    Route::get('/{tour}/editar', TourForm::class)->name('tours.edit');
+
+    Route::get('/reservas', Bookings::class)->name('bookings.index'); 
+    Route::get('/cadastrar', BookingForm::class)->name('bookings.create');
+    Route::get('/{booking}/editar', BookingForm::class)->name('bookings.edit');   
+
     Route::get('usuarios/clientes', Users::class)->name('users.index');
     Route::get('usuarios/time', Time::class)->name('users.time');
     Route::get('usuarios/cadastrar', Form::class)->name('users.create');
     Route::get('usuarios/{userId}/editar', Form::class)->name('users.edit');
-    Route::get('usuarios/{user}/visualizar', ViewUser::class)->name('users.view'); 
+    Route::get('usuarios/{userId}/visualizar', ViewUser::class)->name('users.view'); 
 
-    //*********************** Posts *********************************************/
     Route::get('posts/{post}/editar', PostForm::class)->name('posts.edit');
     Route::get('posts/cadastrar', PostForm::class)->name('posts.create');
     Route::get('posts/categorias', CatPosts::class)->name('posts.categories.index');
     Route::get('/posts/lixeira', Lixeira::class)->name('posts.lixeira');
     Route::get('posts', Posts::class)->name('posts.index');
-    Route::get('posts/reports', ReportsPosts::class)->name('posts.reports');         
-
+    Route::get('posts/reports', ReportsPosts::class)->name('posts.reports'); 
 });
 
-// Authentication routes
-Route::group(['prefix' => 'auth'], function () {
-    Route::get('login', Login::class)->name('login');
-    Route::get('register', Register::class)->name('register');
-});
+require __DIR__.'/auth.php';

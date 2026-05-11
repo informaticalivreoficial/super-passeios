@@ -28,7 +28,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="info-box">
                         <span class="info-box-icon bg-info">
-                            <a href="{{ route('companies.index') }}" title="Empresas">
+                            <a href="{{ route('admin.companies.index') }}" title="Empresas">
                                 <i class="fa far fa-industry"></i>
                             </a>
                         </span>            
@@ -42,7 +42,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="info-box">
                         <span class="info-box-icon bg-teal">
-                            <a href="{{ route('posts.index') }}" title="Notícias">
+                            <a href="{{ route('admin.posts.index') }}" title="Notícias">
                                 <i class="fa far fa-pencil-alt"></i>
                             </a>
                         </span>            
@@ -56,7 +56,7 @@
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="info-box">
                         <span class="info-box-icon bg-purple">
-                            <a href="{{ route('posts.index') }}" title="Artigos">
+                            <a href="{{ route('admin.posts.index') }}" title="Artigos">
                                 <i class="fa far fa-pencil-alt"></i>
                             </a>
                         </span>            

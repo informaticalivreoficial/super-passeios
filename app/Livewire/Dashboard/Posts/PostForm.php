@@ -68,7 +68,7 @@ class PostForm extends Component
             'thumb_caption' => 'nullable|string|max:255',
             'comments' => 'required|boolean',
             'tags' => 'nullable|array',
-            'images.*' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
+            'images.*' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:4096',
         ];
     }
 

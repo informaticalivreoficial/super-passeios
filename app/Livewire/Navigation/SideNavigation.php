@@ -2,11 +2,14 @@
 
 namespace App\Livewire\Navigation;
 
+use App\Models\Booking;
 use App\Models\Company;
 use App\Models\Config;
 use App\Models\Post;
 use App\Models\Property;
+use App\Models\Tour;
 use App\Models\User;
+use App\Models\Vessel;
 use Livewire\Component;
 
 class SideNavigation extends Component
@@ -36,9 +39,17 @@ class SideNavigation extends Component
         $companiesCount = Company::count();
         $config = Config::first();
 
+        $vesselsCount = Vessel::count();
+
+        $toursCount = Tour::count();
+        $bookingsCount = Booking::count();
+
         return view('livewire.navigation.side-navigation',[
-            'companiesCount' => $companiesCount,
-            'config' => $config
+            'companiesCount' => $companiesCount > 0 ? $companiesCount : null,
+            'config' => $config,
+            'vesselsCount' => $vesselsCount > 0 ? $vesselsCount : null,
+            'toursCount' => $toursCount > 0 ? $toursCount : null,
+            'bookingsCount' => $bookingsCount > 0 ? $bookingsCount : null,
         ]);
     }
 }

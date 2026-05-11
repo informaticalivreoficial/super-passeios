@@ -33,6 +33,7 @@ return new class extends Migration
 
             $table->text('description')->nullable();
 
+            $table->boolean('display_marked_water')->default(false);
             $table->boolean('bathroom')->default(false);
             $table->boolean('barbecue')->default(false);
             $table->boolean('suite')->default(false);

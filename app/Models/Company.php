@@ -16,12 +16,7 @@ class Company extends Model
     protected $fillable = [
         'uuid',
         'api_token',
-
-        'client',
-        'category_id',
-        'sub_category_id',
         
-        'guia',
         'content',
         'url',
         'slug',
@@ -29,15 +24,12 @@ class Company extends Model
         'metatags',
         'maps',
         'logo',
-        'metaimg',
+        'watermark',
         'caption_img_cover',
         'highlight',
 
         'magic_token',
         'magic_token_expires_at',
-        'responsable_name',
-        'responsable_email',
-        'responsable_cpf',
         'social_name',
         'alias_name',
         'document_company',
@@ -54,8 +46,6 @@ class Company extends Model
 
     protected $casts = [
         'status' => 'boolean',
-        'client' => 'boolean',
-        'guia' => 'boolean',
         'magic_token_expires_at' => 'datetime',
         'highlight' => 'boolean',
     ];
@@ -112,23 +102,18 @@ class Company extends Model
     public function vessels()
     {
         return $this->hasMany(Vessel::class);
-    }
-    
-    public function categoriaObject()
-    {
-        return $this->belongsTo(CatCompany::class, 'category_id');
-    }
-
-    public function subcategoriaObject()
-    {
-        return $this->belongsTo(CatCompany::class, 'sub_category_id');
-    }
+    }   
 
     public function images()
     {
         return $this->hasMany(CompanyGb::class, 'company', 'id')
                     ->orderBy('order_img', 'ASC')
                     ->orderBy('cover', 'DESC'); // cover primeiro (1 antes de 0)
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function hasImagesWithoutWatermark()
@@ -145,15 +130,7 @@ class Company extends Model
             return asset('theme/images/image.jpg');
         } 
         return Storage::url($this->logo);
-    }
-
-    public function getmetaimg()
-    {
-        if(empty($this->metaimg) || !Storage::disk()->exists($this->metaimg)) {
-            return url(asset('theme/images/image.jpg'));
-        } 
-        return Storage::url($this->metaimg);
-    }
+    }    
 
     public function logoPathForPdf(): string
     {
@@ -162,14 +139,7 @@ class Company extends Model
         }
 
         return public_path('theme/images/image.jpg');
-    }
-
-    public function getMetatagsArrayAttribute()
-    {
-        return $this->metatags
-            ? array_map('trim', explode(',', $this->metatags))
-            : [];
-    }
+    }    
 
     public function setZipcodeAttribute($value)
     {
@@ -289,15 +259,6 @@ class Company extends Model
     
             $this->attributes['slug'] = $slug;
         }
-    }
-
-    private function convertStringToDate(?string $param)
-    {
-        if (empty($param)) {
-            return null;
-        }
-        list($day, $month, $year) = explode('/', $param);
-        return (new \DateTime($year . '-' . $month . '-' . $day))->format('Y-m-d');
     }
     
     private function clearField(?string $param)

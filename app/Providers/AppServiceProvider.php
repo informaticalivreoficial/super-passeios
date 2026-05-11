@@ -7,6 +7,8 @@ use Illuminate\Support\ServiceProvider;
 use App\Models\Company;
 use App\Policies\CompanyPolicy;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,5 +31,16 @@ class AppServiceProvider extends ServiceProvider
 
         $config = \App\Models\Config::first(); 
         View()->share('config', $config);
+
+        VerifyEmail::toMailUsing(function ($notifiable, $url) {
+
+            return (new MailMessage)
+                ->subject('Bem-vindo à Plataforma Náutica')
+                ->greeting('Olá ' . $notifiable->name)
+                ->line('Sua conta foi criada com sucesso.')
+                ->line('Agora valide seu email para acessar o painel.')
+                ->action('Validar Email', $url)
+                ->line('Após a validação você poderá cadastrar sua empresa.');
+        });
     }
 }

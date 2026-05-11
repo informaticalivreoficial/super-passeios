@@ -62,8 +62,6 @@ class CompanyForm extends Component
     public ?string $maps = null;
 
     public ?string $status    = '0';
-    public ?string $guia      = '0';
-    public ?string $client    = '0';
     public ?string $highlight = '0';
     public ?string $facebook = null;
     public ?string $twitter = null;
@@ -111,8 +109,6 @@ class CompanyForm extends Component
             $this->fill($data);
 
             $this->status    = (string) (int) ($company->status    ?? false);
-            $this->guia      = (string) (int) ($company->guia      ?? false);
-            $this->client    = (string) (int) ($company->client    ?? false);
             $this->highlight = (string) (int) ($company->highlight ?? false);
 
             // Metatags como array

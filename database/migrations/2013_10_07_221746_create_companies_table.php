@@ -13,25 +13,16 @@ return new class extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')
+                ->constrained()
+                ->cascadeOnDelete();
             $table->uuid('uuid')->unique();            
-            $table->string('api_token', 64)->unique()->nullable();
-            $table->boolean('client')->default(false);
-            $table->foreignId('category_id')
-                ->nullable()
-                ->constrained('cat_companies')
-                ->nullOnDelete();
-
-            $table->foreignId('sub_category_id')
-                ->nullable()
-                ->constrained('cat_companies')
-                ->nullOnDelete();
+            $table->string('api_token', 64)->unique()->nullable();           
                 
-            $table->boolean('guia')->default(false);
             $table->text('content')->nullable();
             $table->string('url')->nullable();
             $table->string('slug')->nullable();
             $table->string('first_year')->nullable();
-            $table->text('metatags')->nullable();
             $table->text('maps')->nullable();
             $table->string('caption_img_cover')->nullable();
             $table->boolean('highlight')->default(false);
@@ -39,9 +30,6 @@ return new class extends Migration
 
             $table->string('magic_token', 64)->nullable()->unique();
             $table->timestamp('magic_token_expires_at')->nullable();
-            $table->string('responsable_name');
-            $table->string('responsable_email');
-            $table->string('responsable_cpf')->nullable();
             $table->string('social_name')->nullable();
             $table->string('alias_name')->nullable();
             $table->string('document_company')->nullable();
@@ -51,7 +39,7 @@ return new class extends Migration
 
             /** images */
             $table->string('logo')->nullable();
-            $table->string('metaimg')->nullable();
+            $table->string('watermark')->nullable();
 
             /** social */
             $table->string('facebook')->nullable();

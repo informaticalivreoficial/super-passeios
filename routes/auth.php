@@ -1,31 +1,50 @@
 <?php
 
-use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
-use Livewire\Volt\Volt;
+
+use App\Livewire\Auth\Login;
+use App\Livewire\Auth\RegisterCompany;
+use App\Livewire\Auth\ForgotPassword;
+use App\Livewire\Auth\ResetPassword;
+use App\Livewire\Auth\VerifyEmail;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+
 
 Route::middleware('guest')->group(function () {
-    Volt::route('register', 'pages.auth.register')
-        ->name('register');
 
-    Volt::route('login', 'pages.auth.login')
-        ->name('login');
+    Route::get('/login', Login::class)->name('login');
+    Route::get('/cadastro', RegisterCompany::class)->name('register.company');
+    Route::get('/forgot-password', ForgotPassword::class)->name('password.request');
+    Route::get('/reset-password/{token}', ResetPassword::class)->name('password.reset');
 
-    Volt::route('forgot-password', 'pages.auth.forgot-password')
-        ->name('password.request');
-
-    Volt::route('reset-password/{token}', 'pages.auth.reset-password')
-        ->name('password.reset');
 });
 
+
 Route::middleware('auth')->group(function () {
-    Volt::route('verify-email', 'pages.auth.verify-email')
-        ->name('verification.notice');
 
-    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
+    Route::get('/email/verify', VerifyEmail::class)->name('verification.notice');
 
-    Volt::route('confirm-password', 'pages.auth.confirm-password')
-        ->name('password.confirm');
+    Route::get('/email/verify/{id}/{hash}', function (
+        EmailVerificationRequest $request
+    ) {
+
+        $request->fulfill();
+
+        return redirect()->route('company.dashboard');
+
+    })->middleware([
+        'signed',
+        'throttle:6,1'
+    ])->name('verification.verify');
+
+    Route::post('/email/verification-notification', function (
+        Request $request
+    ) {
+
+        $request->user()->sendEmailVerificationNotification();
+
+        return back()->with('success', 'Novo email enviado.');
+
+    })->middleware('throttle:6,1')->name('verification.send');
 });

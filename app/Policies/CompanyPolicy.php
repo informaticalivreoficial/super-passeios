@@ -37,7 +37,7 @@ class CompanyPolicy
         if ($user->isCompany()) {
 
             return
-                $user->company_id === $company->id;
+                $company->user_id === $user->id;
         }
 
         return false;
@@ -51,7 +51,30 @@ class CompanyPolicy
 
     public function create(User $user): bool
     {
-        return $user->isSuperAdmin();
+        /*
+        |--------------------------------------------------------------------------
+        | Super admin pode sempre
+        |--------------------------------------------------------------------------
+        */
+
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Company cria apenas UMA empresa
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $user->isCompany()
+            && !$user->company
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
     /*
@@ -71,7 +94,7 @@ class CompanyPolicy
         if ($user->isCompany()) {
 
             return
-                $user->company_id === $company->id;
+                $company->user_id === $user->id;
         }
 
         return false;

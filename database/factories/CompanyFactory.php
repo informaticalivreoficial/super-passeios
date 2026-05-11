@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\CatCompany;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -20,35 +19,20 @@ class CompanyFactory extends Factory
     public function definition(): array
     {
         return [
+            'user_id' => User::factory(),
             'uuid' => Str::uuid(),
             'api_token' => Str::random(64),
 
-            'client' => $this->faker->boolean(),
-            'guia' => $this->faker->boolean(),
-
-            'category_id' => function () {
-                return CatCompany::whereNull('id_pai')->inRandomOrder()->value('id');
-            },
-
-            'sub_category_id' => function (array $attributes) {
-                $subs = CatCompany::where('id_pai', $attributes['category_id'])->pluck('id');
-
-                return $subs->isNotEmpty() ? $subs->random() : null;
-            },
+            
 
             'content' => $this->faker->paragraph(),
             'url' => $this->faker->url(),
             'slug' => Str::slug($this->faker->unique()->sentence()),
             'first_year' => $this->faker->year(),
-            'metatags' => implode(',', $this->faker->words(5)),
             'maps' => $this->faker->url(),
 
             'magic_token' => null,
             'magic_token_expires_at' => null,
-
-            'responsable_name' => $this->faker->name(),
-            'responsable_email' => $this->faker->safeEmail(),
-            'responsable_cpf' => fake()->cpf,
 
             'social_name' => $this->faker->company(),
             'alias_name' => $this->faker->companySuffix(),
@@ -62,7 +46,6 @@ class CompanyFactory extends Factory
 
             // imagens
             'logo' => null,
-            'metaimg' => null,
 
             // redes sociais
             'facebook' => $this->faker->url(),

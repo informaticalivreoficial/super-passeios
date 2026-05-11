@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
@@ -31,7 +32,7 @@ class User extends Authenticatable
         //Address      
         'zipcode', 'street', 'number', 'complement', 'neighborhood', 'state', 'city',
         //Contact
-        'phone', 'cell_phone', 'whatsapp', 'skype', 'telegram', 'email', 'additional_email',
+        'phone', 'cell_phone', 'whatsapp', 'telegram', 'email', 'additional_email',
         //Social
         'facebook', 'twitter', 'instagram', 'linkedin',        
         'status',
@@ -88,6 +89,11 @@ class User extends Authenticatable
     public function posts()
     {
         return $this->hasMany(Post::class, 'autor', 'id');
+    }
+
+    public function company()
+    {
+        return $this->hasOne(Company::class);
     }
 
     /**

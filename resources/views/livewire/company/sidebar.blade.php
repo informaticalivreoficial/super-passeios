@@ -1,7 +1,15 @@
 <div>
     <aside
-        class="sidebar-bg sidebar-border fixed lg:static inset-y-0 left-0 z-50 w-64 flex flex-col transform transition-transform duration-300 lg:min-h-screen"
-        :class="sidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
+        class="sidebar-bg sidebar-border
+            fixed lg:sticky
+            top-0 left-0
+            z-50
+            w-64
+            h-screen
+            flex flex-col
+            transform transition-transform duration-300
+            lg:translate-x-0"
+        :class="sidebar ? 'translate-x-0' : '-translate-x-full'"
     >
 
         {{-- LOGO --}}
@@ -71,10 +79,10 @@
                 Dashboard
             </a>
 
-            @if(auth()->check() && auth()->user()->company_id)
+            @if(auth()->check() && auth()->user()->company()->exists())
 
                 <a
-                    href="{{ route('company.company.edit', auth()->user()->company_id) }}"
+                    href="{{ route('company.company.edit', auth()->user()->company->uuid) }}"
                     @class([
                         'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition',
                         'nav-active' => request()->routeIs('company.company.edit'),

@@ -22,13 +22,17 @@ class CompanyForm extends Component
     use AuthorizesRequests;
 
     public ?Company $company = null;
-    public bool $isEditing = false;    
 
     // Imagens
     public array $images = [];
     public $savedImages = [];
-    public $logo = null;
+    public $logo;
+    public $watermark;
+    public $logoPreview = null;
+    public $watermarkPreview = null;
+
     public ?string $logoPath = null;
+    public ?string $watermarkPath = null;
 
     // Dados principais
     public ?string $social_name = null;
@@ -66,13 +70,24 @@ class CompanyForm extends Component
         $user = auth()->user();
 
         // Se o usuário já tem empresa, carrega para edição
-        if ($user->company_id) {
-            $this->company = Company::findOrFail($user->company_id);
-            $this->isEditing = true;
+        if ($user->company) {
+
+            $this->company = $user->company;
+            $this->authorize('update', $this->company);
             $this->fillForm();
+
+            $this->logoPreview = $this->company->logo
+                ? Storage::disk('public')->url($this->company->logo)
+                : null;
+
+            $this->watermarkPreview = $this->company->watermark
+                ? Storage::disk('public')->url($this->company->watermark)
+                : null;
         } else {
+
+            $this->authorize('create', Company::class);
             $this->company = new Company();
-            $this->isEditing = false;
+            
         }
 
         $this->savedImages = $this->company->exists
@@ -120,6 +135,7 @@ class CompanyForm extends Component
             'email'      => ['required', 'email', Rule::unique('companies', 'email')->ignore($companyId)],
             'whatsapp'   => 'required|string|min:14',
             'logo'       => 'nullable|file|mimes:jpeg,jpg,png,webp|max:2048',
+            'watermark'  => 'nullable|file|mimes:jpeg,jpg,png,webp|max:2048',
         ];
     }
 
@@ -151,6 +167,10 @@ class CompanyForm extends Component
 
             if (! $this->logo instanceof TemporaryUploadedFile) {
                 unset($rules['logo']);
+            } 
+
+            if (! $this->watermark instanceof TemporaryUploadedFile) {
+                unset($rules['watermark']);
             }        
 
             $this->validate($rules);
@@ -186,7 +206,6 @@ class CompanyForm extends Component
                 $this->company->update($data);
             } else {
                 $this->company = Company::create($data);
-                $this->isEditing = true;
             }
 
             $folder = 'company/' . $this->company->uuid;
@@ -199,6 +218,16 @@ class CompanyForm extends Component
                 $this->logoPath = $this->logo->store($folder, 'public');
                 $this->company->update(['logo' => $this->logoPath]);
                 $this->logo = null;
+            }
+
+            // Upload watermak
+            if ($this->watermark instanceof TemporaryUploadedFile) {
+                if ($this->watermarkPath) {
+                    Storage::disk('public')->delete($this->watermarkPath);
+                }
+                $this->watermarkPath = $this->watermark->store($folder, 'public');
+                $this->company->update(['watermark' => $this->watermarkPath]);
+                $this->watermark = null;
             }        
 
             // Upload galeria
@@ -251,9 +280,9 @@ class CompanyForm extends Component
 
             $this->dispatch('swal:success', [
                 'title'             => 'Sucesso!',
-                'text'              => $this->isEditing
-                    ? 'Empresa atualizada com sucesso!'
-                    : 'Empresa cadastrada com sucesso!',
+                'text'              => $this->company->wasRecentlyCreated
+                    ? 'Empresa cadastrada com sucesso!'
+                    : 'Empresa atualizada com sucesso!',
                 'timer'             => 2000,
                 'showConfirmButton' => false,
             ]);
@@ -284,6 +313,16 @@ class CompanyForm extends Component
                 $this->addError('zipcode', 'CEP não encontrado.'); 
             }
         }
+    }
+
+    public function updatedLogo()
+    {
+        $this->logoPreview = $this->logo->temporaryUrl();
+    }
+
+    public function updatedWatermark()
+    {
+        $this->watermarkPreview = $this->watermark->temporaryUrl();
     }
 
     #[Layout('components.layouts.company', ['title' => 'Dados da Empresa'])]

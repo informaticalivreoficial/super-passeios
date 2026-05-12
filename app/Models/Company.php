@@ -14,6 +14,7 @@ class Company extends Model
     protected $table = 'companies';
 
     protected $fillable = [
+        'user_id',
         'uuid',
         'api_token',
         
@@ -21,7 +22,6 @@ class Company extends Model
         'url',
         'slug',
         'first_year',
-        'metatags',
         'maps',
         'logo',
         'watermark',

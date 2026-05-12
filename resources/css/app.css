@@ -11,7 +11,7 @@
   input[type='password'],
   textarea,
   select {
-    @apply border border-gray-300 rounded-lg px-3 py-2 text-sm w-full bg-white;
+    @apply border border-gray-300 rounded-lg text-sm w-full bg-white;
   }
 }
 

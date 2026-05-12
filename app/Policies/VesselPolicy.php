@@ -4,12 +4,11 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Vessel;
-use Illuminate\Auth\Access\Response;
 
 class VesselPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Listagem de embarcações.
      */
     public function viewAny(User $user): bool
     {
@@ -19,71 +18,75 @@ class VesselPolicy
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Visualizar embarcação específica.
      */
     public function view(User $user, Vessel $vessel): bool
     {
-        // Super admin vê tudo
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        // Empresa vê apenas a própria empresa
-        if ($user->isCompany()) {
-
-            return
-                $user->company_id === $vessel->company_id;
-        }
-
-        return false;
+        return
+            $user->isSuperAdmin()
+            || (
+                $user->isCompany()
+                && $user->company?->id === $vessel->company_id
+            );
     }
 
     /**
-     * Determine whether the user can create models.
+     * Criar embarcação.
      */
     public function create(User $user): bool
     {
-        return $user->isSuperAdmin();
+        return
+            $user->isSuperAdmin()
+            || (
+                $user->isCompany()
+                && $user->company?->id
+            );
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Editar embarcação.
      */
     public function update(User $user, Vessel $vessel): bool
     {
-        // Super admin pode tudo
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        // Empresa edita apenas ela mesma
-        if ($user->isCompany()) {
-
-            return
-                $user->company_id === $vessel->company_id;
-        }
-
-        return false;
+        return
+            $user->isSuperAdmin()
+            || (
+                $user->isCompany()
+                && $user->company?->id === $vessel->company_id
+            );
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Excluir embarcação.
      */
     public function delete(User $user, Vessel $vessel): bool
     {
-        // Super admin pode tudo
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        // Empresa remove apenas embarcações dela
-        if ($user->isCompany()) {
-
-            return
-                $user->company_id === $vessel->company_id;
-        }
-
-        return false;
+        return
+            $user->isSuperAdmin()
+            || (
+                $user->isCompany()
+                && $user->company?->id === $vessel->company_id
+            );
     }
-    
+
+    /**
+     * Restaurar embarcação.
+     */
+    public function restore(User $user, Vessel $vessel): bool
+    {
+        return
+            $user->isSuperAdmin()
+            || (
+                $user->isCompany()
+                && $user->company?->id === $vessel->company_id
+            );
+    }
+
+    /**
+     * Forçar exclusão.
+     */
+    public function forceDelete(User $user, Vessel $vessel): bool
+    {
+        return $user->isSuperAdmin();
+    }
 }

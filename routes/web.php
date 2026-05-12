@@ -7,6 +7,8 @@ use App\Livewire\Auth\RegisterCompany;
 use App\Livewire\Company\Company\CompanyForm as CompanyCompanyForm;
 use App\Livewire\Company\Dashboard as CompanyDashboard;
 use App\Livewire\Company\User\UserForm;
+use App\Livewire\Company\Vessels\VesselForm as VesselsVesselForm;
+use App\Livewire\Company\Vessels\VesselIndex;
 use App\Livewire\Dashboard\Bookings\BookingForm;
 use App\Livewire\Dashboard\Bookings\Bookings;
 use App\Livewire\Dashboard\Companies\CatCompanies;
@@ -62,15 +64,13 @@ Route::group(['middleware' => ['auth', 'verified', 'role:company'], 'prefix' => 
 
     Route::get('/', CompanyDashboard::class)->name('dashboard');
 
-    Route::get('empresa/{company}/editar', CompanyCompanyForm::class)->name('company.edit');
+    Route::get('editar-empresa/{uuid}', CompanyCompanyForm::class)->name('company.edit');
     Route::get('/cadastrar-empresa', CompanyCompanyForm::class)->middleware('company.not.exists')->name('company.create');
     Route::get('usuarios/{user}/editar', UserForm::class)->name('company.users.edit');
 
-    Route::prefix('embarcacoes')->middleware('company.created')->name('vessels.')->group(function () {
-        Route::get('/', Vessels::class)->name('index');
-        Route::get('/cadastrar', VesselForm::class)->name('create');
-        Route::get('/{vessel}/editar', VesselForm::class)->name('edit');
-    });
+    Route::get('/embarcacoes', VesselIndex::class)->name('vessels.index');
+    Route::get('/cadastrar-embarcacao', VesselsVesselForm::class)->name('vessels.create');
+    Route::get('/editar-embarcacao/{vessel}', VesselsVesselForm::class)->name('vessels.edit');
 
     Route::prefix('passeios')->middleware('company.created')->name('tours.')->group(function () {
         Route::get('/', Tours::class)->name('index');

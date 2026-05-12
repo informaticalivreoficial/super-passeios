@@ -9,22 +9,24 @@
         </span>
 
         <h1 class="text-2xl font-extrabold tracking-tight" style="color: #051e34;">
-            Cadastro da Empresa
+            {{ $company ? 'Dados da Empresa' : 'Cadastro da Empresa' }}
         </h1>
 
-        <p class="text-sm mt-1" style="color: #87c2c0;">
-            Preencha as informações da sua operação náutica.
-        </p>
+                
 
     </div>
 
-    {{-- TIP --}}
-    <div class="flex items-start gap-3 rounded-xl px-4 py-3 mb-6" style="background-color: rgba(250,221,55,0.15); border: 1px solid rgba(250,221,55,0.4);">
-        <svg class="w-5 h-5 mt-0.5 shrink-0" style="color: #c4a800;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-        <p class="text-sm" style="color: #7a6800;">
-            <strong>Dica:</strong> Campos marcados com <span style="color: #337bbc;" class="font-bold">*</span> são obrigatórios.
-        </p>
-    </div>
+    @if (!$company) 
+        {{-- TIP --}}
+        <div class="flex items-start gap-3 rounded-xl px-4 py-3 mb-6" style="background-color: rgba(250,221,55,0.15); border: 1px solid rgba(250,221,55,0.4);">
+            <svg class="w-5 h-5 mt-0.5 shrink-0" style="color: #c4a800;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <p class="text-sm" style="color: #7a6800;">
+                <strong>Dica:</strong> Campos marcados com <span style="color: #337bbc;" class="font-bold">*</span> são obrigatórios.
+            </p>
+        </div>            
+    @endif
+
+    
 
     <form wire:submit="save" class="space-y-6">
 
@@ -93,10 +95,22 @@
                             type="text"
                             wire:model="document_company"
                             placeholder="00.000.000/0001-00"
-                            class="w-full border rounded-xl text-sm pl-9 pr-3 py-2.5 outline-none transition"
+                            class="w-full border rounded-xl text-sm px-3 py-2.5 outline-none transition"
                             style="border-color: #e8e4d8; color: #051e34;"
                             onfocus="this.style.borderColor='#16a3b7'; this.style.boxShadow='0 0 0 3px rgba(22,163,183,0.15)'"
                             onblur="this.style.borderColor='#e8e4d8'; this.style.boxShadow='none'"
+                            x-data
+                            x-init="
+                                let mask = IMask($el, {
+                                    mask: [
+                                        { mask: '00.000.000/0000-00' },
+                                        { mask: '00.000.000/0000-00' }
+                                    ]
+                                });
+                                mask.on('accept', () => {
+                                    $el.dispatchEvent(new Event('input'));
+                                });
+                            "
                         >
                     </div>
                 </div>
@@ -134,41 +148,57 @@
                         <input
                             type="text"
                             wire:model="phone"
-                            placeholder="(00) 0000-0000"
-                            class="w-full border rounded-xl text-sm pl-9 pr-3 py-2.5 outline-none transition"
+                            placeholder="(00) 00000-0000"
+                            class="w-full border rounded-xl text-sm px-3 py-2.5 outline-none transition"
                             style="border-color: #e8e4d8; color: #051e34;"
                             onfocus="this.style.borderColor='#16a3b7'; this.style.boxShadow='0 0 0 3px rgba(22,163,183,0.15)'"
                             onblur="this.style.borderColor='#e8e4d8'; this.style.boxShadow='none'"
-                            x-mask="(99) 99999-9999"
+                            x-data
+                            x-init="
+                                let mask = IMask($el, {
+                                    mask: [
+                                        { mask: '(00) 0000-0000' },
+                                        { mask: '(00) 00000-0000' }
+                                    ]
+                                });
+                                mask.on('accept', () => {
+                                    $el.dispatchEvent(new Event('input'));
+                                });
+                            "
                         >
                     </div>
                 </div>
 
                 {{-- WhatsApp --}}
                 <div class="flex flex-col gap-1.5">
-                    <label class="text-sm font-bold" style="color: #051e34;">
-                        WhatsApp <span style="color: #337bbc;">*</span>
-                    </label>
-                    <div class="relative">
-                        <input
-                            type="text"
-                            wire:model="whatsapp"
-                            placeholder="(00) 00000-0000"
-                            @class([
-                                'input-pagbank',
-
-                                'input-pagbank-default'
-                                    => !$errors->has('whatsapp'),
-
-                                'input-pagbank-error input-error'
-                                    => $errors->has('whatsapp'),
-                            ])
-                        >
-                        @error('whatsapp')
-                            <p class="text-xs mt-1" style="color: #e53e3e;">{{ $message }}</p>
-                        @enderror
-                    </div>
+                <label class="text-sm font-bold" style="color: #051e34;">
+                    WhatsApp <span style="color: #337bbc;">*</span>
+                </label>
+                <div class="relative">
+                    <input
+                        type="text"
+                        wire:model="whatsapp"
+                        placeholder="(00) 00000-0000"
+                        x-data
+                        x-init="$nextTick(() => {
+                            IMask($el, {
+                                mask: [
+                                    { mask: '(00) 0000-0000' },
+                                    { mask: '(00) 00000-0000' }
+                                ]
+                            })
+                        })"
+                        @class([
+                            'input-pagbank',
+                            'input-pagbank-default' => !$errors->has('whatsapp'),
+                            'input-pagbank-error input-error' => $errors->has('whatsapp'),
+                        ])
+                    >
+                    @error('whatsapp')
+                        <p class="text-xs mt-1" style="color: #e53e3e;">{{ $message }}</p>
+                    @enderror
                 </div>
+            </div>
 
             </div>
         </div>
@@ -451,6 +481,102 @@
 
         </div>
 
+        {{-- CARD: IDENTIDADE VISUAL --}}
+        <div class="bg-white rounded-2xl overflow-hidden" style="border: 1px solid #e8e4d8;">
+
+            <div class="flex items-center gap-3 px-6 py-4" style="border-bottom: 1px solid #f0ece4;">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background-color: rgba(22,163,183,0.1);">
+                    <svg class="w-5 h-5" style="color: #16a3b7;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+                        <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-sm font-bold" style="color: #051e34;">Identidade Visual</h2>
+                    <p class="text-xs" style="color: #87c2c0;">Logo e marca d'água exibidos nas reservas.</p>
+                </div>
+            </div>
+
+            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                {{-- LOGO --}}
+                <div class="flex flex-col gap-2">
+                    <label class="text-sm font-bold" style="color: #051e34;">Logo da Empresa</label>
+                    <p class="text-xs" style="color: #87c2c0;">PNG ou JPG, recomendado 400x400px.</p>
+
+                    <label
+                        class="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed cursor-pointer transition py-8"
+                        style="border-color: #e8e4d8;"
+                        onfocus="this.style.borderColor='#16a3b7'"
+                        onmouseover="this.style.borderColor='#16a3b7'; this.style.backgroundColor='rgba(22,163,183,0.04)'"
+                        onmouseout="this.style.borderColor='#e8e4d8'; this.style.backgroundColor='transparent'"
+                    >
+                        {{-- Preview --}}
+                        @if ($logoPreview)
+                            <img src="{{ $logoPreview }}" class="w-24 h-24 object-contain rounded-lg mb-1">
+                        @else
+                            <div class="w-14 h-14 rounded-xl flex items-center justify-center" style="background-color: rgba(22,163,183,0.08);">
+                                <svg class="w-7 h-7" style="color: #16a3b7;" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M12 12V3m0 0L8 7m4-4l4 4"/>
+                                </svg>
+                            </div>
+                            <span class="text-xs font-medium" style="color: #16a3b7;">Clique para enviar</span>
+                            <span class="text-xs" style="color: #b0a98a;">ou arraste o arquivo aqui</span>
+                        @endif
+
+                        <input
+                            type="file"
+                            wire:model="logo"
+                            accept="image/png,image/jpeg"
+                            class="hidden"
+                        >
+                    </label>
+
+                    @error('logo')
+                        <p class="text-xs mt-1" style="color: #e53e3e;">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- WATERMARK --}}
+                <div class="flex flex-col gap-2">
+                    <label class="text-sm font-bold" style="color: #051e34;">Marca d'água</label>
+                    <p class="text-xs" style="color: #87c2c0;">PNG com fundo transparente, recomendado 800x800px.</p>
+
+                    <label
+                        class="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed cursor-pointer transition py-8"
+                        style="border-color: #e8e4d8;"
+                        onmouseover="this.style.borderColor='#337bbc'; this.style.backgroundColor='rgba(51,123,188,0.04)'"
+                        onmouseout="this.style.borderColor='#e8e4d8'; this.style.backgroundColor='transparent'"
+                    >
+                        {{-- Preview --}}
+                        @if ($watermarkPreview)
+                            <img src="{{ $watermarkPreview }}" class="w-24 h-24 object-contain rounded-lg mb-1">
+                        @else
+                            <div class="w-14 h-14 rounded-xl flex items-center justify-center" style="background-color: rgba(51,123,188,0.08);">
+                                <svg class="w-7 h-7" style="color: #337bbc;" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M12 12V3m0 0L8 7m4-4l4 4"/>
+                                </svg>
+                            </div>
+                            <span class="text-xs font-medium" style="color: #337bbc;">Clique para enviar</span>
+                            <span class="text-xs" style="color: #b0a98a;">ou arraste o arquivo aqui</span>
+                        @endif
+
+                        <input
+                            type="file"
+                            wire:model="watermark"
+                            accept="image/png"
+                            class="hidden"
+                        >
+                    </label>
+
+                    @error('watermark')
+                        <p class="text-xs mt-1" style="color: #e53e3e;">{{ $message }}</p>
+                    @enderror
+                </div>
+
+            </div>
+        </div>
+
         {{-- CARD: SOBRE --}}
         <div class="bg-white rounded-2xl overflow-hidden" style="border: 1px solid #e8e4d8;">
 
@@ -489,7 +615,7 @@
                 onmouseout="this.style.backgroundColor='#23c55e'"
             >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                Salvar Empresa
+                {{ $company ? 'Editar' : 'Salvar' }}
             </button>
 
         </div>

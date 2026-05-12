@@ -52,13 +52,7 @@
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Listar Todos <span class="badge badge-info right">{{ $companiesCount }}</span></p>
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('admin.categories.index') }}" class="nav-link {{ Route::is('admin.categories.index') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Categorias</p>
-                            </a>
-                        </li>
+                        </li>                        
                     </ul>
                 </li>
 

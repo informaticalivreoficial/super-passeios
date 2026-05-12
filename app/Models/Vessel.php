@@ -6,6 +6,7 @@ use App\Support\Cropper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Vessel extends Model
 {
@@ -39,6 +40,30 @@ class Vessel extends Model
         'active' => 'boolean',
     ];    
 
+    protected static function boot()
+    {
+        parent::boot();        
+    }
+
+    protected static function booted()
+    {
+        static::saving(function ($vessel) {
+            $vessel->setSlug();
+        });
+
+        static::creating(function ($vessel) {
+            $vessel->uuid      = Str::uuid();
+        });
+
+        static::deleting(function ($vessel) {
+            // Deleta a pasta inteira com todas as imagens
+            Storage::disk('public')->deleteDirectory("company/vessels/{$vessel->uuid}");
+
+            // Deleta os registros do banco
+            $vessel->images()->delete();
+        });
+    }
+
      /**
      * Relationships
     */ 
@@ -62,6 +87,11 @@ class Vessel extends Model
     /**
      * Accerssors and Mutators
      */
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
     public function cover()
     {
         $images = $this->images();
@@ -88,5 +118,26 @@ class Vessel extends Model
         
         return Storage::url($cover['path']);
     } 
+
+    public function setSlug()
+    {
+        if (!empty($this->name)) {
+    
+            $baseSlug = Str::slug($this->name);
+            $slug = $baseSlug;
+            $count = 1;
+    
+            while (
+                Vessel::where('slug', $slug)
+                    ->where('id', '!=', $this->id)
+                    ->exists()
+            ) {
+                $slug = $baseSlug . '-' . str_pad($count, 2, '0', STR_PAD_LEFT);
+                $count++;
+            }
+    
+            $this->attributes['slug'] = $slug;
+        }
+    }
     
 }

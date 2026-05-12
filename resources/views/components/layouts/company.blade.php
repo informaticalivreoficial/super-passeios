@@ -45,7 +45,7 @@
     style="background-color: #efebe0;"
 >
 
-    <div class="min-h-screen flex">
+    <div class="flex min-h-screen items-stretch">
 
         {{-- OVERLAY MOBILE --}}
         <div
@@ -58,7 +58,7 @@
         <livewire:company.sidebar class="flex flex-col" style="min-height: 100vh;" />
 
         {{-- CONTENT --}}
-        <div class="flex-1 flex flex-col min-h-screen overflow-hidden">
+        <div class="flex-1 flex flex-col min-h-screen">
 
             {{-- TOPBAR --}}
             <header class="topbar-bg h-16 px-4 lg:px-8 flex items-center justify-between shrink-0">
@@ -99,7 +99,7 @@
             </header>
 
             {{-- PAGE --}}
-            <main class="flex-1 p-4 lg:p-8 overflow-x-hidden">
+            <main class="flex-1 p-4 lg:p-8">
 
                 {{ $slot }}
 
@@ -108,6 +108,7 @@
         </div>
 
     </div>
+    
 
     @livewireScripts
 

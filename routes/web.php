@@ -6,6 +6,8 @@ use App\Livewire\Auth\Register;
 use App\Livewire\Auth\RegisterCompany;
 use App\Livewire\Company\Company\CompanyForm as CompanyCompanyForm;
 use App\Livewire\Company\Dashboard as CompanyDashboard;
+use App\Livewire\Company\Tours\TourForm as ToursTourForm;
+use App\Livewire\Company\Tours\TourIndex;
 use App\Livewire\Company\User\UserForm;
 use App\Livewire\Company\Vessels\VesselForm as VesselsVesselForm;
 use App\Livewire\Company\Vessels\VesselIndex;
@@ -66,17 +68,15 @@ Route::group(['middleware' => ['auth', 'verified', 'role:company'], 'prefix' => 
 
     Route::get('editar-empresa/{uuid}', CompanyCompanyForm::class)->name('company.edit');
     Route::get('/cadastrar-empresa', CompanyCompanyForm::class)->middleware('company.not.exists')->name('company.create');
-    Route::get('usuarios/{user}/editar', UserForm::class)->name('company.users.edit');
+    Route::get('minha-conta/{user}', UserForm::class)->name('company.users.edit');
 
-    Route::get('/embarcacoes', VesselIndex::class)->name('vessels.index');
+    Route::get('/gerenciar-embarcacoes', VesselIndex::class)->name('vessels.index');
     Route::get('/cadastrar-embarcacao', VesselsVesselForm::class)->name('vessels.create');
     Route::get('/editar-embarcacao/{vessel}', VesselsVesselForm::class)->name('vessels.edit');
 
-    Route::prefix('passeios')->middleware('company.created')->name('tours.')->group(function () {
-        Route::get('/', Tours::class)->name('index');
-        Route::get('/cadastrar', TourForm::class)->name('create');
-        Route::get('/{tour}/editar', TourForm::class)->name('edit');
-    });
+    Route::get('/gerenciar-passeios', TourIndex::class)->name('tours.index');
+    Route::get('/cadastrar-passeio', ToursTourForm::class)->name('tours.create');
+    Route::get('/editar-passeio/{tour}', ToursTourForm::class)->name('tours.edit');
 
     Route::prefix('reservas')->middleware('company.created')->name('bookings.')->group(function () {
         Route::get('/', Bookings::class)->name('index'); 

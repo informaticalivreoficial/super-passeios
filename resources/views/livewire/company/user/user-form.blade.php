@@ -1,23 +1,5 @@
 <div class="max-w-6xl mx-auto">
 
-    {{-- HEADER --}}
-    <div class="mb-8">
-
-        <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-4" style="background-color: rgba(22,163,183,0.1); border: 1px solid rgba(22,163,183,0.3); color: #16a3b7;">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            Perfil do Usuário
-        </span>
-
-        <h1 class="text-2xl font-extrabold tracking-tight" style="color: #051e34;">
-            Editar Dados
-        </h1>
-
-        <p class="text-sm mt-1" style="color: #87c2c0;">
-            Atualize as informações do seu perfil.
-        </p>
-
-    </div>
-
     <form wire:submit="save" class="space-y-6">
 
         {{-- AVATAR --}}

@@ -57,7 +57,7 @@ class Vessel extends Model
 
         static::deleting(function ($vessel) {
             // Deleta a pasta inteira com todas as imagens
-            Storage::disk('public')->deleteDirectory("company/vessels/{$vessel->uuid}");
+            Storage::disk('public')->deleteDirectory("company/{$vessel->company->uuid}/vessels/{$vessel->uuid}");
 
             // Deleta os registros do banco
             $vessel->images()->delete();

@@ -54,7 +54,7 @@ class VesselIndex extends Component
     }
 
     #[On('deleteVessel')]
-    public function deleteCompany($id): void
+    public function deleteVessel($id): void
     {
         try {
             $vessel = Vessel::findOrFail($id);
@@ -74,7 +74,7 @@ class VesselIndex extends Component
             $this->dispatch('swal:error', [
                 'title' => 'Erro!',
                 'icon'  => 'error',
-                'text'  => 'Não foi possível excluir a empresa.',
+                'text'  => 'Não foi possível excluir a embarcação.',
             ]);
         }
     }

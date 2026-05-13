@@ -23,16 +23,17 @@ class TourPolicy
      */
     public function view(User $user, Tour $tour): bool
     {
-        // Super admin vê tudo
+        // super admin
         if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Empresa vê apenas a própria empresa
+        // empresa vê apenas os próprios passeios
         if ($user->isCompany()) {
 
             return
-                $user->company_id === $tour->company_id;
+                $user->company
+                && $user->company->id === $tour->company_id;
         }
 
         return false;
@@ -43,7 +44,18 @@ class TourPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isSuperAdmin();
+        // super admin
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        // empresa precisa existir
+        if ($user->isCompany()) {
+
+            return $user->company()->exists();
+        }
+
+        return false;
     }
 
     /**
@@ -51,16 +63,17 @@ class TourPolicy
      */
     public function update(User $user, Tour $tour): bool
     {
-        // Super admin pode tudo
+        // super admin
         if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Empresa edita apenas ela mesma
+        // empresa edita apenas os próprios passeios
         if ($user->isCompany()) {
 
             return
-                $user->company_id === $tour->company_id;
+                $user->company
+                && $user->company->id === $tour->company_id;
         }
 
         return false;
@@ -71,19 +84,25 @@ class TourPolicy
      */
     public function delete(User $user, Tour $tour): bool
     {
-        // Super admin pode tudo
+        // super admin
         if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Empresa remove apenas embarcações dela
+        // empresa remove apenas os próprios passeios
         if ($user->isCompany()) {
 
             return
-                $user->company_id === $tour->company_id;
+                $user->company
+                && $user->company->id === $tour->company_id;
         }
 
         return false;
+    }
+
+    public function restore(User $user, Tour $tour): bool
+    {
+        return $this->delete($user, $tour);
     }
     
 }

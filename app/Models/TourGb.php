@@ -20,6 +20,10 @@ class TourGb extends Model
         'cover'
     ];
 
+    protected $casts = [
+        'cover' => 'boolean',
+    ];
+
     public function getUrlCroppedAttribute()
     {
         return Storage::url($this->path);

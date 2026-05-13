@@ -245,7 +245,7 @@ class VesselForm extends Component
 
         } catch (ValidationException $e) {
             $this->dispatch('scroll-to-error');
-            dd($e);
+            //dd($e);
             throw $e;
         }
     }

@@ -27,7 +27,7 @@
 
         <a
             href="{{ route('company.vessels.create') }}"
-            class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-emerald-500 text-slate-900 text-sm font-bold shadow-sm hover:bg-emerald-400 transition"
+            class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-emerald-500 text-white text-sm font-bold shadow-sm hover:bg-emerald-400 transition"
         >
 
             <svg
@@ -67,7 +67,7 @@
 
             <a
                 href="{{ route('company.vessels.create') }}"
-                class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-emerald-500 text-slate-900 text-sm font-bold hover:bg-emerald-400 transition"
+                class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition"
             >
 
                 <svg
@@ -96,12 +96,12 @@
                 <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-lg transition flex flex-col">
 
                     {{-- IMAGE --}}
-                    <div class="relative h-56 bg-slate-100 overflow-hidden">
+                    <div class="relative">
 
                         <img
                             src="{{ $vessel->cover() }}"
                             alt="{{ $vessel->name }}"
-                            class="w-full h-full object-cover"
+                            class="w-full h-52 object-cover"
                         >
 
                         {{-- STATUS --}}

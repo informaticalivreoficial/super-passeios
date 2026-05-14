@@ -6,6 +6,7 @@ use App\Livewire\Auth\Register;
 use App\Livewire\Auth\RegisterCompany;
 use App\Livewire\Company\Company\CompanyForm as CompanyCompanyForm;
 use App\Livewire\Company\Dashboard as CompanyDashboard;
+use App\Livewire\Company\Tours\TourDates;
 use App\Livewire\Company\Tours\TourForm as ToursTourForm;
 use App\Livewire\Company\Tours\TourIndex;
 use App\Livewire\Company\User\UserForm;
@@ -77,6 +78,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:company'], 'prefix' => 
     Route::get('/gerenciar-passeios', TourIndex::class)->name('tours.index');
     Route::get('/cadastrar-passeio', ToursTourForm::class)->name('tours.create');
     Route::get('/editar-passeio/{tour}', ToursTourForm::class)->name('tours.edit');
+    Route::get('/passeios-datas/{tour:uuid}', TourDates::class)->name('tours.dates');
 
     Route::prefix('reservas')->middleware('company.created')->name('bookings.')->group(function () {
         Route::get('/', Bookings::class)->name('index'); 

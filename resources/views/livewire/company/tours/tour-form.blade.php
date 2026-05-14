@@ -465,9 +465,11 @@
         <div class="flex items-center justify-end gap-3 pt-2">
 
             <a
-                href="{{ route('company.tours.index') }}"
-                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition border"
-                style="border-color: #e8e4d8; color: #051e34;"
+                href="{{ route('company.dashboard') }}"
+                class="px-5 py-2.5 rounded-xl text-sm font-bold transition"
+                style="border: 1px solid #e8e4d8; background: white; color: #87c2c0;"
+                onmouseover="this.style.color='#051e34'"
+                onmouseout="this.style.color='#87c2c0'"
             >
                 Cancelar
             </a>

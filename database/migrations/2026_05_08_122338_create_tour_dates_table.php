@@ -20,6 +20,7 @@ return new class extends Migration
 
             $table->date('date');
             $table->decimal('price', 10, 2)->nullable();
+            $table->string('status')->default('OPEN')->after('price');
             
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();

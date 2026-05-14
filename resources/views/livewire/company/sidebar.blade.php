@@ -44,9 +44,17 @@
         <div class="px-4 py-4" style="border-bottom: 1px solid rgba(255,255,255,0.07);">
 
             <div class="user-card flex items-center gap-3 px-3 py-2.5 rounded-xl">
-                <div class="avatar-bg w-9 h-9 rounded-xl flex items-center justify-center font-extrabold text-sm shrink-0">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                </div>                    
+                <div class="avatar-bg w-9 h-9 rounded-xl flex items-center justify-center font-extrabold text-sm shrink-0 overflow-hidden">
+                    @if(auth()->user()->avatar)
+                        <img
+                            src="{{ auth()->user()->url_avatar }}"
+                            alt="{{ auth()->user()->name }}"
+                            class="w-full h-full object-cover"
+                        >
+                    @else
+                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                    @endif
+                </div>                   
                 <div class="overflow-hidden">
                     <a href="{{ route('company.company.users.edit', [auth()->user()->id]) }}">
                         <p class="font-bold text-sm truncate leading-tight" style="color: #efebe0;">

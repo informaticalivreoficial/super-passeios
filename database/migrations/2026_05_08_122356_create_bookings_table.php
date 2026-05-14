@@ -17,12 +17,16 @@ return new class extends Migration
             $table->foreignId('tour_id')
                 ->constrained()
                 ->cascadeOnDelete();
+                
+            $table->foreignId('company_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
             $table->foreignId('tour_date_id')
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->foreignId('user_id')
+            $table->foreignId('customer_id')
                 ->nullable()
                 ->constrained()
                 ->nullOnDelete();
@@ -35,6 +39,20 @@ return new class extends Migration
 
             $table->integer('adults')->default(1);
             $table->integer('children')->default(0);
+
+            $table->string('payment_method')
+                ->nullable();
+            
+            $table->string('payment_id')
+                ->nullable();
+
+            $table->decimal('subtotal', 10, 2);
+
+            $table->decimal('commission_amount', 10, 2)
+                ->default(0);
+
+            $table->decimal('company_amount', 10, 2)
+                ->default(0);
 
             $table->decimal('total', 10, 2);
 
@@ -51,6 +69,15 @@ return new class extends Migration
                 'refused',
                 'refunded',
             ])->default('pending');
+
+            $table->timestamp('expires_at')
+                ->nullable();
+
+            $table->timestamp('paid_at')
+                ->nullable();
+
+            $table->index('status');
+            $table->index('payment_status');
 
             $table->timestamps();
         });

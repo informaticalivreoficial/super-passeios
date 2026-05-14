@@ -57,6 +57,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'birthday' => 'date',
     ];
 
     protected static function booted()
@@ -141,20 +142,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getWhatsappAttribute($value): ?string
     {
         return $this->formatPhone($value);
-    }
-
-    public function setBirthdayAttribute($value)
-    {
-        $this->attributes['birthday'] = (!empty($value) ? $this->convertStringToDate($value) : null);
-    }
-
-    public function getBirthdayAttribute($value)
-    {
-        if (empty($value)) {
-            return null;
-        }
-        return \Carbon\Carbon::parse($value)->format('d/m/Y');
-    }
+    }    
 
     public function setZipcodeAttribute($value)
     {
@@ -177,14 +165,7 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return str_replace(',', '.', str_replace('.', '', $param));
-    }
-
-    private function convertStringToDate(?string $param): ?string
-    {
-        if (empty($param)) return null;
-
-        return \Carbon\Carbon::createFromFormat('d/m/Y', $param)->format('Y-m-d');
-    }
+    }    
     
     private function clearField(?string $param)
     {

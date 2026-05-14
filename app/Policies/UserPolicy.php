@@ -27,20 +27,25 @@ class UserPolicy
 
     public function view(User $user, User $model): bool
     {
-        // Super Admin vê todos
+        // Super admin vê tudo
         if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Empresa vê usuários da própria empresa
+        // Próprio perfil
+        if ($user->id === $model->id) {
+            return true;
+        }
+
+        // Empresa vê usuários vinculados à empresa dela
         if ($user->isCompany()) {
 
             return
-                $user->company_id === $model->company_id;
+                $model->company
+                && $model->company->user_id === $user->id;
         }
 
-        // Cliente vê apenas ele mesmo
-        return $user->id === $model->id;
+        return false;
     }
 
     /*
@@ -64,20 +69,27 @@ class UserPolicy
 
     public function update(User $user, User $model): bool
     {
-        // Super Admin pode tudo
+        // Super admin pode tudo
         if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Empresa edita apenas usuários dela
+        // Próprio perfil
+        if ($user->id === $model->id) {
+            return true;
+        }
+
+        // Empresa gerencia usuários dela
         if ($user->isCompany()) {
 
             return
-                $user->company_id === $model->company_id;
+                $model->company
+                && $model->company->user_id === $user->id
+                && !$model->isSuperAdmin()
+                && !$model->isCompany();
         }
 
-        // Cliente apenas próprio perfil
-        return $user->id === $model->id;
+        return false;
     }
 
     /*
@@ -88,21 +100,24 @@ class UserPolicy
 
     public function delete(User $user, User $model): bool
     {
-        // Não pode deletar a si mesmo
+        // Não pode deletar si mesmo
         if ($user->id === $model->id) {
             return false;
         }
 
-        // Super Admin pode tudo
+        // Super admin pode tudo
         if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Empresa deleta apenas usuários dela
+        // Empresa remove usuários dela
         if ($user->isCompany()) {
 
             return
-                $user->company_id === $model->company_id;
+                $model->company
+                && $model->company->user_id === $user->id
+                && !$model->isSuperAdmin()
+                && !$model->isCompany();
         }
 
         return false;

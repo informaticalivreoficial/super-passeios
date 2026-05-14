@@ -1,21 +1,5 @@
 <div class="max-w-6xl mx-auto">
 
-    {{-- BADGE + HEADER --}}
-    <div class="mb-8">
-
-        <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-4" style="background-color: rgba(22,163,183,0.1); border: 1px solid rgba(22,163,183,0.3); color: #16a3b7;">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 2a4 4 0 100 8 4 4 0 000-8zM12 10v12M4.93 14.93A10 10 0 0012 22a10 10 0 007.07-7.07M4 18h16"/></svg>
-            Operação náutica
-        </span>
-
-        <h1 class="text-2xl font-extrabold tracking-tight" style="color: #051e34;">
-            {{ $company ? 'Dados da Empresa' : 'Cadastro da Empresa' }}
-        </h1>
-
-                
-
-    </div>
-
     @if (!$company) 
         {{-- TIP --}}
         <div class="flex items-start gap-3 rounded-xl px-4 py-3 mb-6" style="background-color: rgba(250,221,55,0.15); border: 1px solid rgba(250,221,55,0.4);">
@@ -24,9 +8,7 @@
                 <strong>Dica:</strong> Campos marcados com <span style="color: #337bbc;" class="font-bold">*</span> são obrigatórios.
             </p>
         </div>            
-    @endif
-
-    
+    @endif    
 
     <form wire:submit="save" class="space-y-6">
 
@@ -232,6 +214,18 @@
                         style="border-color: #e8e4d8; color: #051e34;"
                         onfocus="this.style.borderColor='#16a3b7'; this.style.boxShadow='0 0 0 3px rgba(22,163,183,0.15)'"
                         onblur="this.style.borderColor='#e8e4d8'; this.style.boxShadow='none'"
+                        x-data
+                        x-init="
+                            let mask = IMask($el, {
+                                mask: [
+                                    { mask: '00.000-000' },
+                                    { mask: '00.000-000' }
+                                ]
+                            });
+                            mask.on('accept', () => {
+                                $el.dispatchEvent(new Event('input'));
+                            });
+                        "
                     >
                 </div>
 

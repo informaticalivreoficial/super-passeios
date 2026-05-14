@@ -209,47 +209,80 @@
                         </div>
 
                         {{-- ACTIONS --}}
-                        <div class="flex items-center gap-2">
+                        <div class="space-y-2">
 
-                            {{-- EDIT --}}
-                            <a
-                                href="{{ route('company.tours.edit', $tour->uuid) }}"
-                                class="flex-1 h-11 inline-flex items-center justify-center rounded-xl bg-cyan-50 text-cyan-700 text-sm font-bold hover:bg-cyan-100 transition"
-                            >
-                                Editar
-                            </a>
+                            {{-- LINHA 1 --}}
+                            <div class="flex items-center gap-2">
 
-                            {{-- STATUS --}}
-                            <button
-                                wire:click="toggleStatus({{ $tour->id }})"
-                                type="button"
-                                class="h-11 px-4 rounded-xl text-sm font-bold transition"
-                                style="
-                                    background-color: {{ $tour->active ? 'rgba(250,204,21,0.15)' : 'rgba(35,197,94,0.15)' }};
-                                    color: {{ $tour->active ? '#ca8a04' : '#15803d' }};
-                                "
-                            >
-                                {{ $tour->active ? 'Desativar' : 'Ativar' }}
-                            </button>
-
-                            {{-- DELETE --}}
-                            <button
-                                wire:click="setDeleteId({{ $tour->id }})"
-                                type="button"
-                                class="h-11 w-11 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition flex items-center justify-center"
-                            >
-                                <svg
-                                    class="w-4 h-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    viewBox="0 0 24 24"
+                                {{-- EDIT --}}
+                                <a
+                                    href="{{ route('company.tours.edit', $tour->uuid) }}"
+                                    class="flex-1 h-11 inline-flex items-center justify-center rounded-xl bg-cyan-50 text-cyan-700 text-sm font-bold hover:bg-cyan-100 transition"
                                 >
-                                    <path d="M3 6h18"/>
-                                    <path d="M8 6V4h8v2"/>
-                                    <path d="M19 6l-1 14H6L5 6"/>
-                                </svg>
-                            </button>
+                                    Editar
+                                </a>
+
+                                {{-- CALENDAR --}}
+                                <a
+                                    href="{{ route('company.tours.dates', $tour->uuid) }}"
+                                    class="flex-1 h-11 inline-flex items-center justify-center rounded-xl bg-indigo-50 text-indigo-700 text-sm font-bold hover:bg-indigo-100 transition"
+                                >
+
+                                    <svg
+                                        class="w-4 h-4 mr-2"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <rect x="3" y="4" width="18" height="18" rx="2"/>
+                                        <line x1="16" y1="2" x2="16" y2="6"/>
+                                        <line x1="8" y1="2" x2="8" y2="6"/>
+                                        <line x1="3" y1="10" x2="21" y2="10"/>
+                                    </svg>
+
+                                    Agenda
+
+                                </a>
+
+                            </div>
+
+                            {{-- LINHA 2 --}}
+                            <div class="flex items-center gap-2">
+
+                                {{-- STATUS --}}
+                                <button
+                                    wire:click="toggleStatus({{ $tour->id }})"
+                                    type="button"
+                                    class="flex-1 h-11 rounded-xl text-sm font-bold transition"
+                                    style="
+                                        background-color: {{ $tour->active ? 'rgba(250,204,21,0.15)' : 'rgba(35,197,94,0.15)' }};
+                                        color: {{ $tour->active ? '#ca8a04' : '#15803d' }};
+                                    "
+                                >
+                                    {{ $tour->active ? 'Desativar' : 'Ativar' }}
+                                </button>
+
+                                {{-- DELETE --}}
+                                <button
+                                    wire:click="setDeleteId({{ $tour->id }})"
+                                    type="button"
+                                    class="h-11 w-11 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition flex items-center justify-center shrink-0"
+                                >
+                                    <svg
+                                        class="w-4 h-4"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path d="M3 6h18"/>
+                                        <path d="M8 6V4h8v2"/>
+                                        <path d="M19 6l-1 14H6L5 6"/>
+                                    </svg>
+                                </button>
+
+                            </div>
 
                         </div>
 

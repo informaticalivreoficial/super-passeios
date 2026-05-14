@@ -5,3 +5,20 @@
     </h1>
 
 </div>
+
+@push('scripts')  
+    @if(session()->has('toastr'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                toastr["{{ session('toastr.type') }}"](
+                    "{{ session('toastr.message') }}",
+                    "{{ session('toastr.title') }}"
+                );
+                toastr.options = {
+                    "closeButton": true,
+                    "progressBar": true,
+                };
+            });
+        </script>
+    @endif
+@endpush

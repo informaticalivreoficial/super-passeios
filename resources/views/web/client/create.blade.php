@@ -8,8 +8,8 @@
 <body>
 
     {{ $slot }}   
+    <livewire:components.toastr-notification />
 
     @livewireScripts
-
 </body>
 </html>

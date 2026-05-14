@@ -1,20 +1,10 @@
-<div></div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Toast via Livewire
-        window.addEventListener('toast', event => {
-            const { type, message } = event.detail[0];
-            showToast(type, message);
+<div wire:ignore>
+    <script>
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('toast', ({ type, message }) => {
+                showToast(type, message);
+            });
         });
-
-        // Toast via session (redirect)
-        @if (session()->has('toast'))
-            showToast(
-                "{{ session('toast.type') }}",
-                "{{ session('toast.message') }}"
-            );
-        @endif
 
         function showToast(type, message) {
             const colors = {
@@ -35,5 +25,5 @@
                 },
             }).showToast();
         }
-    });
-</script>
+    </script>
+</div>

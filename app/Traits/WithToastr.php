@@ -4,35 +4,28 @@ namespace App\Traits;
 
 trait WithToastr
 {
-    public function toastSuccess(string $message)
+    protected function toast(string $type, string $message): void
     {
-        $this->dispatch('toast', [
-            'type' => 'success',
-            'message' => $message,
-        ]);
+        $this->dispatch('toast', type: $type, message: $message);
     }
 
-    public function toastError(string $message)
+    public function toastSuccess(string $message): void
     {
-        $this->dispatch('toast', [
-            'type' => 'error',
-            'message' => $message,
-        ]);
+        $this->toast('success', $message);
     }
 
-    public function toastWarning(string $message)
+    public function toastError(string $message): void
     {
-        $this->dispatch('toast', [
-            'type' => 'warning',
-            'message' => $message,
-        ]);
+        $this->toast('error', $message);
     }
 
-    public function toastInfo(string $message)
+    public function toastWarning(string $message): void
     {
-        $this->dispatch('toast', [
-            'type' => 'info',
-            'message' => $message,
-        ]);
+        $this->toast('warning', $message);
+    }
+
+    public function toastInfo(string $message): void
+    {
+        $this->toast('info', $message);
     }
 }

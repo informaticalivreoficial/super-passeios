@@ -202,13 +202,27 @@
                 <div class="pt-2">
                     <button
                         type="submit"
+                        wire:loading.attr="disabled"
+                        wire:target="save"
                         class="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-extrabold text-sm transition"
                         style="background: #16a3b7; color: white; box-shadow: 0 2px 0 #0e7a8a; font-family: 'Syne', sans-serif;"
                         onmouseover="this.style.background='#13919e'"
                         onmouseout="this.style.background='#16a3b7'"
                     >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        Criar minha conta
+                        {{-- Estado normal --}}
+                        <span wire:loading.remove wire:target="save" class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            Criar minha conta
+                        </span>
+
+                        {{-- Estado loading --}}
+                        <span wire:loading wire:target="save" class="flex items-center gap-2">
+                            <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                            </svg>
+                            Criando conta...
+                        </span>
                     </button>
                 </div>
 
@@ -222,6 +236,30 @@
 
             </form>
 
+        </div>
+    </div>
+
+    {{-- OVERLAY DE LOADING --}}
+    <div
+        wire:loading.flex
+        wire:target="save"
+        class="fixed inset-0 z-50 items-center justify-center"
+        style="background: rgba(5,30,52,0.7); backdrop-filter: blur(4px);"
+    >
+        <div class="flex flex-col items-center gap-4">
+            <div class="relative w-16 h-16">
+                <svg class="animate-spin w-16 h-16" style="color: #16a3b7;" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <svg class="w-6 h-6" style="color: #fadd37;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 17l4-8 4 4 4-6 4 10"/></svg>
+                </div>
+            </div>
+            <div class="text-center">
+                <p class="font-bold text-white text-lg" style="font-family: 'Syne', sans-serif;">Criando sua conta...</p>
+                <p class="text-sm mt-1" style="color: rgba(255,255,255,0.6);">Aguarde um momento</p>
+            </div>
         </div>
     </div>
 

@@ -4,18 +4,18 @@ namespace App\Livewire\Auth;
 
 use Livewire\Component;
 use Livewire\Attributes\Layout;
+use App\Traits\WithToastr;
 
 
 class VerifyEmail extends Component
 {
+    use WithToastr;
+
     public function resend()
     {
         auth()->user()->sendEmailVerificationNotification();
-
-        session()->flash(
-            'success',
-            'Novo link enviado.'
-        );
+        
+        $this->toastSuccess('Novo link enviado!');
     }
 
     #[Layout('web.client.create', ['title' => 'Verifique seu email'])]    

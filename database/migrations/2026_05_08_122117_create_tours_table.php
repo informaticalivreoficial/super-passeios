@@ -38,6 +38,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->text('rules')->nullable();
             $table->boolean('active')->default(true);
+            $table->bigInteger('views')->default(0);
 
             $table->timestamps();
         });

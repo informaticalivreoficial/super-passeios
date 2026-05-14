@@ -17,6 +17,7 @@ class Tour extends Model
         'company_id',
         'vessel_id',
         'uuid',
+        'views',
         'title',
         'slug',
         'tour_type',

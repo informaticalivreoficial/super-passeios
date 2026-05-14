@@ -39,8 +39,10 @@ Route::get('/cadastro', RegisterCompany::class)->name('register.company');
 
 Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
 
-    /** Página Inicial */   
-    Route::get('/', [SiteController::class, 'home'])->name('home'); 
+    // Portal público
+    Route::get('/', [SiteController::class, 'home'])->name('home');
+    Route::get('/{slug}', [SiteController::class, 'company'])->name('site.company');
+    Route::get('/{slug}/{uuid}', [SiteController::class, 'tour'])->name('site.tour');
 
     Route::get('/blog/artigo/{slug}', [SiteController::class, 'artigo'])->name('blog.artigo');
     Route::get('/blog/categoria/{slug}', [SiteController::class, 'categoria'])->name('blog.categoria');

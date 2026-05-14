@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\BookingStatusEnum;
+use App\Enums\PaymentStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -12,6 +14,8 @@ class Booking extends Model
 
     protected $fillable = [
         'tour_id',
+        'company_id',
+        'customer_id',
         'tour_date_id',
         'user_id',
         'uuid',
@@ -20,15 +24,27 @@ class Booking extends Model
         'customer_phone',
         'adults',
         'children',
+        'payment_method',
+        'payment_id',
+        'subtotal',
+        'commission_amount',    
+        'company_amount',
         'total',
         'status',
         'payment_status',
+        'paid_at',
+        'expires_at',       
+
     ];
 
     protected $casts = [
         'total' => 'decimal:2',
         'adults' => 'integer',
         'children' => 'integer',
+        'paid_at' => 'datetime',
+        'expires_at' => 'datetime',
+        'status' => BookingStatusEnum::class,
+        'payment_status' => PaymentStatusEnum::class,
     ];
 
     protected static function boot()

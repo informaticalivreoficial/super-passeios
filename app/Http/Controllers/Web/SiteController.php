@@ -59,8 +59,6 @@ class SiteController extends Controller
 
     public function company(string $slug)
     {
-        $config = $this->config();
-
         $company = Company::available()
             ->where('slug', $slug)
             ->with(['images'])
@@ -81,8 +79,6 @@ class SiteController extends Controller
 
     public function tour(string $slug, string $uuid)
     {
-        $config = $this->config();
-
         $company = Company::available()
             ->where('slug', $slug)
             ->firstOrFail();

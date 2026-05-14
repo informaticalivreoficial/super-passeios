@@ -10,11 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 
-
-#[Layout('components.layouts.guest')]
 class Login extends Component
 {
     use WithToastr;
@@ -102,7 +99,7 @@ class Login extends Component
     }
 
 
-    #[Title('Login')]
+    #[Layout('components.layouts.guest', ['title' => 'Login'])]    
     public function render()
     {
         return view('livewire.auth.login', [

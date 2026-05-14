@@ -27,13 +27,13 @@ class Renato
     * do usuário!
     * @return HTML = texto informado primeiro nome!
     */
-    public static function getPrimeiroNome($pNome) {
-        if(!empty($pNome)):
-            $pData = explode(" ",$pNome);
-            return count( $pData ) > 0 ? $pData[0] : $pNome;
-        else:
-            return false;
-        endif;
+    public static function getPrimeiroNome(?string $nome): ?string
+    {
+        if (empty($nome)) {
+            return null; // ✅ null em vez de false
+        }
+
+        return explode(' ', trim($nome))[0];
     }
 
     /**

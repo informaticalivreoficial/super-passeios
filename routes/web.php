@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\Web\SiteController;
-use App\Livewire\Auth\Login;
-use App\Livewire\Auth\Register;
 use App\Livewire\Auth\RegisterCompany;
 use App\Livewire\Company\Company\CompanyForm as CompanyCompanyForm;
 use App\Livewire\Company\Dashboard as CompanyDashboard;
@@ -35,6 +33,8 @@ use App\Livewire\Dashboard\Vessels\VesselForm;
 use App\Livewire\Dashboard\Vessels\Vessels;
 use Illuminate\Support\Facades\Route;
 
+require __DIR__.'/auth.php';
+
 Route::get('/cadastro', RegisterCompany::class)->name('register.company');
 
 Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
@@ -55,9 +55,11 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
 
     Route::get('/pagina/{slug}', [SiteController::class, 'page'])->name('pagina');
 
-    Route::get('/embarcacao/{slug}', [SiteController::class, 'vessel'])->name('vessel');
-
+    Route::get('/embarcacao/{slug}', [SiteController::class, 'vessel'])->name('vessel'); 
     
+    Route::get('/atendimento', [SiteController::class, 'contact'])->name('contact');
+    Route::get('/politica-de-privacidade', [SiteController::class, 'privacy'])->name('privacy');
+    Route::get('/termos-e-condicoes', [SiteController::class, 'terms'])->name('terms');
 
 });
 
@@ -131,5 +133,3 @@ Route::group(['middleware' => ['auth', 'verified', 'role:super-admin'], 'prefix'
     Route::get('posts', Posts::class)->name('posts.index');
     Route::get('posts/reports', ReportsPosts::class)->name('posts.reports'); 
 });
-
-require __DIR__.'/auth.php';

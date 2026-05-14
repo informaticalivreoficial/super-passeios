@@ -5,18 +5,9 @@
     @livewireStyles
 </head>
 
-<body class="bg-gray-100">
+<body>
 
-    <div class="flex min-h-screen">       
-
-        {{-- Content --}}
-        <main class="flex-1 p-8">
-
-            {{ $slot }}
-
-        </main>
-
-    </div>
+    {{ $slot }}   
 
     @livewireScripts
 

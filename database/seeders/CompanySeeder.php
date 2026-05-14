@@ -13,6 +13,6 @@ class CompanySeeder extends Seeder
      */
     public function run(): void
     {
-        Company::factory(20)->has(Vessel::factory(3)->hasTours(5))->create();
+        Company::factory(5)->has(Vessel::factory(3)->hasTours(5))->create();
     }
 }

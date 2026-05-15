@@ -604,7 +604,7 @@
             <button
                 type="submit"
                 class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-extrabold transition"
-                style="background-color: #23c55e; color: #051e34; box-shadow: 0 2px 0 #15803d;"
+                style="background-color: #23c55e; color: #ffffff; box-shadow: 0 2px 0 #15803d;"
                 onmouseover="this.style.backgroundColor='#1aad52'"
                 onmouseout="this.style.backgroundColor='#23c55e'"
             >

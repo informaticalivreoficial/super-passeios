@@ -60,9 +60,9 @@
 
         {{-- Breadcrumb --}}
         <nav class="flex items-center gap-2 text-xs mb-8" style="color: #87c2c0;">
-            <a href="{{ route('site.home') }}" class="hover:text-teal-500 transition">Início</a>
+            <a href="{{ route('web.home') }}" class="hover:text-teal-500 transition">Início</a>
             <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-            <a href="{{ route('site.company', $company->slug) }}" class="hover:text-teal-500 transition">{{ $company->alias_name }}</a>
+            <a href="{{ route('web.site.company', $company->slug) }}" class="hover:text-teal-500 transition">{{ $company->alias_name }}</a>
             <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
             <span style="color: var(--navy);">{{ $tour->title }}</span>
         </nav>
@@ -112,7 +112,7 @@
 
                 {{-- Empresa --}}
                 <a
-                    href="{{ route('site.company', $company->slug) }}"
+                    href="{{ route('web.site.company', $company->slug) }}"
                     class="flex items-center gap-4 p-4 rounded-2xl transition"
                     style="border: 1px solid #e8e4d8; background: white;"
                     onmouseover="this.style.borderColor='var(--teal)'"
@@ -242,7 +242,7 @@
                                         R$ {{ number_format($date->price, 2, ',', '.') }}
                                     </p>
                                     <p class="text-xs" style="color: #87c2c0;">
-                                        {{ $date->attributes['available_slots'] }} vagas
+                                        {{ $date->available_slots }} vagas
                                     </p>
                                 </div>
                             </a>

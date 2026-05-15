@@ -7,12 +7,19 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'logomarca'        => env('LOGOMARCA', 'https://informaticalivre.com.br/media/logo.png'),
     'logomarca_width'  => env('LOGOMARCA_GERENCIADOR_WIDTH', 447),
     'logomarca_height' => env('LOGOMARCA_GERENCIADOR_HEIGHT', 155),
     'metaimg_width' => env('METAIMG_WIDTH', 800),
     'metaimg_height' => env('METAIMG_HEIGHT', 418),
 
     'max_images' => env('MAX_PROPERTY_IMAGES', 20),
+
+    'facebook' => env('FACEBOOK', 'https://www.facebook.com/InformaticaLivre/'),
+    'twitter' => env('TWITTER', 'https://twitter.com/informaticalivre'),
+    'instagram' => env('INSTAGRAM', 'https://www.instagram.com/informaticalivre/'),
+    'linkedin' => env('LINKEDIN', 'https://www.linkedin.com/company/informaticalivre'),
+    'telefone' => env('TELEFONE', '(12) 99138-5030'),
 
     'desenvolvedor' => env('DESENVOLVEDOR', 'Informática Livre'),
     'desenvolvedor_url' => env('DESENVOLVEDOR_URL', 'https://informaticalivre.com.br'),

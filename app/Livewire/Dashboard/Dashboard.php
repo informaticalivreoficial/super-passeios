@@ -5,9 +5,12 @@ namespace App\Livewire\Dashboard;
 use App\Models\Company;
 use App\Models\Post;
 use Livewire\Component;
+use App\Traits\WithToastr;
 
 class Dashboard extends Component
 {
+    use WithToastr;
+    
     public $topcompanies = [];
 
     public function render()

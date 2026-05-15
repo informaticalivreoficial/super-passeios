@@ -99,6 +99,46 @@ class SiteController extends Controller
             ->orderBy('date')
             ->get();
 
-        return view('web.'.$this->config->template.'.site.tour', compact('config', 'company', 'tour', 'dates'));
+        $head = $this->seo->render($tour->name ?? config('app.name'),
+            $tour->information ?? config('app.name'),
+            route('web.home'),
+            $tour->cover() ?? asset('theme/images/image.jpg')
+        );
+
+        return view('web.'.$this->config->template.'.tours.tour', [
+            'head' => $head,
+            'tour' => $tour,
+            'dates' => $dates,
+            'company' => $company
+        ]);
+    }
+
+    public function tours(Request $request)
+    {
+        $cities = Company::available()
+            ->whereNotNull('city')
+            ->distinct()
+            ->orderBy('city')
+            ->pluck('city');
+
+        $tours = Tour::with(['company', 'images'])
+            ->where('active', true)
+            ->whereHas('company', fn($q) => $q->available())
+            ->whereHas('dates', fn($q) => $q->where('active', true)->where('status', 'OPEN')->where('date', '>=', now()))
+            ->when($request->cidade, fn($q) => $q->whereHas('company', fn($q) => $q->where('city', $request->cidade)))
+            ->when($request->tipo, fn($q) => $q->where('tour_type', $request->tipo))
+            ->when($request->preco_max, fn($q) => $q->where('price', '<=', $request->preco_max))
+            ->when($request->preco_min, fn($q) => $q->where('price', '>=', $request->preco_min))
+            ->orderByDesc('views')
+            ->paginate(12)
+            ->withQueryString();
+
+        $head = $this->seo->render('Passeios', 'Passeios', '', route('web.site.tours'));
+
+        return view('web.'.$this->config->template.'.tours.index', [
+            'head'   => $head,
+            'tours'  => $tours,
+            'cities' => $cities,
+        ]);
     }
 }

@@ -14,7 +14,7 @@ class VerifyEmail extends Component
     public function resend()
     {
         auth()->user()->sendEmailVerificationNotification();
-        
+
         $this->toastSuccess('Novo link enviado!');
     }
 

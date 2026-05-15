@@ -208,7 +208,7 @@
  
                 {{-- Links --}}
                 <div class="hidden md:flex items-center gap-8">
-                    <a href="{{ route('web.home') }}" class="nav-link">Passeios</a>
+                    <a href="{{ route('web.site.tours') }}" class="nav-link">Passeios</a>
                     <a href="{{ route('web.home') }}#empresas" class="nav-link">Empresas</a>
                     @if($config->whatsapp)
                         <a

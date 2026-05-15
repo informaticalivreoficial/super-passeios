@@ -230,17 +230,15 @@
 </div>
 
 @push('scripts')  
-    @if(session()->has('toastr'))
+    @if (session()->has('toast'))
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                toastr["{{ session('toastr.type') }}"](
-                    "{{ session('toastr.message') }}",
-                    "{{ session('toastr.title') }}"
-                );
-                toastr.options = {
-                    "closeButton": true,
-                    "progressBar": true,
-                };
+                @if (session()->has('toast'))
+                    showToast(
+                        "{{ session('toast.type') }}",
+                        "{{ session('toast.message') }}"
+                    );
+                @endif
             });
         </script>
     @endif

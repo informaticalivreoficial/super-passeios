@@ -37,12 +37,9 @@ require __DIR__.'/auth.php';
 
 Route::get('/cadastro', RegisterCompany::class)->name('register.company');
 
-Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
+Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {    
 
-    // Portal público
     Route::get('/', [SiteController::class, 'home'])->name('home');
-    Route::get('/{slug}', [SiteController::class, 'company'])->name('site.company');
-    Route::get('/{slug}/{uuid}', [SiteController::class, 'tour'])->name('site.tour');
 
     Route::get('/blog/artigo/{slug}', [SiteController::class, 'artigo'])->name('blog.artigo');
     Route::get('/blog/categoria/{slug}', [SiteController::class, 'categoria'])->name('blog.categoria');
@@ -61,6 +58,17 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     Route::get('/politica-de-privacidade', [SiteController::class, 'privacy'])->name('privacy');
     Route::get('/termos-e-condicoes', [SiteController::class, 'terms'])->name('terms');
 
+    Route::get('/passeios', [SiteController::class, 'tours'])->name('site.tours');
+
+    // ✅ Restrição para não capturar rotas do sistema
+    Route::get('/{slug}/passeio/{uuid}', [SiteController::class, 'tour'])
+        ->name('site.tour')
+        ->where('slug', '^(?!email|login|cadastro|painel|admin|minha-conta|forgot-password|reset-password)[a-z0-9-]+$');
+
+    Route::get('/{slug}', [SiteController::class, 'company'])
+        ->name('site.company')
+        ->where('slug', '^(?!email|login|cadastro|painel|admin|minha-conta|forgot-password|reset-password)[a-z0-9-]+$');
+    
 });
 
 Route::group(['middleware' => ['auth', 'verified', 'role:customer'], 'prefix' => 'minha-conta', 'as' => 'customer.'], function () {

@@ -1,58 +1,65 @@
 <x-mail::message>
+
 {{-- Greeting --}}
 @if (! empty($greeting))
 # {{ $greeting }}
 @else
 @if ($level === 'error')
-# @lang('Whoops!')
+# Oops!
 @else
-# @lang('Hello!')
+# Olá!
 @endif
 @endif
 
-{{-- Intro Lines --}}
+{{-- Intro --}}
 @foreach ($introLines as $line)
 {{ $line }}
 
 @endforeach
 
-{{-- Action Button --}}
+{{-- Button --}}
 @isset($actionText)
-<?php
-    $color = match ($level) {
-        'success', 'error' => $level,
-        default => 'primary',
-    };
-?>
+
+@php
+$color = match ($level) {
+    'success', 'error' => $level,
+    default => 'primary',
+};
+@endphp
+
 <x-mail::button :url="$actionUrl" :color="$color">
 {{ $actionText }}
 </x-mail::button>
+
 @endisset
 
-{{-- Outro Lines --}}
+{{-- Outro --}}
 @foreach ($outroLines as $line)
 {{ $line }}
 
 @endforeach
 
+{{-- Manual URL --}}
+@isset($actionText)
+<br>
+<p style="font-size:12px; color:#87c2c0; line-height:1.6; margin:0 0 6px;">
+    Caso o botão não funcione, copie e cole o link abaixo no seu navegador:
+</p>
+<p style="font-size:11px; word-break:break-all; margin:0;">
+    <a href="{{ $actionUrl }}" style="color:#16a3b7; text-decoration:none;">
+        {{ $displayableActionUrl }}
+    </a>
+</p>
+@endisset
+
 {{-- Salutation --}}
+<br>
+
 @if (! empty($salutation))
 {{ $salutation }}
 @else
-@lang('Regards'),<br>
-{{ config('app.name') }}
+Atenciosamente,
+<strong>{{ config('app.name') }}</strong>
 @endif
 
-{{-- Subcopy --}}
-@isset($actionText)
-<x-slot:subcopy>
-@lang(
-    "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\n".
-    'into your web browser:',
-    [
-        'actionText' => $actionText,
-    ]
-) <span class="break-all">[{{ $displayableActionUrl }}]({{ $actionUrl }})</span>
-</x-slot:subcopy>
-@endisset
 </x-mail::message>

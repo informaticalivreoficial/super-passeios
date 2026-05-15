@@ -8,7 +8,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">                    
-                        <li class="breadcrumb-item"><a href="{{route('admin')}}">Painel de Controle</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Painel de Controle</a></li>
                         <li class="breadcrumb-item active">Configurações</li>
                     </ol>
                 </div>
@@ -82,7 +82,7 @@
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6 col-sm-6 col-lg-6 mb-2">
-                                    @if(\Illuminate\Support\Facades\Auth::user()->isAdmin() || \Illuminate\Support\Facades\Auth::user()->isSuperAdmin())
+                                    @if(\Illuminate\Support\Facades\Auth::user()->isSuperAdmin())
                                         <div class="form-group">
                                             <label class="labelforms"><b>URL do site</b></label>
                                             <div class="input-group">

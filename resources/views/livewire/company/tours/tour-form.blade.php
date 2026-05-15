@@ -220,8 +220,29 @@
                 </div>
 
                 {{-- PREÇO --}}
-                <div class="flex flex-col gap-1.5">
+                <div
+                    x-data="{
+                        display: '',
 
+                        init() {
+                            if ($wire.price) {
+                                this.display = this.format($wire.price.toString())
+                            }
+                        },
+
+                        format(value) {
+                            value = value.replace(/\D/g, '')
+
+                            value = (Number(value) / 100).toFixed(2) + ''
+
+                            value = value.replace('.', ',')
+
+                            value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+
+                            return 'R$ ' + value
+                        }
+                    }"
+                >
                     <label
                         class="text-sm font-bold"
                         style="color: #051e34;"
@@ -230,10 +251,23 @@
                     </label>
 
                     <input
-                        type="number"
-                        step="0.01"
-                        wire:model="price"
-                        placeholder="0,00"
+                        type="text"
+
+                        x-model="display"
+
+                        x-on:input="
+                            display = format($event.target.value)
+
+                            let numeric = display
+                                .replace('R$ ', '')
+                                .replace(/\./g, '')
+                                .replace(',', '.')
+
+                            $wire.set('price', numeric)
+                        "
+
+                        placeholder="R$ 0,00"
+
                         @class([
                             'input-pagbank',
                             'input-pagbank-default' => !$errors->has('price'),
@@ -249,7 +283,6 @@
                             {{ $message }}
                         </p>
                     @enderror
-
                 </div>
 
                 {{-- DURAÇÃO --}}
@@ -499,3 +532,13 @@
     </form>
 
 </div>
+
+@push('scripts')
+    <script>
+        init() {
+            if ($wire.price) {
+                this.display = this.format($wire.price.toString())
+            }
+        }
+    </script>
+@endpush

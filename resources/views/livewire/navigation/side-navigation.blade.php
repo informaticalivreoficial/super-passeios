@@ -38,22 +38,14 @@
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li>     
 
-                {{-- Empresas --}}
-                <li class="nav-item {{ Route::is('admin.companies.*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ Route::is('admin.companies.*') ? 'active' : '' }}">
+                {{-- Embarcações --}}
+                <li class="nav-item">
+                    <a href="{{ route('admin.companies.index') }}" class="nav-link {{ Route::is('admin.companies.index') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-industry"></i>
-                        <p>Empresas <i class="fas fa-angle-left right"></i></p>
+                        <p>Empresas <span class="badge badge-info right">{{ $companiesCount }}</span></p>
                     </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('admin.companies.index') }}" class="nav-link {{ Route::is('admin.companies.index') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Listar Todos <span class="badge badge-info right">{{ $companiesCount }}</span></p>
-                            </a>
-                        </li>                        
-                    </ul>
                 </li>
 
                 {{-- Embarcações --}}

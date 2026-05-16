@@ -18,6 +18,7 @@ class TourDate extends Model
         'start_time',
         'end_time',
         'available_slots',
+        'half_price',
         'active',
         'price',
         'status',

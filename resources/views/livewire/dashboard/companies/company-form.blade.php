@@ -8,8 +8,8 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('admin') }}">Painel de Controle</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('companies.index') }}">Empresas</a>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Painel de Controle</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.companies.index') }}">Empresas</a>
                         </li>
                         <li class="breadcrumb-item active">{{ $company->exists ? 'Editar' : 'Cadastrar' }}</li>
                     </ol>
@@ -87,20 +87,14 @@
                                 <label class="labelforms"><b>Categoria:</b></label>                                
                                 <select class="form-control" wire:model.live="category_id">
                                     <option value="">Selecione a categoria</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->id }}">
-                                            {{ $category->title }}
-                                        </option>
-                                    @endforeach
+                                    
                                 </select>
                             </div>
                         </div>
                         <div class="col-12 col-md-4"> 
                             <x-forms.select label="Sub-categoria:" name="sub_category_id" :disabled="!$category_id">
                                 <option value="">Selecione a subcategoria</option>
-                                @foreach($subcategories as $sub)
-                                    <option value="{{ $sub->id }}">{{ $sub->title }}</option>
-                                @endforeach
+                                
                             </x-forms.select>
                         </div>
                         <div class="col-12 col-md-4"> 
@@ -431,42 +425,7 @@
                 <div class="card-body text-muted">
                     <div class="row">
                         <div class="col-12 mb-1"> 
-                            <div class="form-group">
-                                <label class="labelforms"><b>MetaTags</b></label>
-                                <div 
-                                    x-data="{
-                                        tags: @entangle('metatags'),
-                                        input: '',
-                                        addTag() {
-                                            const trimmed = this.input.trim();
-                                            if (trimmed && !this.tags.includes(trimmed)) {
-                                                this.tags.push(trimmed);
-                                            }
-                                            this.input = '';
-                                        },
-                                        removeTag(index) {
-                                            this.tags.splice(index, 1);
-                                        }
-                                    }"
-                                    class="p-4 border rounded shadow"
-                                    >
-                                    <div class="flex flex-wrap gap-2 mb-2">
-                                        <template x-for="(tag, index) in tags" :key="index">
-                                            <span class="flex items-center bg-teal-500 text-white px-3 py-1 rounded-full">
-                                                <span x-text="tag"></span>
-                                                <button type="button" @click="removeTag(index)" class="ml-2 hover:text-gray-200">&times;</button>
-                                            </span>
-                                        </template>
-                                    </div>                                    
-                                    <input 
-                                        type="text" 
-                                        x-model="input" 
-                                        @keydown.enter.prevent="addTag"
-                                        placeholder="Digite uma tag e pressione Enter"
-                                        class="border border-gray-300 rounded px-3 py-2 w-full"
-                                    >
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
 
@@ -584,17 +543,17 @@
                                 <div class="relative group w-full max-w-[260px]">
                                     <input 
                                         type="file"
-                                        id="metaimg"
-                                        wire:model="metaimg"
+                                        id="watermark"
+                                        wire:model="watermark"
                                         accept="image/png,image/jpeg,image/webp"
                                         class="hidden"
                                     >
 
-                                    <label for="metaimg" class="cursor-pointer block">
+                                    <label for="watermark" class="cursor-pointer block">
                                         <div class="relative rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
                                             
                                             <img
-                                                src="{{ $this->metaimgUrl }}"
+                                                src="{{ $this->watermarkUrl }}"
                                                 alt="{{ $alias_name }}"
                                                 class="w-full h-[180px] object-contain p-3 transition group-hover:scale-105"
                                             >
@@ -605,7 +564,7 @@
                                                 </span>
                                             </div>
 
-                                            <div wire:loading wire:target="metaimg"
+                                            <div wire:loading wire:target="watermark"
                                                 class="absolute inset-0 bg-white/70 flex items-center justify-center">
                                                 <span class="text-sm text-gray-600">Enviando...</span>
                                             </div>
@@ -613,7 +572,7 @@
                                     </label>
                                 </div>
 
-                                @error('metaimg')
+                                @error('watermark')
                                     <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
                                 @enderror
                             </div>

@@ -8,7 +8,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">                    
-                        <li class="breadcrumb-item"><a href="{{route('admin')}}">Painel de Controle</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Painel de Controle</a></li>
                         <li class="breadcrumb-item active">Embarcações</li>
                     </ol>
                 </div>
@@ -27,7 +27,7 @@
                       </div>
                 </div>
                 <div class="col-12 col-sm-6 my-2 text-right">
-                    <a href="{{route('vessels.create')}}" class="btn btn-sm btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Novo</a>
+                    <a href="{{route('admin.vessels.create')}}" class="btn btn-sm btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Novo</a>
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@
                                                 @if ($vessel->slug)
                                                     <a target="_blank" title="Visualizar Embarcação" class="btn btn-xs btn-info text-white" href="{{ route('web.vessel', ['slug' => $vessel->slug]) }}" title="{{$vessel->name}}"><i class="fas fa-search"></i></a>
                                                 @endif                            
-                                                <a title="Editar Embarcação" href="{{ route('vessels.edit', [ 'vessel' => $vessel->id ]) }}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
+                                                <a title="Editar Embarcação" href="{{ route('admin.vessels.edit', [ 'vessel' => $vessel->id ]) }}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
                                                 <button type="button" 
                                                     class="btn btn-xs bg-danger text-white" 
                                                     title="Excluir Embarcação"

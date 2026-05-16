@@ -27,11 +27,8 @@ class CompanyForm extends Component
     public $logo;
     public ?string $logoPath = null;
 
-    public $metaimg;
-    public ?string $metaimgPath = null;
-
-    public $categories = [];
-    public $subcategories = [];
+    public $watermark;
+    public ?string $watermarkPath = null;
 
     public $category_id = null;
     public $sub_category_id = null;
@@ -85,7 +82,6 @@ class CompanyForm extends Component
             'email' => ['required', 'email', Rule::unique('companies', 'email')->ignore($companyId)],
             'cell_phone' => 'required|string|min:14',
             'logo' => 'nullable|file|mimes:jpeg,jpg,png,webp|max:2048',
-            'metaimg' => 'nullable|file|mimes:jpeg,jpg,png,webp|max:2048',
         ];
     }    
 
@@ -93,19 +89,10 @@ class CompanyForm extends Component
     {
         $this->company = $company;
 
-        // categorias principais
-        $this->categories = CatCompany::whereNull('id_pai')
-            ->where('status', 1)
-            ->orderBy('title')
-            ->get();
-
         if ($company->exists) {
             $this->logoPath = $company->logo; // 👈 essencial
-            $this->metaimgPath = $company->metaimg; // 👈 essencial
 
-            $data = collect($company->toArray())
-                ->except(['metatags'])
-                ->toArray();
+            $data = collect($company->toArray())->toArray();
             $this->fill($data);
 
             $this->status    = (string) (int) ($company->status    ?? false);
@@ -115,25 +102,8 @@ class CompanyForm extends Component
             $this->metatags = is_string($company->metatags)
                 ? explode(',', $company->metatags)
                 : [];
-
-            // Carrega as subcategorias da categoria já salva
-            if ($this->category_id) {
-                $this->subcategories = CatCompany::where('id_pai', $this->category_id)
-                    ->where('status', 1)
-                    ->orderBy('title')
-                    ->get();
-            }
+           
         }
-    }
-
-    public function updatedCategoryId($value)
-    {
-        $this->sub_category_id = null;
-
-        $this->subcategories = CatCompany::where('id_pai', $value)
-            ->where('status', 1)
-            ->orderBy('title')
-            ->get();
     }
 
     public function save(string $mode = 'draft')
@@ -145,27 +115,19 @@ class CompanyForm extends Component
             unset($rules['logo']);
         }
 
-        if (! $this->metaimg instanceof TemporaryUploadedFile) {
-            unset($rules['metaimg']);
-        }
+       
 
         // 🔹 Validação
         $validated = $this->validate($rules);
 
         // 🔹 Ajustes
-        $validated['metatags'] = implode(',', $this->metatags ?? []);
         $validated['status']   = $mode === 'published' ? 1 : 0;
 
         // 🔹 Monta payload
         $data = [
-            'responsable_name' => $validated['responsable_name'],
-            'responsable_email' => $this->responsable_email,
-            'responsable_cpf' => $this->responsable_cpf,
-
             'alias_name' => $validated['alias_name'],
             'email' => $validated['email'],
 
-            'metatags' => $validated['metatags'],
             'maps' => $this->maps,
 
             'status' => $validated['status'],
@@ -176,9 +138,6 @@ class CompanyForm extends Component
             'url' => $this->url,
             'first_year' => $this->first_year,
             'content' => $this->content,
-
-            'category_id' => $this->category_id,
-            'sub_category_id' => $this->sub_category_id,
 
             'social_name' => $this->social_name,
             'zipcode' => $this->zipcode,
@@ -228,16 +187,16 @@ class CompanyForm extends Component
             ]);
         }
 
-        // 🔹 Upload metaimg
-        if ($this->metaimg instanceof TemporaryUploadedFile) {
-            if ($this->metaimgPath) {
-                Storage::disk('public')->delete($this->metaimgPath);
+        // 🔹 Upload watermark
+        if ($this->watermark instanceof TemporaryUploadedFile) {
+            if ($this->watermarkPath) {
+                Storage::disk('public')->delete($this->watermarkPath);
             }
 
-            $this->metaimgPath = $this->metaimg->store($folder, 'public');
+            $this->watermarkPath = $this->watermark->store($folder, 'public');
 
             $this->company->update([
-                'metaimg' => $this->metaimgPath
+                'watermark' => $this->watermarkPath
             ]);
         }
 
@@ -300,7 +259,7 @@ class CompanyForm extends Component
 
         // 🔹 Redirect
         if ($this->company->wasRecentlyCreated) {
-            return redirect()->route('companies.edit', $this->company);
+            return redirect()->route('admin.companies.edit', $this->company);
         }
     }
 
@@ -374,18 +333,20 @@ class CompanyForm extends Component
         return asset('theme/images/image.jpg');
     }
 
-    public function getMetaimgUrlProperty()
+    public function getwatermarkUrlProperty()
     {
-        if ($this->metaimg instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-            return $this->metaimg->temporaryUrl();
+        if ($this->watermark instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            return $this->watermark->temporaryUrl();
         }
 
-        if ($this->metaimgPath && Storage::disk('public')->exists($this->metaimgPath)) {
-            return Storage::url($this->metaimgPath);
+        if ($this->watermarkPath && Storage::disk('public')->exists($this->watermarkPath)) {
+            return Storage::url($this->watermarkPath);
         }
 
         return asset('theme/images/image.jpg');
     }
+
+    
 
     #[On('updateContent')]
     public function updateContent($value)

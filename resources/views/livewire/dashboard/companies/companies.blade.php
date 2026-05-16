@@ -8,7 +8,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">                    
-                        <li class="breadcrumb-item"><a href="{{route('admin')}}">Painel de Controle</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Painel de Controle</a></li>
                         <li class="breadcrumb-item active">Empresas</li>
                     </ol>
                 </div>
@@ -30,7 +30,7 @@
                       </div>
                 </div>
                 <div class="col-12 col-sm-6 my-2 text-right">
-                    <a href="{{route('companies.create')}}" class="btn btn-sm btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Novo</a>
+                    <a href="{{route('admin.companies.create')}}" class="btn btn-sm btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Novo</a>
                 </div>
             </div>
         </div>        
@@ -83,7 +83,7 @@
                                         </a>                                    
                                           
                                         </button>                                  
-                                        <a href="{{route('companies.edit',['company' => $company->id])}}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
+                                        <a href="{{route('admin.companies.edit',['company' => $company->id])}}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
                                         @if (auth()->user()->isSuperAdmin())
                                             <button type="button" 
                                                     class="btn btn-xs bg-danger"

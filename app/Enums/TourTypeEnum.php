@@ -22,4 +22,9 @@ enum TourTypeEnum: string
             self::SHARED => 'bg-green-100 text-green-700',
         };
     }
+
+    public static function values(): array
+    {
+        return array_column(self::cases(), 'value');
+    }
 }

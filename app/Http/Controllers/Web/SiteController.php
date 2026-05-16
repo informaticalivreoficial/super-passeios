@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Enums\TourTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\Config;
 use App\Models\Tour;
 use Illuminate\Http\Request;
 use App\Support\Seo;
+use Illuminate\Validation\Rule;
 
 class SiteController extends Controller
 {
@@ -99,8 +101,8 @@ class SiteController extends Controller
             ->orderBy('date')
             ->get();
 
-        $head = $this->seo->render($tour->name ?? config('app.name'),
-            $tour->information ?? config('app.name'),
+        $head = $this->seo->render($tour->title ?? config('app.name'),
+            $tour->description ?? config('app.name'),
             route('web.home'),
             $tour->cover() ?? asset('theme/images/image.jpg')
         );
@@ -115,18 +117,39 @@ class SiteController extends Controller
 
     public function tours(Request $request)
     {
+        $request->validate([
+            'cidade'    => ['nullable', 'string', 'max:100'],
+            'tipo' => ['nullable', 'string', Rule::in(TourTypeEnum::values())],
+            'preco_min' => ['nullable', 'numeric', 'min:0'],
+            'preco_max' => ['nullable', 'numeric', 'min:0'],
+        ]);
+
         $cities = Company::available()
             ->whereNotNull('city')
             ->distinct()
             ->orderBy('city')
             ->pluck('city');
 
-        $tours = Tour::with(['company', 'images'])
+        $tours = Tour::with([
+                'company',
+                'images' => fn($q) => $q->limit(1),
+                'dates'  => fn($q) => $q->where('active', true)
+                                        ->where('status', 'OPEN')
+                                        ->where('date', '>=', now())
+                                        ->orderBy('date')
+                                        ->limit(1),
+            ])
             ->where('active', true)
-            ->whereHas('company', fn($q) => $q->available())
-            ->whereHas('dates', fn($q) => $q->where('active', true)->where('status', 'OPEN')->where('date', '>=', now()))
-            ->when($request->cidade, fn($q) => $q->whereHas('company', fn($q) => $q->where('city', $request->cidade)))
-            ->when($request->tipo, fn($q) => $q->where('tour_type', $request->tipo))
+            ->whereHas('company', function ($q) use ($request) {
+                $q->available();
+                if ($request->cidade) {
+                    $q->where('city', $request->cidade);
+                }
+            })
+            ->whereHas('dates', fn($q) => $q->where('active', true)
+                                            ->where('status', 'OPEN')
+                                            ->where('date', '>=', now()))
+            ->when($request->tipo,      fn($q) => $q->where('tour_type', $request->tipo))
             ->when($request->preco_max, fn($q) => $q->where('price', '<=', $request->preco_max))
             ->when($request->preco_min, fn($q) => $q->where('price', '>=', $request->preco_min))
             ->orderByDesc('views')
@@ -141,4 +164,5 @@ class SiteController extends Controller
             'cities' => $cities,
         ]);
     }
+
 }

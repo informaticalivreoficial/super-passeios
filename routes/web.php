@@ -12,7 +12,6 @@ use App\Livewire\Company\Vessels\VesselForm as VesselsVesselForm;
 use App\Livewire\Company\Vessels\VesselIndex;
 use App\Livewire\Dashboard\Bookings\BookingForm;
 use App\Livewire\Dashboard\Bookings\Bookings;
-use App\Livewire\Dashboard\Companies\CatCompanies;
 use App\Livewire\Dashboard\Companies\Companies;
 use App\Livewire\Dashboard\Companies\CompanyForm;
 use App\Livewire\Dashboard\Dashboard;
@@ -31,11 +30,13 @@ use App\Livewire\Dashboard\Users\Users;
 use App\Livewire\Dashboard\Users\ViewUser;
 use App\Livewire\Dashboard\Vessels\VesselForm;
 use App\Livewire\Dashboard\Vessels\Vessels;
+use App\Livewire\Web\Checkout\CheckoutForm as CheckoutCheckoutForm;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/auth.php';
 
 Route::get('/cadastro', RegisterCompany::class)->name('register.company');
+Route::get('/checkout/{tourDate}', CheckoutCheckoutForm::class)->name('checkout');
 
 Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {    
 
@@ -59,6 +60,8 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
     Route::get('/termos-e-condicoes', [SiteController::class, 'terms'])->name('terms');
 
     Route::get('/passeios', [SiteController::class, 'tours'])->name('site.tours');
+
+    
 
     // ✅ Restrição para não capturar rotas do sistema
     Route::get('/{slug}/passeio/{uuid}', [SiteController::class, 'tour'])
@@ -113,19 +116,19 @@ Route::group(['middleware' => ['auth', 'verified', 'role:super-admin'], 'prefix'
     Route::get('sitemap-generator', SitemapGenerator::class)->name('sitemap.generator');
 
     Route::get('/empresas', Companies::class)->name('companies.index');
-    Route::get('/cadastrar', CompanyForm::class)->name('companies.create');
+    Route::get('/cadastrar-empresa', CompanyForm::class)->name('companies.create');
     Route::get('/{company}/editar', CompanyForm::class)->name('companies.edit');
 
     Route::get('/embarcacoes', Vessels::class)->name('vessels.index');
-    Route::get('/cadastrar', VesselForm::class)->name('vessels.create');
+    Route::get('/cadastrar-embarcacao', VesselForm::class)->name('vessels.create');
     Route::get('/{vessel}/editar', VesselForm::class)->name('vessels.edit');
 
     Route::get('/passeios', Tours::class)->name('tours.index');
-    Route::get('/cadastrar', TourForm::class)->name('tours.create');
+    Route::get('/cadastrar-passeio', TourForm::class)->name('tours.create');
     Route::get('/{tour}/editar', TourForm::class)->name('tours.edit');
 
     Route::get('/reservas', Bookings::class)->name('bookings.index'); 
-    Route::get('/cadastrar', BookingForm::class)->name('bookings.create');
+    Route::get('/cadastrar-reserva', BookingForm::class)->name('bookings.create');
     Route::get('/{booking}/editar', BookingForm::class)->name('bookings.edit');   
 
     Route::get('usuarios/clientes', Users::class)->name('users.index');

@@ -205,63 +205,7 @@
             <div class="space-y-5">
 
                 {{-- Card de reserva --}}
-                <div class="sticky top-24 bg-white rounded-2xl overflow-hidden" style="border: 1px solid #e8e4d8; box-shadow: 0 8px 40px rgba(5,30,52,0.08);">
-
-                    <div class="p-6" style="border-bottom: 1px solid #f0ece4;">
-                        <p class="text-xs mb-1" style="color: #87c2c0;">A partir de</p>
-                        <p class="font-display font-800 text-3xl" style="font-family: 'Syne', sans-serif; color: var(--navy);">
-                            R$ {{ number_format($tour->price, 2, ',', '.') }}
-                        </p>
-                        <p class="text-xs mt-1" style="color: #87c2c0;">por pessoa</p>
-                    </div>
-
-                    <div class="p-6">
-                        <h3 class="font-display font-700 text-sm mb-4" style="font-family: 'Syne', sans-serif; color: var(--navy);">
-                            Datas disponíveis
-                        </h3>
-
-                        @forelse($dates as $date)
-                            <a
-                                href="#"
-                                class="flex items-center justify-between p-3 rounded-xl mb-2 transition"
-                                style="border: 1px solid #e8e4d8;"
-                                onmouseover="this.style.borderColor='var(--teal)'; this.style.background='rgba(22,163,183,0.04)'"
-                                onmouseout="this.style.borderColor='#e8e4d8'; this.style.background='transparent'"
-                            >
-                                <div>
-                                    <p class="text-sm font-600" style="color: var(--navy); font-family: 'Syne', sans-serif;">
-                                        {{ $date->date->format('d/m/Y') }}
-                                    </p>
-                                    <p class="text-xs mt-0.5" style="color: #87c2c0;">
-                                        {{ $date->start_time }}
-                                        @if($date->end_time) — {{ $date->end_time }} @endif
-                                    </p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-sm font-bold" style="color: var(--navy);">
-                                        R$ {{ number_format($date->price, 2, ',', '.') }}
-                                    </p>
-                                    <p class="text-xs" style="color: #87c2c0;">
-                                        {{ $date->available_slots }} vagas
-                                    </p>
-                                </div>
-                            </a>
-                        @empty
-                            <div class="py-6 text-center">
-                                <p class="text-sm" style="color: #87c2c0;">Nenhuma data disponível.</p>
-                            </div>
-                        @endforelse
-
-                        @if($dates->count() > 0)
-                            <button class="btn-primary w-full justify-center mt-4 py-3">
-                                Reservar agora
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                            </button>
-                        @endif
-
-                    </div>
-
-                </div>
+                @include('livewire.web.components.tour-calendar')
 
                 {{-- WhatsApp --}}
                 @if($company->whatsapp)

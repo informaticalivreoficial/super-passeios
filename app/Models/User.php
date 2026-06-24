@@ -74,14 +74,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasRole('super-admin');
     }
 
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('admin');
+    }
+
     public function isCompany(): bool
     {
         return $this->hasRole('company');
-    }
-
-    public function isCustomer(): bool
-    {
-        return $this->hasRole('customer');
     }
 
     /**
@@ -190,5 +190,22 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return $value;
+    }
+
+    // Converte d/m/Y → Y-m-d ao salvar
+    public function setBirthdayAttribute($value): void
+    {
+        if ($value && str_contains($value, '/')) {
+            $this->attributes['birthday'] = \Carbon\Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
+        } else {
+            $this->attributes['birthday'] = $value;
+        }
+    }
+
+    // Converte Y-m-d → d/m/Y ao ler
+    public function getBirthdayAttribute($value): ?string
+    {
+        if (!$value) return null;
+        return \Carbon\Carbon::parse($value)->format('d/m/Y');
     }
 }

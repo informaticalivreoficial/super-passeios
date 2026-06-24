@@ -7,7 +7,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">                    
-                        <li class="breadcrumb-item"><a href="{{route('admin')}}">Painel de Controle</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Painel de Controle</a></li>
                         <li class="breadcrumb-item active">Clientes</li>
                     </ol>
                 </div>
@@ -31,21 +31,13 @@
                       </div>
                 </div>
                 <div class="col-12 col-sm-6 my-2 text-right">
-                    <a wire:navigate href="cadastrar-cliente" class="btn btn-sm btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Novo</a>
+                    <a href="{{ route('admin.users.create') }}" class="btn btn-sm btn-default"><i class="fas fa-plus mr-2"></i> Cadastrar Novo</a>
                 </div>
             </div>
         </div>        
         <!-- /.card-header -->
         <div class="card-body">
-            <div class="row">
-                <div class="col-12">                
-                    @if(session()->exists('message'))
-                        @message(['color' => session()->get('color')])
-                            {{ session()->get('mensagem') }}
-                        @endmessage
-                    @endif
-                </div>            
-            </div>
+            
             @if(!empty($users) && $users->count() > 0)
                 <table class="table table-bordered table-striped projects">
                     <thead>
@@ -53,7 +45,6 @@
                             <th>Foto</th>
                             <th wire:click="sortBy('name')">Nome <i class="expandable-table-caret fas fa-caret-down fa-fw"></i></th>
                             <th>CPF</th>
-                            <th class="text-center">Status</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -80,32 +71,43 @@
                             </td>
                             <td>{{$user->name}}</td>
                             <td>{{$user->cpf}}</td>
-                            <td class="text-center">
-                                <x-forms.switch-toggle
-                                    wire:key="safe-switch-{{ $user->id }}"
-                                    wire:click="toggleStatus({{ $user->id }})"
-                                    :checked="$user->status"
-                                    size="sm"
-                                    color="green"
-                                />
-                            </td>
                             <td>
-                                
-                                @if($user->whatsapp != '')
-                                    <a target="_blank" href="{{\App\Helpers\WhatsApp::getNumZap($user->whatsapp)}}" class="btn btn-xs btn-success text-white"><i class="fab fa-whatsapp"></i></a>
-                                @endif
-                                
-                                <form class="btn btn-xs" action="{{--route('email.send')--}}" method="post">
-                                    @csrf
-                                    <input type="hidden" name="nome" value="{{ $user->name }}">
-                                    <input type="hidden" name="email" value="{{ $user->email }}">
-                                    <button title="Enviar Email" type="submit" class="btn btn-xs text-white bg-teal"><i class="fas fa-envelope"></i></button>
-                                </form> 
-                                <a wire:navigate href="visualizar/{{$user->id}}" class="btn btn-xs btn-info text-white"><i class="fas fa-search"></i></a>
-                                <a wire:navigate href="{{ route('users.edit', [ 'userId' => $user->id ]) }}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
-                                <button type="button" class="btn btn-xs bg-danger text-white" wire:click="setDeleteId({{$user->id}})">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                <div class="flex items-center gap-2">
+                                    <x-forms.switch-toggle
+                                        wire:key="safe-switch-{{ $user->id }}"
+                                        wire:click="toggleStatus({{ $user->id }})"
+                                        :checked="$user->status"
+                                        size="sm"
+                                        color="green"
+                                    />
+                                    @if($user->whatsapp != '')
+                                        <a target="_blank" 
+                                            href="{{\App\Helpers\WhatsApp::getNumZap($user->whatsapp)}}" 
+                                            class="btn btn-xs bg-teal"><i class="fab fa-whatsapp"></i>
+                                        </a>
+                                    @endif                                
+                                    <button 
+                                        class="btn btn-xs btn-success" 
+                                        title="Enviar Email"
+                                        wire:click="#">
+                                        <i class="fas fa-envelope"></i>
+                                    </button> 
+                                    <a href="#" 
+                                        title="Visualizar"
+                                        class="btn btn-xs btn-info"><i class="fas fa-search"></i>
+                                    </a>
+                                    <a href="{{ route('admin.users.edit', $user->id) }}" 
+                                        class="btn btn-xs btn-default" 
+                                        title="Editar">
+                                        <i class="fas fa-pen"></i>
+                                    </a>
+                                    <button type="button" 
+                                        class="btn btn-xs bg-danger text-white" 
+                                        title="Excluir Colaborador"
+                                        wire:click="setDeleteId({{ $user->id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>                                
                             </td>
                         </tr>
                         @endforeach
@@ -131,6 +133,31 @@
 
 <script>
     
-    
+    document.addEventListener('livewire:initialized', () => {
+        @this.on('swal', (event) => {
+            const data = event
+            swal.fire({
+                icon:data[0]['icon'],
+                title:data[0]['title'],
+                text:data[0]['text'],
+            })
+        })
+
+        @this.on('delete-prompt', (event) => {
+            swal.fire({
+                icon: 'warning',
+                title: 'Atenção',
+                text: 'Você tem certeza que deseja excluir este Cliente?',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, excluir!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    @this.dispatch('goOn-Delete')
+                }
+            })
+        })
+    });
 
 </script>

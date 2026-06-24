@@ -130,7 +130,7 @@
             </a>
 
             <div class="dropdown-menu dropdown-menu-md dropdown-menu-right">
-                <a href="{{ route('admin.users.edit', [ 'user' => auth()->id() ]) }}" class="dropdown-item">
+                <a href="{{ route('admin.users.edit', auth()->id()) }}" class="dropdown-item">
                     <i class="fas fa-user mr-2"></i> Perfil
                 </a>
             </div>

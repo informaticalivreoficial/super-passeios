@@ -8,7 +8,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('admin') }}">Painel de Controle</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Painel de Controle</a></li>
                         <li class="breadcrumb-item active">Time de Usuários</li>
                     </ol>
                 </div>
@@ -99,7 +99,7 @@
                                             title="Visualizar"
                                             class="btn btn-xs btn-info"><i class="fas fa-search"></i>
                                         </a> 
-                                        <a href="{{ route('users.edit', [ 'userId' => $user->id ]) }}" 
+                                        <a href="{{ route('admin.users.edit', [ 'userId' => $user->id ]) }}" 
                                             class="btn btn-xs btn-default" 
                                             title="Editar">
                                             <i class="fas fa-pen"></i>

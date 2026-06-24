@@ -7,11 +7,11 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('admin') }}">Painel de Controle</a></li>
-                        @if (auth()->user()->isEmployee())
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Painel de Controle</a></li>
+                        @if (auth()->user()->isCompany())
                             <li class="breadcrumb-item">Colaboradores</li>
                         @else
-                            <li class="breadcrumb-item"><a href="{{ route('users.index') }}">Colaboradores</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}">Colaboradores</a></li>
                         @endif
                         
                         <li class="breadcrumb-item active">{{ $userId ? 'Editar' : 'Cadastrar' }}</li>
@@ -307,7 +307,7 @@
                     </div>
                 </div>
 
-                @if (!auth()->user()->isEmployee())
+                @if (!auth()->user()->isCompany())
                     <div class="card text-muted">
                         <div class="card-header">
                             <h4>
@@ -358,7 +358,7 @@
                                         </div>
                                     @enderror                                    
                                 </div>  
-                                @if (!$userId && $roleSelected !== 'employee')
+                                @if (!$userId && $roleSelected !== 'company')
                                     <!-- Campo: Senha -->
                                     <div class="col-12 col-md-6 col-lg-4 mt-3">
                                         <label class="labelforms text-muted"><b>Senha:</b></label>
@@ -404,27 +404,7 @@
     </form>
 </div>
 
-<script>
-    document.addEventListener('user-atualizado', function() {
-        Swal.fire({
-            title: 'Sucesso!',
-            text: "Usuário atualizado!",
-            icon: 'success',
-            showConfirmButton: false,
-            timer: 3000 // Fecha automaticamente após 3 segundos
-        });
-    });
-
-    document.addEventListener('user-cadastrado', function() {
-        Swal.fire({
-            title: 'Sucesso!',
-            text: "Usuário Cadastrado!",
-            icon: 'success',
-            showConfirmButton: false,
-            timer: 3000 // Fecha automaticamente após 3 segundos
-        });
-    });
-
+<script>  
     function initFlatpickr() {
             let input = document.getElementById('datepicker');
             if (!input) return;
@@ -466,31 +446,6 @@
     
 </script>
 
-<script>
-
-    document.addEventListener('livewire:init', () => {
-        // Configurações do Toastr
-        toastr.options = {
-            "closeButton": true,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "timeOut": "4000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut",
-            "preventDuplicates": false,
-            "newestOnTop": true
-        };
-
-        Livewire.on('toast', (event) => {
-            toastr[event.type](event.message);
-        });
-        
-    });
-
-</script>
 <script>  
 
     function togglePassword(id) {

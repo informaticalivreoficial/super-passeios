@@ -50,7 +50,7 @@ class Users extends Component
     public function render()
     {
         $users = User::query()
-            ->role('employee')
+            ->role('company')
             ->when($this->search, function($query){
                 $query->orWhere('name', 'LIKE', "%{$this->search}%");
                 $query->orWhere('email', "%{$this->search}%");

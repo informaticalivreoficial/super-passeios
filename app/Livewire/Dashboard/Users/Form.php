@@ -28,8 +28,7 @@ class Form extends Component
     public array $roleLabels = [
         'super-admin' => 'Super Administrador',
         'admin'       => 'Administrador',
-        'manager'     => 'Gerente',
-        'employee'    => 'Colaborador',
+        'manager'     => 'Cliente',
     ];
     public $roleSelected = '';
     
@@ -46,9 +45,9 @@ class Form extends Component
             'birthday' => 'required|date_format:d/m/Y|before:today',
             //'foto' => 'nullable|image|max:2048',
 
-            'roleSelected' => 'required|in:employee,manager,admin,super-admin',
+            'roleSelected' => 'required|in:manager,admin,super-admin',
 
-            'code' => $this->roleSelected !== 'employee'
+            'code' => $this->roleSelected !== 'manager'
                 ? 'required|min:6|confirmed'
                 : 'nullable',
         ];
@@ -152,9 +151,16 @@ class Form extends Component
             $user->syncRoles([$this->roleSelected]);
 
             $this->reset(['code', 'code_confirmation', 'foto']);
-            $this->dispatch('user-cadastrado');
+            
+            $this->dispatch('swal', [
+                'title' => 'Sucesso!',
+                'text' => 'Usuário cadastrado com sucesso!',
+                'icon' => 'success',
+                'timer' => 2000,
+                'showConfirmButton' => false,
+            ]);
 
-            redirect()->route('users.edit', $user->id);
+            redirect()->route('admin.users.edit', $user->id);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             $this->dispatch('toast', type: 'error', message: $e->validator->errors()->first());
@@ -206,7 +212,13 @@ class Form extends Component
             $user->syncRoles([$this->roleSelected]);
 
             $this->reset(['code', 'code_confirmation', 'foto']);
-            $this->dispatch('user-atualizado');
+            $this->dispatch('swal', [
+                'title' => 'Sucesso!',
+                'text' => 'Usuário atualizado com sucesso!',
+                'icon' => 'success',
+                'timer' => 2000,
+                'showConfirmButton' => false,
+            ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             
             $this->dispatch('toast', 

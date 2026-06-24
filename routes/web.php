@@ -109,7 +109,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:company'], 'prefix' => 
 
 
 
-Route::group(['middleware' => ['auth', 'verified', 'role:super-admin'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
+Route::group(['middleware' => ['auth', 'verified', 'role:super-admin|admin'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
 
     Route::get('/', Dashboard::class)->name('dashboard');
     Route::get('configuracoes', Settings::class)->name('settings');

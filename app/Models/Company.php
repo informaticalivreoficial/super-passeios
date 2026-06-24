@@ -14,20 +14,20 @@ class Company extends Model
     protected $table = 'companies';
 
     protected $fillable = [
-        'user_id',
         'uuid',
-        'api_token',
-        
+        'api_token',  
+        'responsable_name',
+        'responsable_email',
+        'responsable_cpf',      
         'content',
         'url',
         'slug',
         'first_year',
         'maps',
         'logo',
-        'watermark',
+        'metaimg',
         'caption_img_cover',
         'highlight',
-
         'magic_token',
         'magic_token_expires_at',
         'social_name',
@@ -68,7 +68,7 @@ class Company extends Model
 
         static::deleting(function ($company) {
             // Deleta a pasta inteira com todas as imagens
-            Storage::disk('public')->deleteDirectory("company/{$company->id}");
+            Storage::disk('public')->deleteDirectory("company/{$company->uuid}");
 
             // Deleta os registros do banco
             $company->images()->delete();
@@ -104,17 +104,17 @@ class Company extends Model
         return $this->hasMany(Vessel::class);
     }   
 
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
+    }
+
     public function images()
     {
         return $this->hasMany(CompanyGb::class, 'company', 'id')
                     ->orderBy('order_img', 'ASC')
                     ->orderBy('cover', 'DESC'); // cover primeiro (1 antes de 0)
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    }    
 
     public function hasImagesWithoutWatermark()
     {
@@ -124,22 +124,14 @@ class Company extends Model
     /**
      * Accerssors and Mutators
     */
-    public function getlogo()
+    public function getLogoUrl(): string
     {
-        if(empty($this->logo) || !Storage::disk()->exists($this->logo)) {
-            return asset('theme/images/image.jpg');
-        } 
-        return Storage::url($this->logo);
-    }    
-
-    public function logoPathForPdf(): string
-    {
-        if ($this->logo && file_exists(storage_path('app/public/' . $this->logo))) {
-            return storage_path('app/public/' . $this->logo);
+        if ($this->logo && Storage::disk('public')->exists($this->logo)) {
+            return Storage::url($this->logo);
         }
 
-        return public_path('theme/images/image.jpg');
-    }    
+        return asset('theme/images/image.jpg');
+    }
 
     public function setZipcodeAttribute($value)
     {
@@ -173,52 +165,38 @@ class Company extends Model
     public function setCellPhoneAttribute($value)
     {
         $this->attributes['cell_phone'] = (!empty($value) ? $this->clearField($value) : null);
-    }
-    
-    public function getCellPhoneAttribute($value)
-    {
-        if (empty($value)) {
-            return null;
-        }
-        return  
-            substr($value, 0, 0) . '(' .
-            substr($value, 0, 2) . ') ' .
-            substr($value, 2, 5) . '-' .
-            substr($value, 7, 4) ;
-    }
+    }  
 
     public function setPhoneAttribute($value)
     {
         $this->attributes['phone'] = (!empty($value) ? $this->clearField($value) : null);
-    }
-
-    public function getPhoneAttribute($value)
-    {
-        if (empty($value)) {
-            return null;
-        }
-        return  
-            substr($value, 0, 0) . '(' .
-            substr($value, 0, 2) . ') ' .
-            substr($value, 2, 5) . '-' .
-            substr($value, 7, 4) ;
-    }
+    }    
 
     public function setWhatsappAttribute($value)
     {
         $this->attributes['whatsapp'] = (!empty($value) ? $this->clearField($value) : null);
+    }    
+
+    private function formatPhone(?string $value): ?string
+    {
+        if (empty($value)) return null;
+
+        return '(' . substr($value, 0, 2) . ') ' . substr($value, 2, 5) . '-' . substr($value, 7, 4);
     }
 
-    public function getWhatsappAttribute($value)
+    public function getPhoneAttribute($value): ?string
     {
-        if (empty($value)) {
-            return null;
-        }
-        return  
-            substr($value, 0, 0) . '(' .
-            substr($value, 0, 2) . ') ' .
-            substr($value, 2, 5) . '-' .
-            substr($value, 7, 4) ;
+        return $this->formatPhone($value);
+    }
+
+    public function getCellPhoneAttribute($value): ?string
+    {
+        return $this->formatPhone($value);
+    }
+
+    public function getWhatsappAttribute($value): ?string
+    {
+        return $this->formatPhone($value);
     }
 
     public function generateMagicToken(): string

@@ -104,11 +104,6 @@ Route::group(['middleware' => ['auth', 'verified', 'role:company'], 'prefix' => 
 });
 
 
-
-
-
-
-
 Route::group(['middleware' => ['auth', 'verified', 'role:super-admin|admin'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
 
     Route::get('/', Dashboard::class)->name('dashboard');
@@ -117,30 +112,30 @@ Route::group(['middleware' => ['auth', 'verified', 'role:super-admin|admin'], 'p
 
     Route::get('/empresas', Companies::class)->name('companies.index');
     Route::get('/cadastrar-empresa', CompanyForm::class)->name('companies.create');
-    Route::get('/{company}/editar', CompanyForm::class)->name('companies.edit');
+    Route::get('/empresa/{company}/editar', CompanyForm::class)->name('companies.edit');
 
     Route::get('/embarcacoes', Vessels::class)->name('vessels.index');
     Route::get('/cadastrar-embarcacao', VesselForm::class)->name('vessels.create');
-    Route::get('/{vessel}/editar', VesselForm::class)->name('vessels.edit');
+    Route::get('/embarcacao/{id}/editar', VesselForm::class)->name('vessels.edit');
 
     Route::get('/passeios', Tours::class)->name('tours.index');
     Route::get('/cadastrar-passeio', TourForm::class)->name('tours.create');
-    Route::get('/{tour}/editar', TourForm::class)->name('tours.edit');
+    Route::get('/passeio/{tour}/editar', TourForm::class)->name('tours.edit');
 
     Route::get('/reservas', Bookings::class)->name('bookings.index'); 
     Route::get('/cadastrar-reserva', BookingForm::class)->name('bookings.create');
-    Route::get('/{booking}/editar', BookingForm::class)->name('bookings.edit');   
+    Route::get('/reserva/{booking}/editar', BookingForm::class)->name('bookings.edit');   
 
     Route::get('usuarios/clientes', Users::class)->name('users.index');
     Route::get('usuarios/time', Time::class)->name('users.time');
     Route::get('usuarios/cadastrar', Form::class)->name('users.create');
-    Route::get('usuarios/{userId}/editar', Form::class)->name('users.edit');
-    Route::get('usuarios/{userId}/visualizar', ViewUser::class)->name('users.view'); 
+    Route::get('usuario/{userId}/editar', Form::class)->name('users.edit');
+    Route::get('usuario/{userId}/visualizar', ViewUser::class)->name('users.view'); 
 
-    Route::get('posts/{post}/editar', PostForm::class)->name('posts.edit');
+    Route::get('posts', Posts::class)->name('posts.index');
     Route::get('posts/cadastrar', PostForm::class)->name('posts.create');
     Route::get('posts/categorias', CatPosts::class)->name('posts.categories.index');
-    Route::get('/posts/lixeira', Lixeira::class)->name('posts.lixeira');
-    Route::get('posts', Posts::class)->name('posts.index');
-    Route::get('posts/reports', ReportsPosts::class)->name('posts.reports'); 
+    Route::get('posts/lixeira', Lixeira::class)->name('posts.lixeira');
+    Route::get('posts/reports', ReportsPosts::class)->name('posts.reports');
+    Route::get('posts/{post}/editar', PostForm::class)->name('posts.edit'); 
 });

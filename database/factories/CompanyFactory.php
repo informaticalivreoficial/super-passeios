@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -19,11 +18,12 @@ class CompanyFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
             'uuid' => Str::uuid(),
-            'api_token' => Str::random(64),
+            'api_token' => Str::random(64), 
 
-            
+            'responsable_name' => $this->faker->name(),
+            'responsable_email' => $this->faker->email(),
+            'responsable_cpf' => $this->faker->cpf(),           
 
             'content' => $this->faker->paragraph(),
             'url' => $this->faker->url(),
@@ -46,6 +46,7 @@ class CompanyFactory extends Factory
 
             // imagens
             'logo' => null,
+            'metaimg' => null,
 
             // redes sociais
             'facebook' => $this->faker->url(),

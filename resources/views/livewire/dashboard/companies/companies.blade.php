@@ -54,17 +54,16 @@
                             <tr style="{{ ($company->status == true ? '' : 'background: #fffed8 !important;')  }}">                            
                                 <td>
                                     <img 
-                                        src="{{$company->getlogo()}}" 
-                                        alt="{{$company->alias_name}}" 
-                                        title="{{$company->alias_name}}"
+                                        src="{{ $company->getLogoUrl() }}" 
+                                        alt="{{ $company->alias_name }}"
                                         class="w-12 mx-auto cursor-pointer rounded-lg hover:scale-105 transition-transform"
-                                        @click="showModal = true; imageUrl = '{{ addslashes(url($company->getlogo())) }}'"
+                                        @click="showModal = true; imageUrl = '{{ addslashes($company->getLogoUrl()) }}'"
                                     />
                                 </td>
                                 <td>{{$company->alias_name}}</td>
                                 <td class="text-center">{{--  --}}</td>
                                 <td>{{$company->responsable_name}}</td>
-                                <td>{{$company->views ?? 0}}</td>
+                                <td class="text-center">{{$company->views ?? 0}}</td>
                                 <td>  
                                     <div class="flex items-center justify-center gap-1">                              
                                         <x-forms.switch-toggle

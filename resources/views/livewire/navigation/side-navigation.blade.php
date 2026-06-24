@@ -82,7 +82,7 @@
                         <li class="nav-item">
                             <a href="{{ route('admin.users.index') }}" class="nav-link {{ Route::is('admin.users.index') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Clientes</p>
+                                <p>Gerentes</p>
                             </a>
                         </li>
                         <li class="nav-item">

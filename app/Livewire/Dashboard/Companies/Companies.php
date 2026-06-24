@@ -79,19 +79,6 @@ class Companies extends Component
         try {
             $company = Company::findOrFail($id);
 
-            //$folder = 'company/' . $company->id;
-            //Storage::disk('public')->deleteDirectory($folder);
-
-            // $logoPath = $company->logo;
-            // if ($logoPath && Storage::disk('public')->exists($logoPath)) {
-            //     Storage::disk('public')->delete($logoPath);
-            // }
-
-            // $metaimgPath = $company->metaimg;
-            // if ($metaimgPath && Storage::disk('public')->exists($metaimgPath)) {
-            //     Storage::disk('public')->delete($metaimgPath);
-            // }
-
             $company->delete();
 
             $this->delete_id = null;
@@ -119,7 +106,7 @@ class Companies extends Component
         if (!$config || !$config->watermark) {
             $this->dispatch('swal:error', [
                 'title' => false,
-                'text' => 'Nenhuma marca d’água configurada!',
+                'text' => "Nenhuma marca d'água configurada!",
                 'timer' => 2000,
                 'showConfirmButton' => false
             ]);
@@ -174,13 +161,18 @@ class Companies extends Component
 
     public function render()
     {
-        $title = 'Lista de Empresas';
-        $companies = Company::query()->when($this->search, function($query){
-            $query->orWhere('social_name', 'LIKE', "%{$this->search}%");
-            $query->orWhere('email', 'LIKE', "%{$this->search}%");
-        })->orderBy($this->sortField, $this->sortDirection)->paginate(35);
-        return view('livewire.dashboard.companies.companies',[
-            'companies' => $companies
-        ])->with('title', $title);
+        $companies = Company::query()
+            ->when($this->search, function ($query) {
+                $query->where(function ($q) {
+                    $q->where('social_name', 'LIKE', "%{$this->search}%")
+                    ->orWhere('email', 'LIKE', "%{$this->search}%");
+                });
+            })
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate(35);
+
+        return view('livewire.dashboard.companies.companies', [
+            'companies' => $companies,
+        ])->with('title', 'Lista de Empresas');
     }
 }

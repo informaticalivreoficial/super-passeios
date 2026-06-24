@@ -9,19 +9,14 @@ use Spatie\Permission\Models\Permission;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         /*
         |--------------------------------------------------------------------------
-        | Permissions
+        | Permissions — guard web (users)
         |--------------------------------------------------------------------------
         */
-
         $permissions = [
-
             // Companies
             'view companies',
             'create companies',
@@ -45,33 +40,54 @@ class RolesAndPermissionsSeeder extends Seeder
             'create bookings',
             'edit bookings',
             'cancel bookings',
-
         ];
 
         foreach ($permissions as $permission) {
-
-            Permission::firstOrCreate([
-                'name' => $permission
-            ]);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
         /*
         |--------------------------------------------------------------------------
-        | Roles
+        | Permissions — guard customer
         |--------------------------------------------------------------------------
         */
+        $customerPermissions = [
+            'view tours',
+            'create bookings',
+            'view bookings',
+            'cancel bookings',
 
-        $superAdmin = Role::firstOrCreate([
-            'name' => 'super-admin'
-        ]);
+            // admin da company
+            'view vessels',
+            'create vessels',
+            'edit vessels',
+            'delete vessels',
+            'create tours',
+            'edit tours',
+            'delete tours',
+            'edit bookings',
+        ];
 
-        $company = Role::firstOrCreate([
-            'name' => 'company'
-        ]);
+        foreach ($customerPermissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'customer']);
+        }
 
-        $customer = Role::firstOrCreate([
-            'name' => 'customer'
-        ]);
+        /*
+        |--------------------------------------------------------------------------
+        | Roles — guard web
+        |--------------------------------------------------------------------------
+        */
+        $superAdmin = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
+        $admin    = Role::firstOrCreate(['name' => 'admin',     'guard_name' => 'web']);
+        $manager  = Role::firstOrCreate(['name' => 'manager',  'guard_name' => 'web']);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Roles — guard customer
+        |--------------------------------------------------------------------------
+        */
+        $customerProprietary  = Role::firstOrCreate(['name' => 'proprietary',  'guard_name' => 'customer']);
+        $customerClient = Role::firstOrCreate(['name' => 'client', 'guard_name' => 'customer']);
 
         /*
         |--------------------------------------------------------------------------
@@ -79,19 +95,44 @@ class RolesAndPermissionsSeeder extends Seeder
         |--------------------------------------------------------------------------
         */
 
-        $superAdmin->givePermissionTo(Permission::all());
+        // web
+        $superAdmin->givePermissionTo(Permission::where('guard_name', 'web')->get());
 
-        $company->givePermissionTo([
+        $admin->givePermissionTo([
             'view vessels',
             'create vessels',
             'edit vessels',
-
             'view tours',
             'create tours',
             'edit tours',
-
             'view bookings',
             'edit bookings',
+        ]);
+
+        $manager->givePermissionTo([
+            'view companies',
+            'create companies',
+            'edit companies',
+            'view vessels',
+            'create vessels',
+            'edit vessels',
+            'view tours',
+            'create tours',
+            'edit tours',
+            'view bookings',
+            'edit bookings',
+        ]);
+
+        // customer
+        $customerProprietary->givePermissionTo(
+            Permission::where('guard_name', 'customer')->get()
+        );
+
+        $customerClient->givePermissionTo([
+            'view tours',
+            'create bookings',
+            'view bookings',
+            'cancel bookings',
         ]);
     }
 }

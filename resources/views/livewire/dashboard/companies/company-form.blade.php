@@ -51,19 +51,6 @@
             <div class="bg-white">
                 <div class="card-body text-muted">
                     <div class="row">
-                        <div class="col-12"> 
-                            <div class="form-group">
-                                <label class="labelforms text-muted">
-                                    <b>Cliente?</b>
-                                </label>
-                                <div class="form-check">
-                                    <input id="clientsim" class="form-check-input" type="radio" value="1" wire:model="client">
-                                    <label for="clientsim" class="form-check-label mr-5">Sim</label>
-                                    <input id="clientnao" class="form-check-input" type="radio" value="0" wire:model="client">
-                                    <label for="clientnao" class="form-check-label">Não</label>
-                                </div>
-                            </div>
-                        </div>
                         <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                             <x-forms.input
                                 label="Responsável:"
@@ -81,33 +68,8 @@
                                 <label class="labelforms"><b>CPF</b></label>
                                 <input type="text" class="form-control" placeholder="000.000.000-00" id="responsable_cpf" wire:model="responsable_cpf" x-mask="999.999.999-99" />                                
                             </div>                                        
-                        </div>
-                        <div class="col-12 col-md-4"> 
-                            <div class="form-group">
-                                <label class="labelforms"><b>Categoria:</b></label>                                
-                                <select class="form-control" wire:model.live="category_id">
-                                    <option value="">Selecione a categoria</option>
-                                    
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4"> 
-                            <x-forms.select label="Sub-categoria:" name="sub_category_id" :disabled="!$category_id">
-                                <option value="">Selecione a subcategoria</option>
-                                
-                            </x-forms.select>
-                        </div>
-                        <div class="col-12 col-md-4"> 
-                            <div class="form-group">
-                                <label class="labelforms"><b>Exibir no Guia?</b></label>
-                                <select wire:model="guia" class="form-control">
-                                    <option value="1">Sim</option>
-                                    <option value="0">Não</option>
-                                </select>
-                            </div>
-                        </div>
+                        </div>                        
                     </div>
-
                     <div class="row mb-3">  
                         <div class="col-12 col-sm-6 col-md-3 col-lg-4">
                             <div class="form-group">
@@ -368,15 +330,7 @@
                                         wire:click="toggleCover({{ $savedImage->id }})"
                                         class="absolute bottom-1 left-1 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded hover:bg-black">
                                     {{ $savedImage->cover ? 'Remover capa' : 'Definir capa' }}
-                                </button>
-
-                                @if (!$savedImage->watermark)
-                                    <button type="button" title="Inserir Marca d'água"
-                                        wire:click="applyWatermarkImage({{ $savedImage->id }})"
-                                        class="absolute bottom-1 right-1 bg-yellow-500 px-2 py-1 rounded">
-                                        <i class="fas fa-copyright"></i>
-                                    </button>
-                                @endif                                    
+                                </button>                                                                   
                             </div>
                         @endforeach
 
@@ -543,17 +497,17 @@
                                 <div class="relative group w-full max-w-[260px]">
                                     <input 
                                         type="file"
-                                        id="watermark"
-                                        wire:model="watermark"
+                                        id="metaimg"
+                                        wire:model="metaimg"
                                         accept="image/png,image/jpeg,image/webp"
                                         class="hidden"
                                     >
 
-                                    <label for="watermark" class="cursor-pointer block">
+                                    <label for="metaimg" class="cursor-pointer block">
                                         <div class="relative rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
                                             
                                             <img
-                                                src="{{ $this->watermarkUrl }}"
+                                                src="{{ $this->metaimgUrl }}"
                                                 alt="{{ $alias_name }}"
                                                 class="w-full h-[180px] object-contain p-3 transition group-hover:scale-105"
                                             >
@@ -564,7 +518,7 @@
                                                 </span>
                                             </div>
 
-                                            <div wire:loading wire:target="watermark"
+                                            <div wire:loading wire:target="metaimg"
                                                 class="absolute inset-0 bg-white/70 flex items-center justify-center">
                                                 <span class="text-sm text-gray-600">Enviando...</span>
                                             </div>
@@ -572,7 +526,7 @@
                                     </label>
                                 </div>
 
-                                @error('watermark')
+                                @error('metaimg')
                                     <p class="text-red-500 text-xs mt-2">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -605,6 +559,29 @@
 
 @push('scripts')
     <script>
+        document.addEventListener('livewire:init', () => {
+
+            Livewire.on('scroll-to-first-error', () => {
+
+                setTimeout(() => {
+
+                    const error = document.querySelector('.erro-feedback');
+
+                    if (!error) return;
+
+                    const y = error.getBoundingClientRect().top + window.pageYOffset - 120;
+
+                    window.scrollTo({
+                        top: y,
+                        behavior: 'smooth'
+                    });
+
+                }, 100);
+
+            });
+
+        });
+
         function tagInputComponent(tagsBinding) {
             return {
                 tags: tagsBinding,
@@ -704,7 +681,7 @@
                 }
             }
         }
-    </script>
+</script>
 @endpush
 
 

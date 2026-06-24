@@ -1,22 +1,21 @@
 <div>     
+    @section('title', $title)
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1><i class="fas fa-search mr-2"></i> Clientes</h1>
+                    <h1><i class="fas fa-search mr-2"></i> Gerentes</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">                    
                         <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Painel de Controle</a></li>
-                        <li class="breadcrumb-item active">Clientes</li>
+                        <li class="breadcrumb-item active">Gerentes</li>
                     </ol>
                 </div>
             </div>
         </div>    
-    </div>   {{-- 
-    @if ($updateMode)
-        @livewire('dashboard.users.form')
-    @endif  --}} 
+    </div>   
+
     <div class="card">
         <div class="card-header">
             <div class="row">

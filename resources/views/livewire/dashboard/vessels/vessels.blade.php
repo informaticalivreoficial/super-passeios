@@ -60,19 +60,11 @@
                                                     color="green"
                                                 />                             
 
-                                                <button 
-                                                    type="button" 
-                                                    wire:click="applyWatermark({{ $vessel->id }})"
-                                                    class="btn btn-xs {{ $vessel->display_marked_water ? 'btn-warning' : 'btn-secondary' }}"
-                                                    title="Inserir Marca d'água"
-                                                    @if($vessel->display_marked_water) disabled @endif
-                                                >
-                                                    <i class="fas fa-copyright"></i>
-                                                </button>
+                                                
                                                 @if ($vessel->slug)
                                                     <a target="_blank" title="Visualizar Embarcação" class="btn btn-xs btn-info text-white" href="{{ route('web.vessel', ['slug' => $vessel->slug]) }}" title="{{$vessel->name}}"><i class="fas fa-search"></i></a>
                                                 @endif                            
-                                                <a title="Editar Embarcação" href="{{ route('admin.vessels.edit', [ 'vessel' => $vessel->id ]) }}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
+                                                <a title="Editar Embarcação" href="{{ route('admin.vessels.edit', ['id' => $vessel->id]) }}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
                                                 <button type="button" 
                                                     class="btn btn-xs bg-danger text-white" 
                                                     title="Excluir Embarcação"

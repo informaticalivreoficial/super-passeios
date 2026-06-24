@@ -63,15 +63,14 @@ class VesselForm extends Component
         'images.*.max' => 'A imagem não pode ultrapassar 2MB.',
     ];
 
-    public function mount(Vessel $vessel)
+    public function mount($id = null): void
     {
-        $this->vessel = $vessel;
-
-        if ($vessel->exists) {
-            $this->authorize('update', $vessel);
-            $data = collect($vessel->toArray())->toArray(); 
-            $this->fill($data);            
-        }else {
+        if ($id) {
+            $this->vessel = Vessel::findOrFail($id);
+            $this->authorize('update', $this->vessel);
+            $this->fill(collect($this->vessel->toArray())->toArray());
+        } else {
+            $this->vessel = new Vessel();
             $this->authorize('create', Vessel::class);
         }
     }    

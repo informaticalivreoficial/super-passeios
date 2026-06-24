@@ -49,11 +49,14 @@
                                         <div class="col-7">
                                             <h2 class="lead"><b>{{$user->name}}</b></h2>
                                             <p class="text-muted text-sm">{{$user->cargo}}</p>
-                                            <p class="text-muted text-sm"><b>Data de Entrada: </b><br>
-                                                05/05/2025
+                                            <p class="text-muted text-sm">
+                                                <b>Data de Entrada: </b><br>
+                                                {{ $user->created_at->format('d/m/Y') }}
                                             </p>
                                             <ul class="ml-4 mb-0 fa-ul text-muted">
-                                                <li class="small">sss</li>
+                                                <li class="small">
+                                                    {{ $roleLabels[$user->roles->pluck('name')->first()] ?? 'Sem cargo' }}
+                                                </li>
                                             </ul>
                                         </div>
                                         @php

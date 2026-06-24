@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')
-                ->constrained()
-                ->cascadeOnDelete();
             $table->uuid('uuid')->unique();            
-            $table->string('api_token', 64)->unique()->nullable();           
+            $table->string('api_token', 64)->unique()->nullable();   
+
+            $table->string('responsable_name');
+            $table->string('responsable_email');
+            $table->string('responsable_cpf')->nullable();
                 
             $table->text('content')->nullable();
             $table->string('url')->nullable();
@@ -39,7 +40,7 @@ return new class extends Migration
 
             /** images */
             $table->string('logo')->nullable();
-            $table->string('watermark')->nullable();
+            $table->string('metaimg')->nullable();
 
             /** social */
             $table->string('facebook')->nullable();

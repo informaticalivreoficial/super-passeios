@@ -82,7 +82,7 @@ class Time extends Component
     {
         $title = 'Time de Usuários';
 
-        $users = User::role(['admin', 'super-admin']) // Filtra por roles
+        $users = User::role(['admin', 'super-admin'])
             ->when($this->search, function($query) {
                 $query->where(function($q) {
                     $q->where('name', 'LIKE', "%{$this->search}%")
@@ -93,7 +93,11 @@ class Time extends Component
             ->paginate(15);
 
         return view('livewire.dashboard.users.time', [
-            'users' => $users
-        ])->with('title', $title);        
+            'users'      => $users,
+            'roleLabels' => [
+                'super-admin' => 'Super Administrador',
+                'admin'       => 'Administrador',
+            ],
+        ])->with('title', $title);
     }
 }

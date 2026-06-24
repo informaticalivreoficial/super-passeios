@@ -7,7 +7,6 @@ use Livewire\Attributes\Title;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Masmerise\Toaster\Toaster;
 
 class Users extends Component
 {
@@ -46,21 +45,7 @@ class Users extends Component
         $this->resetPage();
     }
 
-    #[Title('Clientes')]
-    public function render()
-    {
-        $users = User::query()
-            ->role('company')
-            ->when($this->search, function($query){
-                $query->orWhere('name', 'LIKE', "%{$this->search}%");
-                $query->orWhere('email', "%{$this->search}%");
-            })
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(35);
-        return view('livewire.dashboard.users.users',[
-            'users' => $users
-        ]);
-    }
+    
 
     public function setDeleteId($id)
     {
@@ -106,4 +91,19 @@ class Users extends Component
         $this->updateMode = true;
     }
 
+    public function render()
+    {
+        $title = 'Gerentes';
+        $users = User::query()
+            ->role('manager')
+            ->when($this->search, function($query){
+                $query->orWhere('name', 'LIKE', "%{$this->search}%");
+                $query->orWhere('email', "%{$this->search}%");
+            })
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate(35);
+        return view('livewire.dashboard.users.users',[
+            'users' => $users
+        ])->with('title', $title);
+    }
 }

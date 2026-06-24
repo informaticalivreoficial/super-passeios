@@ -170,7 +170,7 @@ use WithPagination;
         ])
 
         ->when(
-            auth()->user()->isCompany(),
+            auth()->user()->isManager(),
 
             fn ($query) => $query->where(
                 'company_id',

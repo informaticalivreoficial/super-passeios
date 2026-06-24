@@ -57,7 +57,6 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'birthday' => 'date',
     ];
 
     protected static function booted()
@@ -79,9 +78,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasRole('admin');
     }
 
-    public function isCompany(): bool
+    public function isManager(): bool
     {
-        return $this->hasRole('company');
+        return $this->hasRole('manager');
     }
 
     /**
@@ -90,12 +89,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function posts()
     {
         return $this->hasMany(Post::class, 'autor', 'id');
-    }
-
-    public function company()
-    {
-        return $this->hasOne(Company::class);
-    }
+    }    
 
     /**
      * Scopes
@@ -167,12 +161,13 @@ class User extends Authenticatable implements MustVerifyEmail
         return str_replace(',', '.', str_replace('.', '', $param));
     }    
     
-    private function clearField(?string $param)
+    private function clearField(?string $value): ?string
     {
-        if (empty($param)) {
+        if (blank($value)) {
             return null;
         }
-        return str_replace(['.', '-', '/', '(', ')', ' '], '', $param);
+
+        return preg_replace('/\D/', '', $value);
     }
 
     private function formatPhone(?string $value): ?string

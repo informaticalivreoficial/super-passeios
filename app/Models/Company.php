@@ -101,6 +101,21 @@ class Company extends Model
         return $this->hasMany(Customer::class);
     }
 
+    public function tours()
+    {
+        return $this->hasMany(Tour::class);
+    }
+
+    public function bookings()
+    {
+        return $this->hasManyThrough(
+            Booking::class,
+            Tour::class,
+            'company_id', // FK em tours
+            'tour_id',    // FK em bookings
+        );
+    }
+
     public function images()
     {
         return $this->hasMany(CompanyGb::class, 'company', 'id')

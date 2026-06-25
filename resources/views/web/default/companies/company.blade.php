@@ -1,9 +1,5 @@
 @extends("web.$config->template.master.master")
 
-@section('title', $company->alias_name . ' — ' . $config->app_name)
-
-@section('description', Str::limit($company->content, 160))
-
 @section('content')
 
     {{-- HERO DA EMPRESA --}}
@@ -22,7 +18,7 @@
 
             {{-- Breadcrumb --}}
             <nav class="flex items-center gap-2 text-xs mb-8" style="color: rgba(255,255,255,0.5);">
-                <a href="{{ route('site.home') }}" class="hover:text-white transition">Início</a>
+                <a href="{{ route('web.home') }}" class="hover:text-white transition">Início</a>
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
                 <span style="color: rgba(255,255,255,0.8);">{{ $company->alias_name }}</span>
             </nav>
@@ -32,7 +28,7 @@
                 {{-- Logo --}}
                 <div class="w-24 h-24 rounded-2xl overflow-hidden border-2 shrink-0" style="border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.1);">
                     <img
-                        src="{{ $company->getlogo() }}"
+                        src="{{ $company->getLogoUrl() }}"
                         alt="{{ $company->alias_name }}"
                         class="w-full h-full object-cover"
                     >
@@ -69,7 +65,7 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
                                 {{ $company->email }}
                             </span>
-                        @endif
+                        @endif                        
                     </div>
                 </div>
 
@@ -110,7 +106,7 @@
 
                 @forelse($tours as $tour)
                     <a
-                        href="{{ route('site.tour', [$company->slug, $tour->uuid]) }}"
+                        href="{{ route('web.site.tour', [$company->slug, $tour->uuid]) }}"
                         class="card-tour flex flex-col sm:flex-row mb-5 block"
                     >
                         {{-- Imagem --}}
@@ -191,7 +187,7 @@
                 @if($company->content)
                     <div class="bg-white rounded-2xl p-6" style="border: 1px solid #e8e4d8;">
                         <h3 class="font-display font-700 text-base mb-4" style="font-family: 'Syne', sans-serif; color: var(--navy);">Sobre a empresa</h3>
-                        <p class="text-sm leading-relaxed" style="color: #87c2c0;">{{ $company->content }}</p>
+                        <p class="text-sm leading-relaxed" style="color: #87c2c0;">{!! $company->content !!}</p>
                     </div>
                 @endif
 
@@ -228,6 +224,14 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
                                 </span>
                                 {{ $company->email }}
+                            </li>
+                        @endif
+                        @if($company->additional_email)
+                            <li class="flex items-center gap-3 text-sm" style="color: var(--navy);">
+                                <span class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background: rgba(22,163,183,0.1); color: var(--teal);">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+                                </span>
+                                {{ $company->additional_email }}
                             </li>
                         @endif
                         @if($company->city)

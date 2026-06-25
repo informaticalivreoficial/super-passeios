@@ -2,53 +2,74 @@
 
 namespace App\Policies;
 
+use App\Models\Customer;
 use App\Models\User;
 use App\Models\Vessel;
 
 class VesselPolicy
 {
-    public function viewAny(User $user): bool
+    public function viewAny(User|Customer $user): bool
     {
-        return $user->isSuperAdmin()
-            || $user->isAdmin()
-            || $user->isManager();
+        if ($user instanceof Customer) {
+            return $user->isProprietary();
+        }
+
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isManager();
     }
 
-    public function view(User $user, Vessel $vessel): bool
+    public function view(User|Customer $user, Vessel $vessel): bool
     {
-        return $user->isSuperAdmin()
-            || $user->isAdmin()
-            || $user->isManager();
+        if ($user instanceof Customer) {
+            return $user->company_id === $vessel->company_id;
+        }
+
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isManager();
     }
 
-    public function create(User $user): bool
+    public function create(User|Customer $user): bool
     {
-        return $user->isSuperAdmin()
-            || $user->isAdmin()
-            || $user->isManager();
+        if ($user instanceof Customer) {
+            return $user->isProprietary();
+        }
+
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isManager();
     }
 
-    public function update(User $user, Vessel $vessel): bool
+    public function update(User|Customer $user, Vessel $vessel): bool
     {
-        return $user->isSuperAdmin()
-            || $user->isAdmin()
-            || $user->isManager();
+        if ($user instanceof Customer) {
+            return $user->isProprietary()
+                && $user->company_id === $vessel->company_id;
+        }
+
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isManager();
     }
 
-    public function delete(User $user, Vessel $vessel): bool
+    public function delete(User|Customer $user, Vessel $vessel): bool
     {
-        return $user->isSuperAdmin()
-            || $user->isAdmin();
+        if ($user instanceof Customer) {
+            return $user->isProprietary()
+                && $user->company_id === $vessel->company_id;
+        }
+
+        return $user->isSuperAdmin() || $user->isAdmin();
     }
 
-    public function restore(User $user, Vessel $vessel): bool
+    public function restore(User|Customer $user, Vessel $vessel): bool
     {
-        return $user->isSuperAdmin()
-            || $user->isAdmin();
+        if ($user instanceof Customer) {
+            return false;
+        }
+
+        return $user->isSuperAdmin() || $user->isAdmin();
     }
 
-    public function forceDelete(User $user, Vessel $vessel): bool
+    public function forceDelete(User|Customer $user, Vessel $vessel): bool
     {
+        if ($user instanceof Customer) {
+            return false;
+        }
+
         return $user->isSuperAdmin();
     }
 }

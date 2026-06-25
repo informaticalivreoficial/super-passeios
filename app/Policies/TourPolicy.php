@@ -2,60 +2,65 @@
 
 namespace App\Policies;
 
+use App\Models\Customer;
 use App\Models\Tour;
 use App\Models\User;
 
 class TourPolicy
 {
-    public function viewAny(User $user): bool
+    public function viewAny(User|Customer $user): bool
     {
-        return $user->isSuperAdmin()
-            || $user->isAdmin()
-            || $user->isManager();
-    }
-
-    public function view(User $user, Tour $tour): bool
-    {
-        if ($user->isSuperAdmin() || $user->isAdmin()) {
-            return true;
+        if ($user instanceof Customer) {
+            return $user->isProprietary();
         }
 
-        if ($user->isManager()) {
-            return true;
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isManager();
+    }
+
+    public function view(User|Customer $user, Tour $tour): bool
+    {
+        if ($user instanceof Customer) {
+            return $user->company_id === $tour->company_id;
         }
 
-        return false;
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isManager();
     }
 
-    public function create(User $user): bool
+    public function create(User|Customer $user): bool
     {
-        return $user->isSuperAdmin()
-            || $user->isAdmin()
-            || $user->isManager();
-    }
-
-    public function update(User $user, Tour $tour): bool
-    {
-        if ($user->isSuperAdmin() || $user->isAdmin()) {
-            return true;
+        if ($user instanceof Customer) {
+            return $user->isProprietary();
         }
 
-        if ($user->isManager()) {
-            return true;
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isManager();
+    }
+
+    public function update(User|Customer $user, Tour $tour): bool
+    {
+        if ($user instanceof Customer) {
+            return $user->isProprietary()
+                && $user->company_id === $tour->company_id;
         }
 
-        return false;
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isManager();
     }
 
-    public function delete(User $user, Tour $tour): bool
+    public function delete(User|Customer $user, Tour $tour): bool
     {
-        return $user->isSuperAdmin()
-            || $user->isAdmin();
+        if ($user instanceof Customer) {
+            return $user->isProprietary()
+                && $user->company_id === $tour->company_id;
+        }
+
+        return $user->isSuperAdmin() || $user->isAdmin();
     }
 
-    public function restore(User $user, Tour $tour): bool
+    public function restore(User|Customer $user, Tour $tour): void
     {
-        return $user->isSuperAdmin()
-            || $user->isAdmin();
+        if ($user instanceof Customer) {
+            return;
+        }
+
+        $user->isSuperAdmin() || $user->isAdmin();
     }
 }

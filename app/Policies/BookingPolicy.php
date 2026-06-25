@@ -3,53 +3,75 @@
 namespace App\Policies;
 
 use App\Models\Booking;
+use App\Models\Customer;
 use App\Models\User;
 
 class BookingPolicy
 {
-    public function viewAny(User $user): bool
+    public function viewAny(User|Customer $user): bool
     {
-        return $user->isSuperAdmin()
-            || $user->isAdmin()
-            || $user->isManager();
-    }
-
-    public function view(User $user, Booking $booking): bool
-    {
-        if ($user->isSuperAdmin() || $user->isAdmin()) {
-            return true;
+        if ($user instanceof Customer) {
+            return $user->isProprietary() || $user->isClient();
         }
 
-        if ($user->isManager()) {
-            return true;
-        }
-
-        return false;
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isManager();
     }
 
-    public function create(User $user): bool
+    public function view(User|Customer $user, Booking $booking): bool
     {
-        return $user->isSuperAdmin()
-            || $user->isAdmin()
-            || $user->isManager();
-    }
+        if ($user instanceof Customer) {
+            if ($user->isProprietary()) {
+                return $user->company_id === $booking->tour->company_id;
+            }
 
-    public function update(User $user, Booking $booking): bool
-    {
-        if ($user->isSuperAdmin() || $user->isAdmin()) {
-            return true;
+            return $user->id === $booking->customer_id;
         }
 
-        if ($user->isManager()) {
-            return true;
-        }
-
-        return false;
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isManager();
     }
 
-    public function delete(User $user, Booking $booking): bool
+    public function create(User|Customer $user): bool
     {
-        return $user->isSuperAdmin()
-            || $user->isAdmin();
+        if ($user instanceof Customer) {
+            return $user->isProprietary() || $user->isClient();
+        }
+
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isManager();
+    }
+
+    public function update(User|Customer $user, Booking $booking): bool
+    {
+        if ($user instanceof Customer) {
+            if ($user->isProprietary()) {
+                return $user->company_id === $booking->tour->company_id;
+            }
+
+            return false;
+        }
+
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isManager();
+    }
+
+    public function cancel(User|Customer $user, Booking $booking): bool
+    {
+        if ($user instanceof Customer) {
+            if ($user->isProprietary()) {
+                return $user->company_id === $booking->tour->company_id;
+            }
+
+            return $user->id === $booking->customer_id;
+        }
+
+        return $user->isSuperAdmin() || $user->isAdmin();
+    }
+
+    public function delete(User|Customer $user, Booking $booking): bool
+    {
+        if ($user instanceof Customer) {
+            return $user->isProprietary()
+                && $user->company_id === $booking->tour->company_id;
+        }
+
+        return $user->isSuperAdmin() || $user->isAdmin();
     }
 }

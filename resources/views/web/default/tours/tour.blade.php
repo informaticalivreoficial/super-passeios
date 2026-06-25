@@ -122,7 +122,7 @@
                     class="flex items-center gap-4 p-5 rounded-2xl bg-white shadow-lg border-2 border-blue-100 hover:border-blue-400 hover:shadow-xl transition-all duration-300 group cursor-pointer"
                 >
                     <div class="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-gradient-to-br from-blue-100 to-indigo-100 p-0.5">
-                        <img src="{{ $company->getlogo() }}" alt="{{ $company->alias_name }}" class="w-full h-full object-cover rounded-lg">
+                        <img src="{{ $company->getLogoUrl() }}" alt="{{ $company->alias_name }}" class="w-full h-full object-cover rounded-lg">
                     </div>
                     <div class="flex-1">
                         <p class="text-xs mb-1 text-blue-500 font-medium">Operado por</p>

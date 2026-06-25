@@ -10,13 +10,10 @@ class EnsureCompanyNotExists
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $user = auth('customer')->user();
+        $customer = auth('customer')->user();
 
-        if ($user && $user->company_id) {
-
-            return redirect()->route(
-                'company.company.edit', $user->company_id
-            );
+        if ($customer && $customer->company_id) {
+            return redirect()->route('company.company.edit', $customer->company->uuid);
         }
 
         return $next($request);

@@ -414,6 +414,13 @@
                                             id="linkedin" wire:model="linkedin">
                                     </div>
                                 </div>
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="labelforms"><b>Twitter(X):</b></label>
+                                        <input type="text" class="form-control" placeholder="Twitter(X)"
+                                            id="twitter" wire:model="twitter">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

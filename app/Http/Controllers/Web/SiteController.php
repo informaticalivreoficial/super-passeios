@@ -59,9 +59,67 @@ class SiteController extends Controller
         ]);
     }
 
+    public function companies()
+    {
+        $companies = Company::where('status', true)
+            ->with(['images', 'tours'])
+            ->withCount([
+                'tours as active_tours_count' => fn($q) => $q->where('active', true)
+                    ->whereHas('dates', fn($q) => $q->where('active', true)
+                        ->where('status', 'OPEN')
+                        ->where('date', '>=', now())
+                    ),
+                'bookings as bookings_count',
+            ])
+            ->orderByDesc('views')
+            ->orderByDesc('bookings_count')
+            ->orderByDesc('active_tours_count')
+            ->paginate(12);
+
+        $head = $this->seo->render('Empresas que oferecem passeios para você' ?? config('app.name'),
+            'Empresas que oferecem passeios para você' ?? config('app.name'),
+            route('web.site.companies'),
+            $this->config->getmetaimg() ?? url(asset('theme/images/image.jpg'))
+        );
+
+        return view('web.' . $this->config->template . '.companies.companies-list', [
+            'companies' => $companies,
+            'head' => $head
+        ]);
+    }
+
+    public function loadMore(Request $request)
+    {
+        $companies = Company::where('status', true)
+            ->with(['images'])
+            ->withCount([
+                'tours as active_tours_count' => fn($q) => $q->where('active', true)
+                    ->whereHas('dates', fn($q) => $q
+                        ->where('active', true)
+                        ->where('status', 'OPEN')
+                        ->where('date', '>=', now())
+                    ),
+                'bookings as bookings_count',
+            ])
+            ->orderByDesc('views')
+            ->orderByDesc('bookings_count')
+            ->orderByDesc('active_tours_count')
+            ->paginate(12, ['*'], 'page', $request->page);
+
+        $html = view('web.' . $this->config->template . '.companies.partials.company-card', [
+            'companies' => $companies,
+        ])->render();
+
+        return response()->json([
+            'companies' => $companies->items(),
+            'html'      => $html,
+            'has_more'  => $companies->hasMorePages(),
+        ]);
+    }
+
     public function company(string $slug)
     {
-        $company = Company::available()
+        $company = Company::where('status', true)
             ->where('slug', $slug)
             ->with(['images'])
             ->firstOrFail();
@@ -76,12 +134,15 @@ class SiteController extends Controller
             ->orderByDesc('views')
             ->get();
 
-        return view('web.'.$this->config->template.'.site.company', compact('config', 'company', 'tours'));
+        return view('web.'.$this->config->template.'.companies.company', [
+            'company' => $company,
+            'tours' => $tours
+        ]);
     }
 
     public function tour(string $slug, string $uuid)
     {
-        $company = Company::available()
+        $company = Company::where('status', true)
             ->where('slug', $slug)
             ->firstOrFail();
 
@@ -171,5 +232,7 @@ class SiteController extends Controller
             'success' => false
         ]);
     }
+
+    
 
 }

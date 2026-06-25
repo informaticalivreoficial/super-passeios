@@ -342,110 +342,94 @@
                     {{-- DATA --}}
                     <div
                         x-data="{ picker: null }"
-
                         x-init="
                             picker = flatpickr($refs.datepicker, {
-
                                 locale: 'pt',
-
                                 altInput: true,
-
                                 altFormat: 'd/m/Y',
-
                                 dateFormat: 'Y-m-d',
-
                                 minDate: 'today',
-
                                 onChange: function(selectedDates, dateStr) {
                                     $wire.set('date', dateStr)
+                                    $el.classList.remove('date-error')
                                 }
-                            })
+                            })                               
 
                             window.addEventListener('tour-date-edit', (event) => {
-                                picker.setDate(event.detail.date)
+                                picker.setDate(event.detail.date, true)
+                                $el.classList.remove('date-error')
                             })
 
                             window.addEventListener('tour-date-reset', () => {
                                 picker.clear()
+                                $el.classList.remove('date-error')
+                            })
+
+                            window.addEventListener('validation-errors', (event) => {
+                                if (event.detail.fields.includes('date')) {
+                                    $el.classList.add('date-error')
+                                } else {
+                                    $el.classList.remove('date-error')
+                                }
                             })
                         "
                         wire:ignore
                     >
-
-                        <label class="mb-1 block text-sm font-semibold">
-                            Data
-                        </label>
-
-                        <input
-                            x-ref="datepicker"
-                            type="text"
-                            class="w-full rounded-xl border px-3 py-2"
-                        >
-
+                        <label class="mb-1 block text-sm font-semibold">Data</label>
+                        <input x-ref="datepicker" type="text" class="w-full rounded-xl border px-3 py-2">
                     </div>
 
                     {{-- SAÍDA --}}
                     <div
                         x-data="{ picker: null }"
-
                         x-init="
                             picker = flatpickr($refs.starttime, {
-
                                 locale: 'pt',
-
                                 enableTime: true,
-
                                 noCalendar: true,
-
                                 dateFormat: 'H:i',
-
                                 time_24hr: true,
-
                                 onChange: function(selectedDates, dateStr) {
                                     $wire.set('start_time', dateStr)
+                                    $el.classList.remove('date-error')
                                 }
                             })
 
                             window.addEventListener('tour-date-edit', (event) => {
                                 picker.setDate(event.detail.start_time, true, 'H:i')
+                                $el.classList.remove('date-error')
                             })
 
                             window.addEventListener('tour-date-reset', () => {
                                 picker.clear()
+                                $el.classList.remove('date-error')
+                            })
+
+                            window.addEventListener('validation-errors', (event) => {
+                                if (event.detail.fields.includes('start_time')) {
+                                    $el.classList.add('date-error')
+                                } else {
+                                    $el.classList.remove('date-error')
+                                }
                             })
                         "
                         wire:ignore
                     >
-
-                        <label class="mb-1 block text-sm font-semibold">
-                            Saída
-                        </label>
-
-                        <input
-                            x-ref="starttime"
-                            type="text"
-                            class="w-full rounded-xl border px-3 py-2"
-                        >
-
+                        <label class="mb-1 block text-sm font-semibold">Saída</label>
+                        <input x-ref="starttime" type="text" class="w-full rounded-xl border px-3 py-2">
                     </div>
+                    
 
                     {{-- RETORNO --}}
                     <div
                         x-data="{ picker: null }"
-
                         x-init="
                             picker = flatpickr($refs.endtime, {
-
                                 locale: 'pt',
-
                                 enableTime: true,
-
                                 noCalendar: true,
-
                                 dateFormat: 'H:i',
-
                                 time_24hr: true,
-
                                 onChange: function(selectedDates, dateStr) {
                                     $wire.set('end_time', dateStr)
                                 }
@@ -461,17 +445,8 @@
                         "
                         wire:ignore
                     >
-
-                        <label class="mb-1 block text-sm font-semibold">
-                            Retorno
-                        </label>
-
-                        <input
-                            x-ref="endtime"
-                            type="text"
-                            class="w-full rounded-xl border px-3 py-2"
-                        >
-
+                        <label class="mb-1 block text-sm font-semibold">Retorno</label>
+                        <input x-ref="endtime" type="text" class="w-full rounded-xl border px-3 py-2">
                     </div>
 
                     {{-- VAGAS --}}
@@ -649,4 +624,14 @@ function calendarComponent() {
 
 </script>
 
+@endpush
+
+@push('styles')
+<style>
+    .date-error input:not([type="hidden"]) {
+        border-color: rgb(239 68 68) !important;
+        border-width: 1px !important;
+        border-style: solid !important;
+    }
+</style>
 @endpush

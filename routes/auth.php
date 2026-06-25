@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Auth\CustomerLogin;
 use Illuminate\Support\Facades\Route;
 
 use App\Livewire\Auth\Login;
@@ -10,7 +11,7 @@ use App\Livewire\Auth\VerifyEmail;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 
-
+// Admin auth
 Route::middleware('guest')->group(function () {
 
     Route::get('/login', Login::class)->name('login');
@@ -20,31 +21,25 @@ Route::middleware('guest')->group(function () {
 
 });
 
+// Customer auth
+Route::middleware('guest:customer')->group(function () {
+    Route::get('/painel/login', CustomerLogin::class)->name('customer.login');
+});
 
 Route::middleware('auth')->group(function () {
-
     Route::get('/email/verify', VerifyEmail::class)->name('verification.notice');
 
     Route::get('/email/verify/{id}/{hash}', function (
         EmailVerificationRequest $request
     ) {
-
         $request->fulfill();
-
         return redirect()->route('company.dashboard');
-
-    })->middleware([
-        'signed',
-        'throttle:6,1'
-    ])->name('verification.verify');
+    })->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
 
     Route::post('/email/verification-notification', function (
         Request $request
     ) {
-
         $request->user()->sendEmailVerificationNotification();
-
         return back()->with('success', 'Novo email enviado.');
-
     })->middleware('throttle:6,1')->name('verification.send');
 });

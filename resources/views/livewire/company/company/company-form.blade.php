@@ -507,7 +507,7 @@
                     >
                         {{-- Preview --}}
                         @if ($logoPreview)
-                            <img src="{{ $logoPreview }}" class="w-24 h-24 object-contain rounded-lg mb-1">
+                            <img src="{{ $logoPreview }}" class="w-48 h-48 object-contain rounded-lg mb-1">
                         @else
                             <div class="w-14 h-14 rounded-xl flex items-center justify-center" style="background-color: rgba(22,163,183,0.08);">
                                 <svg class="w-7 h-7" style="color: #16a3b7;" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
@@ -531,9 +531,9 @@
                     @enderror
                 </div>
 
-                {{-- WATERMARK --}}
+                {{-- metaimg --}}
                 <div class="flex flex-col gap-2">
-                    <label class="text-sm font-bold" style="color: #051e34;">Marca d'água</label>
+                    <label class="text-sm font-bold" style="color: #051e34;">Meta Imagem</label>
                     <p class="text-xs" style="color: #87c2c0;">PNG com fundo transparente, recomendado 800x800px.</p>
 
                     <label
@@ -543,8 +543,8 @@
                         onmouseout="this.style.borderColor='#e8e4d8'; this.style.backgroundColor='transparent'"
                     >
                         {{-- Preview --}}
-                        @if ($watermarkPreview)
-                            <img src="{{ $watermarkPreview }}" class="w-24 h-24 object-contain rounded-lg mb-1">
+                        @if ($metaimgPreview)
+                            <img src="{{ $metaimgPreview }}" class="w-48 h-48 object-contain rounded-lg mb-1">
                         @else
                             <div class="w-14 h-14 rounded-xl flex items-center justify-center" style="background-color: rgba(51,123,188,0.08);">
                                 <svg class="w-7 h-7" style="color: #337bbc;" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
@@ -557,13 +557,13 @@
 
                         <input
                             type="file"
-                            wire:model="watermark"
+                            wire:model="metaimg"
                             accept="image/png"
                             class="hidden"
                         >
                     </label>
 
-                    @error('watermark')
+                    @error('metaimg')
                         <p class="text-xs mt-1" style="color: #e53e3e;">{{ $message }}</p>
                     @enderror
                 </div>

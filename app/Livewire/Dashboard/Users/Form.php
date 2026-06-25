@@ -44,7 +44,7 @@ class Form extends Component
     public $phone, $cell_phone, $whatsapp, $email, $additional_email, $telegram;
 
     // Social
-    public $facebook, $instagram, $linkedin;
+    public $facebook, $instagram, $linkedin, $twitter;
 
     // Password
     public $code;
@@ -112,7 +112,7 @@ class Form extends Component
                 'phone', 'whatsapp', 'additional_email', 'telegram',
                 'number', 'zipcode', 'street', 'neighborhood',
                 'city', 'state', 'complement',
-                'facebook', 'instagram', 'linkedin', 'information',
+                'facebook', 'instagram', 'linkedin', 'twitter', 'information',
             ];
 
             foreach ($extras as $field) {
@@ -173,6 +173,7 @@ class Form extends Component
                 'facebook'         => $this->facebook,
                 'instagram'        => $this->instagram,
                 'linkedin'         => $this->linkedin,
+                'twitter'          => $this->twitter,
                 'information'      => $this->information,
             ]));
 

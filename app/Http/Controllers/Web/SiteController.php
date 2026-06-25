@@ -22,8 +22,8 @@ class SiteController extends Controller
     }
 
     public function home()
-    {
-        $cities = Company::available()
+    { 
+        $cities = Company::where('status', true)
             ->whereNotNull('city')
             ->distinct()
             ->pluck('city')
@@ -32,13 +32,13 @@ class SiteController extends Controller
 
         $tours = Tour::with(['company', 'images'])
             ->where('active', true)
-            ->whereHas('company', fn($q) => $q->available())
+            ->whereHas('company', fn($q) => $q->where('status', true))
             ->whereHas('dates', fn($q) => $q->where('active', true)->where('status', 'OPEN')->where('date', '>=', now()))
             ->orderByDesc('views')
             ->limit(12)
             ->get();
 
-        $companies = Company::available()
+        $companies = Company::where('status', true)
             ->with('images')
             ->where('highlight', true)
             ->orderByDesc('views')
@@ -124,7 +124,7 @@ class SiteController extends Controller
             'preco_max' => ['nullable', 'numeric', 'min:0'],
         ]);
 
-        $cities = Company::available()
+        $cities = Company::where('status', true)
             ->whereNotNull('city')
             ->distinct()
             ->orderBy('city')
@@ -141,7 +141,7 @@ class SiteController extends Controller
             ])
             ->where('active', true)
             ->whereHas('company', function ($q) use ($request) {
-                $q->available();
+                $q->where('status', true);
                 if ($request->cidade) {
                     $q->where('city', $request->cidade);
                 }

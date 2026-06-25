@@ -45,23 +45,23 @@
 
             <div class="user-card flex items-center gap-3 px-3 py-2.5 rounded-xl">
                 <div class="avatar-bg w-9 h-9 rounded-xl flex items-center justify-center font-extrabold text-sm shrink-0 overflow-hidden">
-                    @if(auth()->user()->avatar)
+                    @if(auth('customer')->user()->avatar)
                         <img
-                            src="{{ auth()->user()->url_avatar }}"
-                            alt="{{ auth()->user()->name }}"
+                            src="{{ auth('customer')->user()->url_avatar }}"
+                            alt="{{ auth('customer')->user()->name }}"
                             class="w-full h-full object-cover"
                         >
                     @else
-                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        {{ strtoupper(substr(auth('customer')->user()->name, 0, 1)) }}
                     @endif
                 </div>                   
                 <div class="overflow-hidden">
-                    <a href="{{ route('company.company.users.edit', [auth()->user()->id]) }}">
+                    <a href="{{ route('company.company.users.edit', [auth('customer')->user()->id]) }}">
                         <p class="font-bold text-sm truncate leading-tight" style="color: #efebe0;">
-                            {{ auth()->user()->name }}
+                            {{ auth('customer')->user()->name }}
                         </p>
                         <p class="text-xs truncate leading-tight" style="color: #87c2c0;">
-                            {{ auth()->user()->email }}
+                            {{ auth('customer')->user()->email }}
                         </p>
                     </a>
                 </div>  
@@ -86,10 +86,10 @@
                 Dashboard
             </a>
 
-            @if(auth()->check() && auth()->user()->company()->exists())
+            @if(auth()->check() && auth('customer')->user()->company()->exists())
 
                 <a
-                    href="{{ route('company.company.edit', auth()->user()->company->uuid) }}"
+                    href="{{ route('company.company.edit', auth('customer')->user()->company->uuid) }}"
                     @class([
                         'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition',
                         'nav-active' => request()->routeIs('company.company.edit'),

@@ -27,12 +27,12 @@ class CompanyForm extends Component
     public array $images = [];
     public $savedImages = [];
     public $logo;
-    public $watermark;
+    public $metaimg;
     public $logoPreview = null;
-    public $watermarkPreview = null;
+    public $metaimgPreview = null;
 
     public ?string $logoPath = null;
-    public ?string $watermarkPath = null;
+    public ?string $metaimgPath = null;
 
     // Dados principais
     public ?string $social_name = null;
@@ -77,11 +77,11 @@ class CompanyForm extends Component
             $this->fillForm();
 
             $this->logoPreview = $this->company->logo
-                ? Storage::disk('public')->url($this->company->logo)
+                ? Storage::url($this->company->logo)
                 : null;
 
-            $this->watermarkPreview = $this->company->watermark
-                ? Storage::disk('public')->url($this->company->watermark)
+            $this->metaimgPreview = $this->company->metaimg
+                ? Storage::url($this->company->metaimg)
                 : null;
         } else {
 
@@ -135,7 +135,7 @@ class CompanyForm extends Component
             'email'      => ['required', 'email', Rule::unique('companies', 'email')->ignore($companyId)],
             'whatsapp'   => 'required|string|min:14',
             'logo'       => 'nullable|file|mimes:jpeg,jpg,png,webp|max:2048',
-            'watermark'  => 'nullable|file|mimes:jpeg,jpg,png,webp|max:2048',
+            'metaimg'  => 'nullable|file|mimes:jpeg,jpg,png,webp|max:2048',
         ];
     }
 
@@ -169,8 +169,8 @@ class CompanyForm extends Component
                 unset($rules['logo']);
             } 
 
-            if (! $this->watermark instanceof TemporaryUploadedFile) {
-                unset($rules['watermark']);
+            if (! $this->metaimg instanceof TemporaryUploadedFile) {
+                unset($rules['metaimg']);
             }        
 
             $this->validate($rules);
@@ -221,13 +221,13 @@ class CompanyForm extends Component
             }
 
             // Upload watermak
-            if ($this->watermark instanceof TemporaryUploadedFile) {
-                if ($this->watermarkPath) {
-                    Storage::disk('public')->delete($this->watermarkPath);
+            if ($this->metaimg instanceof TemporaryUploadedFile) {
+                if ($this->metaimgPath) {
+                    Storage::disk('public')->delete($this->metaimgPath);
                 }
-                $this->watermarkPath = $this->watermark->store($folder, 'public');
-                $this->company->update(['watermark' => $this->watermarkPath]);
-                $this->watermark = null;
+                $this->metaimgPath = $this->metaimg->store($folder, 'public');
+                $this->company->update(['metaimg' => $this->metaimgPath]);
+                $this->metaimg = null;
             }        
 
             // Upload galeria
@@ -270,7 +270,7 @@ class CompanyForm extends Component
                         'path'      => $path,
                         'cover'     => $this->cover ?? null,
                         'order_img' => $maxOrder + $index + 1,
-                        'watermark' => false,
+                        'metaimg' => false,
                     ]);
                 }
 
@@ -320,9 +320,9 @@ class CompanyForm extends Component
         $this->logoPreview = $this->logo->temporaryUrl();
     }
 
-    public function updatedWatermark()
+    public function updatedmetaimg()
     {
-        $this->watermarkPreview = $this->watermark->temporaryUrl();
+        $this->metaimgPreview = $this->metaimg->temporaryUrl();
     }
 
     #[Layout('components.layouts.company', ['title' => 'Dados da Empresa'])]

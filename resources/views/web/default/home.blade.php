@@ -173,7 +173,7 @@
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-2">
                                     @if($tour->company->logo)
-                                        <img src="{{ $tour->company->getlogo() }}" class="w-6 h-6 rounded-full object-cover" alt="{{ $tour->company->alias_name }}">
+                                        <img src="{{ $tour->company->getLogoUrl() }}" class="w-6 h-6 rounded-full object-cover" alt="{{ $tour->company->alias_name }}">
                                     @endif
                                     <span class="text-xs" style="color: #87c2c0;">{{ $tour->company->alias_name }}</span>
                                 </div>
@@ -209,7 +209,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($companies as $company)
                     <a
-                        href="{{ route('site.company', $company->slug) }}"
+                        href="{{ route('web.site.company', $company->slug) }}"
                         class="bg-white rounded-2xl overflow-hidden flex items-center gap-4 p-5 transition"
                         style="border: 1px solid #e8e4d8;"
                         onmouseover="this.style.boxShadow='0 8px 30px rgba(5,30,52,0.1)'; this.style.borderColor='var(--teal)'"
@@ -218,7 +218,7 @@
                         {{-- Logo --}}
                         <div class="w-16 h-16 rounded-xl overflow-hidden shrink-0 flex items-center justify-center" style="background: var(--sand);">
                             <img
-                                src="{{ $company->getlogo() }}"
+                                src="{{ $company->getLogoUrl() }}"
                                 alt="{{ $company->alias_name }}"
                                 class="w-full h-full object-cover"
                             >

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Web\SiteController;
 use App\Livewire\Auth\RegisterCompany;
+use App\Livewire\Company\Booking\BookingForm as BookingBookingForm;
+use App\Livewire\Company\Booking\BookingIndex;
 use App\Livewire\Company\Company\CompanyForm as CompanyCompanyForm;
 use App\Livewire\Company\Dashboard as CompanyDashboard;
 use App\Livewire\Company\Tours\TourDates;
@@ -38,7 +40,7 @@ require __DIR__.'/auth.php';
 Route::get('/cadastro', RegisterCompany::class)->name('register.company');
 Route::get('/checkout/{tourDate}', CheckoutCheckoutForm::class)->name('checkout');
 
-Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {    
+Route::name('web.')->group(function () {    
 
     Route::get('/', [SiteController::class, 'home'])->name('home');
 
@@ -61,14 +63,13 @@ Route::group(['namespace' => 'Web', 'as' => 'web.'], function () {
 
     Route::get('/passeios', [SiteController::class, 'tours'])->name('site.tours');
 
-    
 
     // ✅ Restrição para não capturar rotas do sistema
-    Route::get('/{slug}/passeio/{uuid}', [SiteController::class, 'tour'])
+    Route::get('/passeio/{slug}/{uuid}', [SiteController::class, 'tour'])
         ->name('site.tour')
         ->where('slug', '^(?!email|login|cadastro|painel|admin|minha-conta|forgot-password|reset-password)[a-z0-9-]+$');
 
-    Route::get('/{slug}', [SiteController::class, 'company'])
+    Route::get('/empresa/{slug}', [SiteController::class, 'company'])
         ->name('site.company')
         ->where('slug', '^(?!email|login|cadastro|painel|admin|minha-conta|forgot-password|reset-password)[a-z0-9-]+$');
     
@@ -78,7 +79,10 @@ Route::group(['middleware' => ['auth', 'verified', 'role:customer'], 'prefix' =>
     Route::get('/', CompanyDashboard::class)->name('dashboard');
 });
 
-Route::group(['middleware' => ['auth', 'verified', 'role:company'], 'prefix' => 'painel', 'as' => 'company.'], function () {
+Route::group([
+    'middleware' => ['auth:customer', 'verified', 'role:proprietary'], 
+    'prefix'     => 'painel', 'as' => 'company.'
+    ], function () {
 
     Route::get('/', CompanyDashboard::class)->name('dashboard');
 
@@ -95,11 +99,9 @@ Route::group(['middleware' => ['auth', 'verified', 'role:company'], 'prefix' => 
     Route::get('/editar-passeio/{tour}', ToursTourForm::class)->name('tours.edit');
     Route::get('/passeios-datas/{tour:uuid}', TourDates::class)->name('tours.dates');
 
-    Route::prefix('reservas')->middleware('company.created')->name('bookings.')->group(function () {
-        Route::get('/', Bookings::class)->name('index'); 
-        Route::get('/cadastrar', BookingForm::class)->name('create');
-        Route::get('/{booking}/editar', BookingForm::class)->name('edit');
-    });
+    Route::get('/gerenciar-reservas', BookingIndex::class)->name('bookings.index'); 
+    Route::get('/cadastrar-reserva', BookingBookingForm::class)->name('bookings.create');
+    Route::get('/reserva/{booking}/editar', BookingBookingForm::class)->name('bookings.edit');
 
 });
 

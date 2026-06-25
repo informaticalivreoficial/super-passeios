@@ -10,7 +10,7 @@ class EnsureCompanyNotExists
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $user = auth()->user();
+        $user = auth('customer')->user();
 
         if ($user && $user->company_id) {
 

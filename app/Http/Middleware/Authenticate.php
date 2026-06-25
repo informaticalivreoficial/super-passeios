@@ -12,6 +12,15 @@ class Authenticate extends Middleware
      */
     protected function redirectTo(Request $request): ?string
     {
-        return $request->expectsJson() ? null : route('login');
+        if ($request->expectsJson()) {
+            return null;
+        }
+
+        // Se está tentando acessar o painel da agência
+        if ($request->is('painel/*') || $request->is('painel')) {
+            return route('customer.login');
+        }
+
+        return route('login');
     }
 }

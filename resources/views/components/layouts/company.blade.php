@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'Painel Náutico' }}</title>
 
+    @stack('styles')
+
     @vite([
         'resources/css/app.css',
         'resources/js/app.js'
@@ -88,11 +90,7 @@
                     <div class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl badge-online">
                         <div class="w-1.5 h-1.5 rounded-full" style="background-color: #23c55e;"></div>
                         <span class="text-xs font-bold">Online</span>
-                    </div>
-
-                    <div class="avatar-bg w-9 h-9 rounded-xl flex items-center justify-center font-extrabold text-sm">
-                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                    </div>
+                    </div>                    
 
                 </div>
 

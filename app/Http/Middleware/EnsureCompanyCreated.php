@@ -13,17 +13,17 @@ class EnsureCompanyCreated
         Closure $next
     ): Response {
 
-        $user = auth()->user();
+        $user = auth('customer')->user();
 
         /*
         |--------------------------------------------------------------------------
-        | Super admin ignora
+        | Admin ignora
         |--------------------------------------------------------------------------
         */
 
-        if ($user->isSuperAdmin()) {
-            return $next($request);
-        }
+        // if ($user->isProprietary()) {
+        //     return $next($request);
+        // }
 
         /*
         |--------------------------------------------------------------------------
@@ -32,7 +32,7 @@ class EnsureCompanyCreated
         */
 
         if (
-            $user->isCompany()
+            $user->isProprietary()
             && !$user->company_id
         ) {
 

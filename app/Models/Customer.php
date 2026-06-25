@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Traits\HasRoles;
 
 class Customer extends Authenticatable
@@ -60,6 +61,15 @@ class Customer extends Authenticatable
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function getUrlAvatarAttribute(): string
+    {
+        if (!empty($this->avatar) && Storage::disk('public')->exists($this->avatar)) {
+            return Storage::url($this->avatar);
+        }
+
+        return asset('theme/images/image.jpg');
     }
 
     public function setBirthdayAttribute($value): void

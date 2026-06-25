@@ -32,6 +32,8 @@ class TourDates extends Component
 
     public string $calendarMonth;
 
+    public array $fieldErrors = [];
+
     public function mount(Tour $tour)
     {
         $this->tour = $tour;
@@ -113,77 +115,57 @@ class TourDates extends Component
 
     public function save(): void
     {
-        $this->validate();
+        try {
+            $this->validate();
+            $this->fieldErrors = [];
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->fieldErrors = $e->validator->errors()->keys();
+            $this->dispatch('validation-errors', fields: $this->fieldErrors);
+            throw $e;
+        }
 
         // UPDATE
         if ($this->editingId) {
 
-            $date = TourDate::findOrFail(
-                $this->editingId
-            );
+            $date = TourDate::findOrFail($this->editingId);
 
             $this->authorize('update', $date);
 
-            //dd($this->available_slots, $date->available_slots);
-
             $date->update([
-
-                'date' => $this->date,
-
-                'start_time' => $this->start_time,
-
-                'end_time' => $this->end_time,
-
-                'available_slots' => $this->available_slots,
-
-                'price' => $this->price,
-
-                'active' => $this->active,
-
-                'status' => $this->status,
+                'date'             => $this->date,
+                'start_time'       => $this->start_time,
+                'end_time'         => $this->end_time,
+                'available_slots'  => $this->available_slots,
+                'price'            => $this->price,
+                'active'           => $this->active,
+                'status'           => $this->status,
             ]);
 
-            $this->dispatch(
-                'swal:success',
-                [
-                    'title' => 'Sucesso',
-                    'text' => 'Data atualizada com sucesso.',
-                ]
-            );
+            $this->dispatch('swal:success', [
+                'title' => 'Sucesso',
+                'text'  => 'Data atualizada com sucesso.',
+            ]);
 
         } else {
 
-            // CREATE
             TourDate::create([
-
-                'tour_id' => $this->tour->id,
-
-                'date' => $this->date,
-
-                'start_time' => $this->start_time,
-
-                'end_time' => $this->end_time,
-
+                'tour_id'         => $this->tour->id,
+                'date'            => $this->date,
+                'start_time'      => $this->start_time,
+                'end_time'        => $this->end_time,
                 'available_slots' => $this->available_slots,
-
-                'price' => $this->price,
-
-                'active' => $this->active,
-
-                'status' => $this->status,
+                'price'           => $this->price,
+                'active'          => $this->active,
+                'status'          => $this->status,
             ]);
 
-            $this->dispatch(
-                'swal:success',
-                [
-                    'title' => 'Sucesso',
-                    'text' => 'Data cadastrada com sucesso.',
-                ]
-            );
+            $this->dispatch('swal:success', [
+                'title' => 'Sucesso',
+                'text'  => 'Data cadastrada com sucesso.',
+            ]);
         }
 
         $this->refreshCalendar();
-
         $this->resetForm();
     }
 
@@ -224,22 +206,16 @@ class TourDates extends Component
 
     public function resetForm(): void
     {
+        $this->fieldErrors = [];
+        $this->resetErrorBag();
         $this->reset([
-
             'editingId',
-
             'date',
-
             'start_time',
-
             'end_time',
-
             'available_slots',
-
             'price',
-
             'active',
-
             'status',
         ]);
 

@@ -15,6 +15,24 @@ class WebhookController extends Controller
 {
     public function mercadopago(Request $request, MercadoPagoService $mp)
     {
+        // Valida assinatura
+        $secret    = config('services.mercadopago.access_token');
+        $signature = $request->header('x-signature');
+        $requestId = $request->header('x-request-id');
+
+        if ($secret && $signature) {
+            $parts    = explode(',', $signature);
+            $ts       = str_replace('ts=', '', $parts[0] ?? '');
+            $v1       = str_replace('v1=', '', $parts[1] ?? '');
+            $manifest = "id:{$request->input('data.id')};request-id:{$requestId};ts:{$ts};";
+            $hash     = hash_hmac('sha256', $manifest, $secret);
+
+            if (!hash_equals($hash, $v1)) {
+                Log::warning('MP Webhook assinatura inválida');
+                return response()->json(['error' => 'Invalid signature'], 401);
+            }
+        }
+
         Log::info('MP Webhook recebido', $request->all());
  
         // MP envia 'payment' como tipo quando o pagamento muda de status
@@ -46,10 +64,10 @@ class WebhookController extends Controller
         }
  
         match ($status) {
-            'approved' => $this->handleApproved($booking, $paymentId),
+            'approved'            => $this->handleApproved($booking, $paymentId),
             'rejected', 'cancelled' => $this->handleRejected($booking),
-            'refunded' => $this->handleRefunded($booking),
-            default => null,
+            'refunded'            => $this->handleRefunded($booking),
+            default => Log::info("MP Webhook status ignorado: {$status}", ['uuid' => $bookingUuid]),
         };
  
         return response()->json(['ok' => true]);
@@ -57,14 +75,14 @@ class WebhookController extends Controller
  
     private function handleApproved(Booking $booking, string $paymentId): void
     {
-        // Evita processar duas vezes
         if ($booking->payment_status->value === 'PAID') return;
- 
+
+        // salva o payment_id antes de confirmar
         $booking->update(['payment_id' => $paymentId]);
- 
+        $booking->refresh(); // garante que confirmBooking usa o booking atualizado
+
         CheckoutForm::confirmBooking($booking);
- 
-        // Envia e-mail de confirmação com status atualizado
+
         Mail::to($booking->customer_email)
             ->queue(new BookingConfirmed($booking->fresh(), $booking->customer));
     }

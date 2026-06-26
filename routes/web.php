@@ -63,6 +63,8 @@ Route::name('web.')->group(function () {
 
     Route::get('/passeios', [SiteController::class, 'tours'])->name('site.tours');
 
+    Route::get('/pesquisar', [SiteController::class, 'search'])->name('site.search');
+
     Route::get('/empresas', [SiteController::class, 'companies'])->name('site.companies');
     Route::get('/empresas/load-more', [SiteController::class, 'loadMore'])->name('site.companies.load-more');
 

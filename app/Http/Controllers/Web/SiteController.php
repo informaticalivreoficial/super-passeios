@@ -233,6 +233,11 @@ class SiteController extends Controller
         ]);
     }
 
+    public function search()
+    {
+        return view('web.'.$this->config->template.'.search');
+    }
+
     
 
 }

@@ -21,7 +21,7 @@ class MercadoPagoService
     public function createPixPayment(array $data): array
     {
         $response = Http::withToken($this->accessToken)
-            ->withHeaders(['X-Idempotency-Key' => Str::uuid()])
+            ->withHeaders(['X-Idempotency-Key' => (string) Str::uuid()])
             ->post("{$this->baseUrl}/v1/payments", [
                 'transaction_amount' => $data['amount'],
                 'description'        => $data['description'],
@@ -35,9 +35,9 @@ class MercadoPagoService
                         'number' => preg_replace('/\D/', '', $data['cpf']),
                     ],
                 ],
-                'notification_url' => route('webhook.mercadopago'),
+                'notification_url' => config('services.mercadopago.webhook_url', route('webhook.mercadopago')),
                 'external_reference' => $data['booking_uuid'],
-                'date_of_expiration' => now()->addMinutes(30)->toIso8601String(),
+                'date_of_expiration' => now()->addMinutes(30)->format('Y-m-d\TH:i:s.000\-03:00'),
             ]);
 
         return $response->json();
@@ -49,7 +49,7 @@ class MercadoPagoService
     public function createCardPayment(array $data): array
     {
         $response = Http::withToken($this->accessToken)
-            ->withHeaders(['X-Idempotency-Key' => Str::uuid()])
+            ->withHeaders(['X-Idempotency-Key' => (string) Str::uuid()])
             ->post("{$this->baseUrl}/v1/payments", [
                 'transaction_amount'  => $data['amount'],
                 'description'         => $data['description'],

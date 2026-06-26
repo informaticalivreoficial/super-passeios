@@ -56,19 +56,9 @@ return new class extends Migration
 
             $table->decimal('total', 10, 2);
 
-            $table->enum('status', [
-                'pending',
-                'confirmed',
-                'cancelled',
-                'finished',
-            ])->default('pending');
+            $table->string('status')->nullable()->default(null);
 
-            $table->enum('payment_status', [
-                'pending',
-                'paid',
-                'refused',
-                'refunded',
-            ])->default('pending');
+            $table->string('payment_status')->nullable()->default(null);
 
             $table->timestamp('expires_at')
                 ->nullable();

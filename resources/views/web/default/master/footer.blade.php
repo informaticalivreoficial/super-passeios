@@ -124,7 +124,7 @@
             {{-- Empresa --}}
             <div class="lg:col-span-3">
                 <h3 class="text-sm font-semibold uppercase tracking-wider mb-5" style="color: #e8f0f8;">
-                    Empresa
+                    Portal
                 </h3>
                 <ul class="space-y-3">
                     <li>
@@ -135,14 +135,21 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('web.site.companies') }}" class="text-sm transition-all duration-300 hover:translate-x-1 inline-block"
+                        <a href="#" class="text-sm transition-all duration-300 hover:translate-x-1 inline-block"
                             style="color: #b8d4e8;"
                             onmouseover="this.style.color='#e8f0f8'" onmouseout="this.style.color='#b8d4e8'">
-                            Empresas
+                            Cadastre sua empresa
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('web.site.companies') }}" class="text-sm transition-all duration-300 hover:translate-x-1 inline-block"
+                            style="color: #b8d4e8;"
+                            onmouseover="this.style.color='#e8f0f8'" onmouseout="this.style.color='#b8d4e8'">
+                            Operadoras
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('web.site.tours') }}" class="text-sm transition-all duration-300 hover:translate-x-1 inline-block"
                             style="color: #b8d4e8;"
                             onmouseover="this.style.color='#e8f0f8'" onmouseout="this.style.color='#b8d4e8'">
                             Passeios

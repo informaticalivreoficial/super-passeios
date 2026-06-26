@@ -387,145 +387,13 @@
 
 <body style="background: linear-gradient(180deg, #EEF4FB 0%, #F8FAFC 100%); color: var(--navy);">	
 
-    {{-- NAVBAR MODERNIZADA --}}
-    <nav class="sticky top-0 z-50 glass shadow-lg" style="border-bottom: 1px solid rgba(226, 232, 240, 0.5);">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16 lg:h-20">
-
-                {{-- Logo --}}
-                <a href="{{ route('web.home') }}" class="flex items-center gap-3 group flex-shrink-0">
-                    <div class="relative">
-                        <img
-                            src="{{ $config->getlogo() }}"
-                            alt="{{ $config->app_name }}"
-                            class="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-                            onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"
-                        >
-                        <span
-                            class="font-display font-800 text-xl hidden"
-                            style="font-family: 'Syne', sans-serif; font-weight: 800; background: linear-gradient(135deg, var(--navy), var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"
-                        >
-                            {{ $config->app_name }}
-                        </span>
-                    </div>
-                </a>
-
-                {{-- Links Desktop --}}
-                <div class="hidden lg:flex items-center gap-1">
-                    <a href="{{ route('web.site.tours') }}" class="nav-link px-3 py-2 rounded-lg hover:bg-blue-50 transition-all">
-                        <span class="flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M3 17l4-8 4 4 4-6 4 10"/>
-                            </svg>
-                            Passeios
-                        </span>
-                    </a>
-                    <a title="Empresas" href="{{ route('web.site.companies') }}" class="nav-link px-3 py-2 rounded-lg hover:bg-blue-50 transition-all">
-                        <span class="flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                            </svg>
-                            Empresas
-                        </span>
-                    </a>
-                    @if($config->whatsapp)
-                        <a
-                            href="https://wa.me/55{{ preg_replace('/\D/', '', $config->whatsapp) }}"
-                            target="_blank"
-                            class="nav-link px-3 py-2 rounded-lg hover:bg-blue-50 transition-all"
-                        >
-                            <span class="flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/>
-                                </svg>
-                                Contato
-                            </span>
-                        </a>
-                    @endif
-                </div>
-
-                {{-- Botões CTA APENAS Desktop --}}
-                <div class="hidden lg:flex items-center gap-3">
-                    <a href="{{ route('login') }}" class="btn-outline text-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                        </svg>
-                        Entrar
-                    </a>
-                    <a href="{{route('register.company')}}" class="btn-gold text-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path d="M12 4v16m8-8H4"/>
-                        </svg>
-                        Cadastre sua empresa
-                    </a>
-                </div>
-
-                {{-- APENAS Botão Menu Mobile --}}
-                <button class="lg:hidden btn-outline p-2" onclick="toggleMobileMenu()" aria-label="Menu">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                </button>
-
-            </div>
-        </div>
-
-        {{-- Mobile Menu --}}
-        <div id="mobile-menu" class="hidden lg:hidden glass border-t border-gray-200">
-            <div class="px-4 py-4 space-y-2">
-                <a href="{{ route('web.site.tours') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 transition-all font-semibold text-gray-700">
-                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M3 17l4-8 4 4 4-6 4 10"/>
-                    </svg>
-                    Passeios
-                </a>
-                <a href="{{ route('web.home') }}#empresas" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 transition-all font-semibold text-gray-700">
-                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                    </svg>
-                    Empresas
-                </a>
-                @if($config->whatsapp)
-                    <a href="https://wa.me/55{{ preg_replace('/\D/', '', $config->whatsapp) }}" target="_blank" 
-                        class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 transition-all font-semibold text-gray-700">
-                        <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/>
-                        </svg>
-                        WhatsApp
-                    </a>
-                @endif
-                
-                {{-- Botões CTA APENAS Mobile --}}
-                <div class="pt-4 space-y-2 border-t border-gray-200 mt-4">
-                    <a href="{{ route('login') }}" class="btn-outline w-full justify-center">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                        </svg>
-                        Entrar
-                    </a>
-                    <a href="{{route('register.company')}}" class="btn-gold w-full justify-center">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path d="M12 4v16m8-8H4"/>
-                        </svg>
-                        Cadastre sua empresa
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>	
+    {{-- HEADER --}}
+    @include('web.' . $config->template . '.master.header')	
 
     @yield('content')
 
     {{-- FOOTER --}}
-    @include('web.' . $config->template . '.master.footer')
-
-    {{-- Mobile Menu Script --}}
-    <script>
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        }
-    </script>
+    @include('web.' . $config->template . '.master.footer')   
 
     <!-- Google tag (gtag.js) -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-HQ3MRW6582"></script>
@@ -534,9 +402,7 @@
 	function gtag(){dataLayer.push(arguments);}
 	gtag('js', new Date());
 	gtag('config', 'G-HQ3MRW6582');
-	</script>
-
-	@livewireScripts
+	</script>	
 
     @stack('scripts')
 </body>

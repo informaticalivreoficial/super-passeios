@@ -55,7 +55,7 @@ class Booking extends Model
     protected static function booted()
     {
         static::creating(function ($booking) {
-            $booking->uuid = Str::uuid();
+            $booking->uuid = (string) Str::uuid();
         });
     }
 

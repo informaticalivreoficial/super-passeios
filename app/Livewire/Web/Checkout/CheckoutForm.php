@@ -76,6 +76,10 @@ class CheckoutForm extends Component
         $this->commissionAmount = round($this->subtotal * ($commissionPct / 100), 2);
         $this->companyAmount  = round($this->subtotal - $this->commissionAmount, 2);
         $this->total          = $this->subtotal;
+
+        if ($this->step === 3 && $this->paymentMethod === 'card') {
+            $this->dispatch('mercadopago:init', total: $this->total);
+        }
     }
  
     public function updatedAdults(): void   { $this->recalculate(); }
@@ -108,7 +112,7 @@ class CheckoutForm extends Component
             'name'  => ['required', 'string', 'min:3', 'max:100'],
             'email' => ['required', 'email'],
             'phone' => ['required', 'string', 'min:10', 'max:20'],
-            'cpf'   => ['required', 'string', 'min:11', 'max:14'],
+            'cpf'   => ['required', 'cpf',  'string', 'min:11', 'max:14'],
         ], [
             'name.required'  => 'Informe seu nome completo.',
             'email.required' => 'Informe seu e-mail.',
@@ -134,6 +138,10 @@ class CheckoutForm extends Component
         }
  
         $this->step++;
+
+        if ($this->step === 3) {
+            $this->dispatch('mercadopago:init', total: $this->total);
+        }
     }
  
     public function prevStep(): void
@@ -144,8 +152,15 @@ class CheckoutForm extends Component
     // ─────────────────────────────────────────
     // FINALIZAR COMPRA
     // ─────────────────────────────────────────
-    public function pay(MercadoPagoService $mp): void
+    public function pay(MercadoPagoService $mp, $data = null): void
     {
+        // Se os dados vierem do JS, preenchemos as propriedades do componente
+        if ($data) {
+            $this->cardToken = $data['cardToken'] ?? $this->cardToken;
+            $this->paymentMethodId = $data['paymentMethodId'] ?? $this->paymentMethodId;
+            $this->installments = $data['installments'] ?? $this->installments;
+        }
+
         $this->validateStep2();
         if ($this->getErrorBag()->isNotEmpty()) return;
  
@@ -160,12 +175,13 @@ class CheckoutForm extends Component
                     'name'     => $this->name,
                     'phone'    => preg_replace('/\D/', '', $this->phone),
                     'document' => preg_replace('/\D/', '', $this->cpf),
+                    'password' => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(16)),
                 ]
             );
  
             // 2. Cria o booking com status pendente
             $booking = Booking::create([
-                'uuid'              => Str::uuid(),
+                'uuid'              => (string) Str::uuid(),
                 'tour_id'           => $this->tourDate->tour_id,
                 'company_id'        => $this->tourDate->tour->company_id,
                 'customer_id'       => $customer->id,
@@ -211,6 +227,10 @@ class CheckoutForm extends Component
             if (isset($response['error'])) {
                 throw new \Exception($response['message'] ?? 'Erro ao processar pagamento.');
             }
+
+            if (isset($response['error'])) {
+                throw new \Exception($response['message'] ?? json_encode($response));
+            }
  
             $booking->update([
                 'payment_id' => $response['id'],
@@ -219,7 +239,9 @@ class CheckoutForm extends Component
             // 5. PIX: exibe QR code
             if ($this->paymentMethod === 'pix') {
                 $this->pixData = [
-                    'qr_code'      => $response['point_of_interaction']['transaction_data']['qr_code'] ?? null,
+                    'payment_id'   => $response['id'],
+                    'booking_uuid' => $booking->uuid,
+                    'qr_code'        => $response['point_of_interaction']['transaction_data']['qr_code'] ?? null,
                     'qr_code_base64' => $response['point_of_interaction']['transaction_data']['qr_code_base64'] ?? null,
                 ];
                 $this->step = 4; // tela de aguardando pagamento
@@ -228,6 +250,8 @@ class CheckoutForm extends Component
             // 6. Cartão aprovado imediatamente
             if ($this->paymentMethod === 'card' && ($response['status'] ?? '') === 'approved') {
                 $this->confirmBooking($booking);
+                $this->step = 5; // <--- ADICIONE ESTA LINHA: Avança para o passo de sucesso
+                $this->dispatch('mercadopago:destroy'); // <--- ADICIONE ESTA LINHA: Dispara evento para destruir o form
             }
  
             // 7. Envia e-mail de confirmação (pendente aguardando webhook para paid)
@@ -257,6 +281,30 @@ class CheckoutForm extends Component
         // Verifica se lotou
         if ($booking->tourDate->available_slots <= 0) {
             $booking->tourDate->update(['status' => \App\Enums\TourDateStatusEnum::FULL]);
+        }
+    }
+
+    public function checkPixStatus(MercadoPagoService $mp): void
+    {
+        if (!$this->pixData || empty($this->pixData['payment_id'])) return;
+
+        $payment = $mp->getPayment($this->pixData['payment_id']);
+
+        if (($payment['status'] ?? '') === 'approved') {
+            $booking = Booking::where('uuid', $this->pixData['booking_uuid'])->first();
+            if ($booking) {
+                CheckoutForm::confirmBooking($booking);
+                $this->step = 5; // step de sucesso
+            }
+        }
+    }
+
+    public function updatedPaymentMethod()
+    {
+        if ($this->paymentMethod === 'card') {
+            $this->dispatch('mercadopago:init', total: $this->total);
+        } else {
+            $this->dispatch('mercadopago:destroy');
         }
     }
 

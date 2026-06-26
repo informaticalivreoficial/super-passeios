@@ -208,7 +208,7 @@
                                 <div class="flex items-center justify-between pt-4 border-t border-gray-100">
                                     <div class="flex items-center gap-2">
                                         @if($tour->company->logo)
-                                            <img src="{{ $tour->company->getlogo() }}" 
+                                            <img src="{{ $tour->company->getLogoUrl() }}" 
                                                 class="w-7 h-7 rounded-lg object-cover ring-2 ring-blue-100" 
                                                 alt="{{ $tour->company->alias_name }}">
                                         @endif

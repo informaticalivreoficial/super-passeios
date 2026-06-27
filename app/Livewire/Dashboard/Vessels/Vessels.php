@@ -12,7 +12,7 @@ use Intervention\Image\Drivers\Gd\Driver;
 class Vessels extends Component
 {
 
-use WithPagination;
+    use WithPagination;
 
     protected $paginationTheme = 'bootstrap';
 

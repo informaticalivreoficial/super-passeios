@@ -51,12 +51,10 @@
             --border: #E2E8F0;
         }
  
-        * { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-        }
+       
  
         h1, h2, h3, h4, .font-display { 
-            font-family: 'Syne', sans-serif; 
+             
         }
  
         /* Navbar Styles */
@@ -96,7 +94,6 @@
             padding: 0.75rem 1.5rem;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            font-family: 'Syne', sans-serif;
             font-weight: 700;
             font-size: 0.875rem;
             border-radius: 0.875rem;
@@ -140,7 +137,6 @@
             padding: 0.75rem 1.5rem;
             background: linear-gradient(135deg, #F59E0B, #D97706);
             color: white;
-            font-family: 'Syne', sans-serif;
             font-weight: 700;
             font-size: 0.875rem;
             border-radius: 0.875rem;
@@ -163,7 +159,6 @@
             padding: 0.75rem 1.5rem;
             background: white;
             color: var(--navy);
-            font-family: 'Syne', sans-serif;
             font-weight: 700;
             font-size: 0.875rem;
             border-radius: 0.875rem;
@@ -232,7 +227,6 @@
  
         /* Section Styles */
         .section-title {
-            font-family: 'Syne', sans-serif;
             font-size: 2rem;
             font-weight: 800;
             background: linear-gradient(135deg, var(--navy), var(--primary));
@@ -243,7 +237,6 @@
         }
  
         .section-subtitle {
-            font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: 1.125rem;
             color: var(--slate);
             line-height: 1.6;

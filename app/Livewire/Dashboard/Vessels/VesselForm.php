@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Dashboard\Vessels;
 
+use App\Models\Company;
 use App\Models\Vessel;
 use App\Models\VesselGb;
 use Livewire\Component;
@@ -19,6 +20,9 @@ class VesselForm extends Component
 
     public ?Vessel $vessel = null; 
 
+    public ?int $company_id = null;
+    public $companies = [];
+
     public string $currentTab = 'dados'; 
 
     public array $images = [];
@@ -30,7 +34,7 @@ class VesselForm extends Component
     public ?int $year;
     public ?int $size;
     public ?string $description;
-    public ?bool $bathroom;
+    public ?int $bathroom;
     public ?bool $barbecue;
     public ?bool $suite;
     public ?bool $sound_system;
@@ -38,42 +42,90 @@ class VesselForm extends Component
 
     public ?int $display_marked_water = 0; // 0 = Não, 1 = Sim
 
-    protected function rules()
+    protected function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
-            'capacity' => 'nullable|integer|min:1',
-            'year' => 'nullable|integer|min:1900|max:' . date('Y'),
-            'size' => 'nullable|numeric|min:1',
-            'images.*' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
+            'name' => ['required','string','min:2','max:255',],
+            'type' => ['required','string','max:100',],
+            'capacity' => ['required','integer','min:1','max:999',],
+            'year' => ['nullable','integer','min:1900','max:' . now()->year,],
+            'size' => ['nullable','integer','min:2','max:100',],
+            'bathroom' => ['nullable','integer','min:0','max:50',],
+            'description' => ['nullable','string','max:5000',],
+            
+            'barbecue' => ['boolean',],
+            'suite' => ['boolean',],
+            'sound_system' => ['boolean',],
+            'display_marked_water' => ['boolean',],
+            'kitchen' => ['boolean',],
+            
+            'images' => ['nullable','array','max:20',],
+            'images.*' => ['image','mimes:jpg,jpeg,png,webp','max:2048',],
         ];
     }  
     
-    protected $messages = [
-        'type.required' => 'Selecione o tipo.',
-        'type.string' => 'O tipo informado é inválido.',
+    protected function messages(): array
+    {
+        return [
 
-        'name.required' => 'O nome é obrigatório.',
-        'name.string' => 'O nome informado é inválido.',
-        'name.max' => 'O nome deve ter no máximo :max caracteres.',
+            'name.required' => 'O nome da embarcação é obrigatório.',
+            'name.min' => 'O nome deve ter no mínimo :min caracteres.',
+            'name.max' => 'O nome deve ter no máximo :max caracteres.',
 
-        'images.*.image' => 'O arquivo deve ser uma imagem válida.',
-        'images.*.mimes' => 'A imagem deve ser do tipo: jpeg, jpg, png ou webp.',
-        'images.*.max' => 'A imagem não pode ultrapassar 2MB.',
-    ];
+            'type.required' => 'Selecione o tipo da embarcação.',
+            'type.max' => 'O tipo da embarcação é inválido.',
+
+            'capacity.required' => 'Informe a capacidade da embarcação.',
+            'capacity.integer' => 'A capacidade deve ser um número inteiro.',
+            'capacity.min' => 'A capacidade mínima é :min pessoa.',
+            'capacity.max' => 'A capacidade informada é inválida.',
+
+            'year.integer' => 'O ano deve ser um número válido.',
+            'year.min' => 'O ano informado é inválido.',
+            'year.max' => 'O ano não pode ser maior que :max.',
+
+            'size.numeric' => 'O tamanho deve ser numérico.',
+            'size.min' => 'O tamanho mínimo é :min metro.',
+            'size.max' => 'O tamanho informado é inválido.',
+
+            'bathroom.integer' => 'A quantidade de banheiros deve ser um número.',
+            'bathroom.min' => 'A quantidade mínima de banheiros é :min.',
+            'bathroom.max' => 'Quantidade de banheiros inválida.',
+
+            'description.max' => 'A descrição deve ter no máximo :max caracteres.',
+
+            'images.array' => 'Formato de imagens inválido.',
+            'images.max' => 'Você pode enviar no máximo :max imagens.',
+
+            'images.*.image' => 'O arquivo enviado deve ser uma imagem.',
+            'images.*.mimes' => 'As imagens devem ser JPG, PNG ou WEBP.',
+            'images.*.max' => 'Cada imagem deve ter no máximo 2MB.',
+
+        ];
+    }
 
     public function mount($id = null): void
     {
         if ($id) {
             $this->vessel = Vessel::findOrFail($id);
             $this->authorize('update', $this->vessel);
-            $this->fill(collect($this->vessel->toArray())->toArray());
+            $this->fill($this->vessel->toArray());
         } else {
             $this->vessel = new Vessel();
             $this->authorize('create', Vessel::class);
         }
-    }    
+
+        $this->companies = Company::query()
+            ->where(function ($query) {
+                $query->where('status', true);
+
+                if ($this->company_id) {
+                    $query->orWhere('id', $this->company_id);
+                }
+            })
+            ->orderBy('alias_name')
+            ->get();
+    }   
 
     public function save(string $mode = 'draft')
     {
@@ -89,6 +141,7 @@ class VesselForm extends Component
         // 🔹 Monta payload
         $data = [
             'name' => $validated['name'],
+            'company_id' => $this->company_id,
             'type' => $this->type,
             'capacity' => $this->capacity,
             'year' => $this->year,
@@ -99,11 +152,7 @@ class VesselForm extends Component
             'suite' => $this->suite,
             'sound_system' => $this->sound_system,
             'kitchen' => $this->kitchen,
-        ];
-
-        if (auth()->user()->isCompany()) {
-            $data['company_id'] = auth()->user()->company_id;
-        }
+        ];        
 
         // 🔹 Create ou Update
         if ($this->vessel->exists) {

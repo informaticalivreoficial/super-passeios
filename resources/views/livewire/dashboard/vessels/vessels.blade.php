@@ -42,13 +42,13 @@
                                     <div class="rounded-t h-[175px] p-4 text-center text-white" 
                                         style="background: url('{{url($vessel->cover())}}') center center;background-size: cover;">
                                         <h3 class="widget-user-username text-right">{{$vessel->name}}</h3>
-                                        <h5 class="widget-user-desc text-right">ssssssssssss</h5>
+                                        <h5 class="widget-user-desc text-right">Tipo: {{$vessel->type}}</h5>
                                     </div>       
                                 </div>        
                                 <div class="py-3 px-3">
                                     <div class="row">
                                         <div class="col-12 text-center mb-2">
-                                            ddddddddddddd
+                                            Empresa: {{ $vessel->company->alias_name }}
                                         </div>
                                         <div class="col-12 text-center mb-2">                                            
                                             <div x-data="{ open: false }" class="flex items-center gap-2">
@@ -76,8 +76,8 @@
 
                                         <div class="col-sm-4 border-right">
                                             <div class="description-block">
-                                                <h5 class="description-header">{{$vessel->type}}</h5>
-                                                <span>Tipo</span>
+                                                <h5 class="description-header">{{$vessel->size}}</h5>
+                                                <span>Tamanho</span>
                                             </div>                    
                                         </div>
                                         

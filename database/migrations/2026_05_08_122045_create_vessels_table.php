@@ -29,12 +29,12 @@ return new class extends Migration
 
             $table->integer('year')->nullable();
 
-            $table->decimal('size', 8, 2)->nullable();
+            $table->integer('size')->nullable();
 
             $table->text('description')->nullable();
 
             $table->boolean('display_marked_water')->default(false);
-            $table->boolean('bathroom')->default(false);
+            $table->integer('bathroom')->nullable();
             $table->boolean('barbecue')->default(false);
             $table->boolean('suite')->default(false);
             $table->boolean('sound_system')->default(false);

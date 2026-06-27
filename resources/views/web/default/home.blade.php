@@ -32,45 +32,6 @@
                     Encontre as melhores operações náuticas, compare passeios e reserve com segurança em poucos cliques.
                 </p>
  
-                {{-- BUSCA --}}
-                <div class="bg-white rounded-2xl p-2 flex flex-col sm:flex-row gap-2 max-w-2xl" style="box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
- 
-                    {{-- Cidade --}}
-                    <div class="flex-1 flex items-center gap-3 px-4 py-2">
-                        <svg class="w-5 h-5 shrink-0" style="color: var(--teal);" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        <select
-                            id="cidade-filter"
-                            class="w-full outline-none text-sm bg-transparent"
-                            style="color: var(--navy);"
-                            onchange="filterCity(this.value)"
-                        >
-                            <option value="">Todas as cidades</option>
-                            @foreach($cities as $city)
-                                <option value="{{ $city }}">{{ $city }}</option>
-                            @endforeach
-                        </select>
-                    </div>
- 
-                    <div class="hidden sm:block w-px my-2" style="background: #e8e4d8;"></div>
- 
-                    {{-- Busca --}}
-                    <div class="flex-1 flex items-center gap-3 px-4 py-2">
-                        <svg class="w-5 h-5 shrink-0" style="color: var(--teal);" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-                        <input
-                            type="text"
-                            id="search-input"
-                            placeholder="Buscar passeio..."
-                            class="w-full outline-none text-sm bg-transparent"
-                            style="color: var(--navy);"
-                            oninput="filterSearch(this.value)"
-                        >
-                    </div>
- 
-                    <button class="btn-primary shrink-0 px-6">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-                        Buscar
-                    </button>
- 
                 </div>
  
                 {{-- Stats --}}
@@ -234,7 +195,7 @@
                                 {{ $company->city }}, {{ $company->state }}
                             </p>
                             @if($company->content)
-                                <p class="text-xs mt-1 line-clamp-2" style="color: #87c2c0;">{{ Str::limit($company->content, 80) }}</p>
+                                <p class="text-xs mt-1 line-clamp-2" style="color: #87c2c0;">{!! Str::limit($company->content, 80) !!}</p>
                             @endif
                         </div>
  

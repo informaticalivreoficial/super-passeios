@@ -275,7 +275,7 @@
                 @enderror
 
                 <!-- Informação sobre ordenação -->
-                @if(count($property->images ?? []) > 1)
+                @if(count($company->images ?? []) > 1)
                     <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
                         <p class="text-sm text-blue-800">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

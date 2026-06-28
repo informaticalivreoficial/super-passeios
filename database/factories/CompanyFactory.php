@@ -53,6 +53,7 @@ class CompanyFactory extends Factory
             'twitter' => $this->faker->url(),
             'instagram' => $this->faker->url(),
             'linkedin' => $this->faker->url(),
+            'tiktok' => $this->faker->url(),
 
             // endereço
             'zipcode' => $this->faker->numerify('########'),

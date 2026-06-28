@@ -97,6 +97,36 @@
                     </div>
                 </div>
 
+                {{-- Cadastur --}}
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-sm font-bold" style="color: #051e34;">
+                        Cadastur
+                    </label>
+                    <div class="relative">
+                        <input
+                            type="text"
+                            wire:model="cadastur"
+                            placeholder="00.000.000/0001-00"
+                            class="w-full border rounded-xl text-sm px-3 py-2.5 outline-none transition"
+                            style="border-color: #e8e4d8; color: #051e34;"
+                            onfocus="this.style.borderColor='#16a3b7'; this.style.boxShadow='0 0 0 3px rgba(22,163,183,0.15)'"
+                            onblur="this.style.borderColor='#e8e4d8'; this.style.boxShadow='none'"
+                            x-data
+                            x-init="
+                                let mask = IMask($el, {
+                                    mask: [
+                                        { mask: '00.000.000/0000-00' },
+                                        { mask: '00.000.000/0000-00' }
+                                    ]
+                                });
+                                mask.on('accept', () => {
+                                    $el.dispatchEvent(new Event('input'));
+                                });
+                            "
+                        >
+                    </div>
+                </div>
+
                 {{-- Email --}}
                 <div class="flex flex-col gap-1.5">
                     <label class="text-sm font-bold" style="color: #051e34;">
@@ -120,6 +150,24 @@
                         @error('email')
                             <p class="text-xs mt-1" style="color: #e53e3e;">{{ $message }}</p>
                         @enderror
+                    </div>
+                </div>
+
+                {{-- Email Adicional --}}
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-sm font-bold" style="color: #051e34;">
+                        E-mail Adicional
+                    </label>
+                    <div class="relative">
+                        <input
+                            type="email"
+                            wire:model="additional_email"
+                            placeholder="contato@empresa.com"
+                            class="w-full border rounded-xl text-sm px-3 py-2.5 outline-none transition"
+                            style="border-color: #e8e4d8; color: #051e34;"
+                            onfocus="this.style.borderColor='#16a3b7'; this.style.boxShadow='0 0 0 3px rgba(22,163,183,0.15)'"
+                            onblur="this.style.borderColor='#e8e4d8'; this.style.boxShadow='none'"
+                        >
                     </div>
                 </div>
 
@@ -379,6 +427,29 @@
 
             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
 
+                {{-- URL --}}
+                <div class="flex flex-col gap-1.5">
+
+                    <label class="text-sm font-bold" style="color: #051e34;">
+                        Website
+                    </label>
+
+                    <div class="relative">
+
+                        <input
+                            type="text"
+                            wire:model="url"
+                            placeholder="https://seusite.com.br"
+                            class="w-full border rounded-xl text-sm px-3 py-2.5 outline-none transition"
+                            style="border-color: #e8e4d8; color: #051e34;"
+                            onfocus="this.style.borderColor='#16a3b7'; this.style.boxShadow='0 0 0 3px rgba(22,163,183,0.15)'"
+                            onblur="this.style.borderColor='#e8e4d8'; this.style.boxShadow='none'"
+                        >
+
+                    </div>
+
+                </div>
+
                 {{-- FACEBOOK --}}
                 <div class="flex flex-col gap-1.5">
 
@@ -461,6 +532,29 @@
                             type="text"
                             wire:model="linkedin"
                             placeholder="https://linkedin.com/company/suaempresa"
+                            class="w-full border rounded-xl text-sm px-3 py-2.5 outline-none transition"
+                            style="border-color: #e8e4d8; color: #051e34;"
+                            onfocus="this.style.borderColor='#16a3b7'; this.style.boxShadow='0 0 0 3px rgba(22,163,183,0.15)'"
+                            onblur="this.style.borderColor='#e8e4d8'; this.style.boxShadow='none'"
+                        >
+
+                    </div>
+
+                </div>
+
+                {{-- TIKTOK --}}
+                <div class="flex flex-col gap-1.5">
+
+                    <label class="text-sm font-bold" style="color: #051e34;">
+                        TikTok
+                    </label>
+
+                    <div class="relative">
+
+                        <input
+                            type="text"
+                            wire:model="tiktok"
+                            placeholder="https://tiktok.com/@suaempresa"
                             class="w-full border rounded-xl text-sm px-3 py-2.5 outline-none transition"
                             style="border-color: #e8e4d8; color: #051e34;"
                             onfocus="this.style.borderColor='#16a3b7'; this.style.boxShadow='0 0 0 3px rgba(22,163,183,0.15)'"

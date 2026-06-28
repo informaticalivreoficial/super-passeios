@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\WalletStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -16,6 +17,7 @@ class Company extends Model
     protected $fillable = [
         'uuid',
         'api_token',  
+        'commission_rate',
         'responsable_name',
         'responsable_email',
         'responsable_cpf',      
@@ -34,10 +36,11 @@ class Company extends Model
         'alias_name',
         'document_company',
         'document_company_secondary',
+        'cadastur',
         'information',
         'status',
         //Redes Sociais
-        'facebook', 'twitter', 'instagram', 'linkedin',
+        'facebook', 'twitter', 'instagram', 'linkedin', 'tiktok',
         //contact 
         'phone', 'cell_phone', 'whatsapp', 'telegram', 'email', 'additional_email',
         //Address      
@@ -48,6 +51,7 @@ class Company extends Model
         'status' => 'boolean',
         'magic_token_expires_at' => 'datetime',
         'highlight' => 'boolean',
+        'commission_rate' => 'decimal:2',
     ];
 
     protected static function boot()
@@ -116,6 +120,11 @@ class Company extends Model
         );
     }
 
+    public function walletTransactions()
+    {
+        return $this->hasMany(WalletTransaction::class);
+    }
+
     public function images()
     {
         return $this->hasMany(CompanyGb::class, 'company', 'id')
@@ -167,6 +176,11 @@ class Company extends Model
 
         return substr($value, 0, 2) . '.' . substr($value, 2, 3) . '.' . substr($value, 5, 3) .
             '/' . substr($value, 8, 4) . '-' . substr($value, 12, 2);
+    }
+
+    public function setCadasturAttribute($value)
+    {
+        $this->attributes['cadastur'] = (!empty($value) ? $this->clearField($value) : null);
     }
 
     public function setCellPhoneAttribute($value)
@@ -245,6 +259,31 @@ class Company extends Model
             $this->attributes['slug'] = $slug;
         }
     }
+
+    public function getAvailableBalanceAttribute()
+    {
+        return $this->walletTransactions()
+            ->where('status', WalletStatusEnum::Available)
+            ->sum('net_amount');
+    }
+
+    public function getPendingBalanceAttribute()
+    {
+        return $this->walletTransactions()
+            ->where('status', WalletStatusEnum::Pending)
+            ->sum('net_amount');
+    }
+
+    public function getTotalCommissionAttribute()
+    {
+        return $this->walletTransactions()
+            ->sum('fee_amount');
+    }
+
+    // Usar no Blade
+    // $company->available_balance;
+    // $company->pending_balance;
+    // $company->total_commission;
     
     private function clearField(?string $param)
     {

@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('posts:clean-old')->everyMinute()->withoutOverlapping();      
         $schedule->command('posts:purge-deleted')->everyMinute()->withoutOverlapping();
         $schedule->command('app:clear-logs')->everyMinute()->withoutOverlapping(); 
+        $schedule->command('wallet:release')->everyMinute()->withoutOverlapping();
     }
 
     protected function commands(): void

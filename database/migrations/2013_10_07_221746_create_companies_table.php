@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();            
-            $table->string('api_token', 64)->unique()->nullable();   
+            $table->string('api_token', 64)->unique()->nullable(); 
+            $table->decimal('commission_rate', 5, 2)->default(10.00)->nullable();  
 
             $table->string('responsable_name');
             $table->string('responsable_email');
@@ -35,6 +36,7 @@ return new class extends Migration
             $table->string('alias_name')->nullable();
             $table->string('document_company')->nullable();
             $table->string('document_company_secondary')->nullable();
+            $table->string('cadastur')->nullable();
             $table->text('information')->nullable();
             $table->boolean('status')->default(false);
 
@@ -47,6 +49,7 @@ return new class extends Migration
             $table->string('twitter')->nullable();
             $table->string('instagram')->nullable();
             $table->string('linkedin')->nullable();
+            $table->string('tiktok')->nullable();
 
             /** address */
             $table->string('zipcode')->nullable();

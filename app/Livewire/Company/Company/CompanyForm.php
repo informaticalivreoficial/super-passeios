@@ -38,6 +38,8 @@ class CompanyForm extends Component
     public ?string $social_name = null;
     public ?string $alias_name = null;
     public ?string $document_company = null;
+    public ?string $document_company_secondary = null;
+    public ?string $cadastur = null;
     public ?string $content = null;
     public ?string $url = null;
     public ?string $caption_img_cover = null;    
@@ -60,10 +62,11 @@ class CompanyForm extends Component
     public ?string $number = null;
 
     // Redes sociais
-    public ?string $facebook = null;
-    public ?string $twitter = null;
+    public ?string $facebook  = null;
+    public ?string $twitter   = null;
     public ?string $instagram = null;
-    public ?string $linkedin = null;
+    public ?string $linkedin  = null;
+    public ?string $tiktok    = null;
 
     public function mount(): void
     {
@@ -99,11 +102,13 @@ class CompanyForm extends Component
     {
         $c = $this->company;
 
-        $this->social_name              = $c->social_name;
-        $this->alias_name               = $c->alias_name;
-        $this->document_company         = $c->document_company;
-        $this->content                  = $c->content;
-        $this->url                      = $c->url;
+        $this->social_name                = $c->social_name;
+        $this->alias_name                 = $c->alias_name;
+        $this->document_company           = $c->document_company;
+        $this->document_company_secondary = $c->document_company_secondary;
+        $this->cadastur                   = $c->cadastur;
+        $this->content                    = $c->content;
+        $this->url                        = $c->url;
         
         $this->phone                    = $c->phone;
         $this->cell_phone               = $c->cell_phone;
@@ -124,6 +129,7 @@ class CompanyForm extends Component
         $this->twitter                  = $c->twitter;
         $this->instagram                = $c->instagram;
         $this->linkedin                 = $c->linkedin;
+        $this->tiktok                   = $c->tiktok;
     }
 
     protected function rules(): array
@@ -131,11 +137,11 @@ class CompanyForm extends Component
         $companyId = $this->company->id ?? null;
 
         return [
-            'alias_name' => 'required|string|max:255',
-            'email'      => ['required', 'email', Rule::unique('companies', 'email')->ignore($companyId)],
-            'whatsapp'   => 'required|string|min:14',
-            'logo'       => 'nullable|file|mimes:jpeg,jpg,png,webp|max:2048',
-            'metaimg'  => 'nullable|file|mimes:jpeg,jpg,png,webp|max:2048',
+            'alias_name'   => 'required|string|max:255',
+            'email'        => ['required', 'email', Rule::unique('companies', 'email')->ignore($companyId)],
+            'whatsapp'     => 'required|string|min:14',
+            'logo'         => 'nullable|file|mimes:jpeg,jpg,png,webp|max:2048',
+            'metaimg'      => 'nullable|file|mimes:jpeg,jpg,png,webp|max:2048',
         ];
     }
 
@@ -180,6 +186,8 @@ class CompanyForm extends Component
                 'alias_name'                   => $this->alias_name,
                 'social_name'                  => $this->social_name,
                 'document_company'             => $this->document_company,
+                'document_company_secondary'   => $this->document_company_secondary,
+                'cadastur'                     => $this->cadastur,
                 'email'                        => $this->email,
                 'additional_email'             => $this->additional_email,
                 'phone'                        => $this->phone,
@@ -199,6 +207,7 @@ class CompanyForm extends Component
                 'twitter'                      => $this->twitter,
                 'instagram'                    => $this->instagram,
                 'linkedin'                     => $this->linkedin,
+                'tiktok'                       => $this->tiktok,
             ];
 
             // Criar ou atualizar

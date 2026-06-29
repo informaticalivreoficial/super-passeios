@@ -374,6 +374,13 @@
             background: rgba(37, 99, 235, 0.2);
             color: var(--navy);
         }
+        @keyframes slow-zoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+        .animate-slow-zoom {
+            animation: slow-zoom 20s infinite alternate;
+        }
     </style>
 	@stack('styles')
 </head>

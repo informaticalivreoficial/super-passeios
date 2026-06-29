@@ -86,7 +86,7 @@
                             {{ $title ?? 'Dashboard' }}
                         </h2>
                         <p class="text-xs hidden md:block leading-tight" style="color: #87c2c0;">
-                            Gerencie sua operação náutica
+                            {{ $bracrhumb ?? 'Gerencie sua operação náutica' }}
                         </p>
                     </div>
 

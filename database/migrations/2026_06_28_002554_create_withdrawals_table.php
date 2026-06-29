@@ -19,6 +19,11 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
+            $table->foreignId('bank_account_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
+
             $table->decimal('amount', 10, 2);
 
             $table->enum('status', [

@@ -17,11 +17,7 @@ return new class extends Migration
 
             $table->foreignId('company_id')
                 ->constrained()
-                ->cascadeOnDelete();
-
-            $table->foreignId('bank_account_id')
-                ->constrained()
-                ->cascadeOnDelete();
+                ->cascadeOnDelete();            
 
             $table->enum('type', ['pix', 'ted'])->default('pix');
 

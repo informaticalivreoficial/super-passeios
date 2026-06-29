@@ -190,7 +190,7 @@ class BankAccounts extends Component
         $this->account_type = 'checking';
     }
 
-    #[Layout('components.layouts.company', ['title' => 'Meus Bancos'])]
+    #[Layout('components.layouts.company', ['title' => 'Meus Bancos', 'bracrhumb' => 'Gerencie suas contas para recebimento de saques.'])]
     public function render()
     {
         $accounts = BankAccount::where('company_id', $this->getCompany()->id)

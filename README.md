@@ -1,10 +1,21 @@
 🌊 Super Passeios Náutica SaaS
 
-Plataforma SaaS para gestão e comercialização de passeios náuticos, permitindo que empresas criem suas embarcações, publiquem passeios e gerenciem reservas em um painel moderno e intuitivo.
+<p align="center">
+  Plataforma SaaS para gestão e comercialização de passeios náuticos, permitindo que empresas criem suas embarcações, publiquem passeios e gerenciem reservas em um painel moderno e intuitivo.
+</p>
 
-Construído com Laravel 10, Livewire 3, Alpine.js e Tailwind CSS.
+<p align="center">
+  <img src="https://img.shields.io/badge/version-1.0-brightgreen" alt="Versão">
+  <img src="https://img.shields.io/badge/PHP-8.3-777BB4?logo=php&logoColor=white" alt="PHP">
+  <img src="https://img.shields.io/badge/Laravel-10.x-FF2D20?logo=laravel&logoColor=white" alt="Laravel">
+  <img src="https://img.shields.io/badge/Livewire-3.x-FB70A9?logo=livewire&logoColor=white" alt="Livewire">
+  <img src="https://img.shields.io/badge/TailwindCSS-3.x-38BDF8?logo=tailwindcss&logoColor=white" alt="Tailwind">
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Licença MIT">
+</p>
 
-🚀 Visão Geral
+---
+
+## 📋 Sobre o Projeto
 
 O sistema funciona como um marketplace de experiências náuticas, onde:
 
@@ -14,50 +25,56 @@ Publicam passeios (tours)
 Gerenciam reservas e disponibilidade
 Recebem pagamentos via integração com gateways (ex: Mercado Pago)
 
-🧱 Stack Tecnológica
-⚙️ Laravel 10
-⚡ Livewire 3
-🌿 Alpine.js
-🎨 Tailwind CSS
-🗄️ MySQL / MariaDB
-💳 Integração com Mercado Pago
-🔐 Spatie Laravel Permission
-📦 Vite
+---
 
-✨ Funcionalidades
-🏢 Gestão de Empresas
+## 🛠️ Tecnologias
+
+| Tecnologia | Versão |
+|---|---|
+| PHP | 8.3 |
+| Laravel | 10.x |
+| Livewire | 3.x |
+| TailwindCSS | 3.x |
+| Alpine.js | 3.x |
+| MySQL | 8.x |
+
+---
+
+##✨ Funcionalidades
+
+#🏢 Gestão de Empresas
 Cadastro de empresas (onboarding SaaS)
 Validação de e-mail
 Perfil da empresa com informações completas
 
-🚤 Embarcações
+#🚤 Embarcações
 Cadastro de barcos
 Capacidade, descrição e imagens
 Associação com passeios
 
-🏝️ Passeios (Tours)
+#🏝️ Passeios (Tours)
 Criação de experiências náuticas
 Controle de datas e disponibilidade
 Status ativo/inativo
 Visualizações e destaque
 
-📅 Reservas
+#📅 Reservas
 Sistema de booking
 Controle de vagas
 Status de pagamento
 Histórico de reservas
 
-💳 Pagamentos
+#💳 Pagamentos
 Integração com Mercado Pago
 Checkout seguro
 Webhooks para confirmação
 Suporte a cartão, PIX e carteira
 
-🔐 Permissões
+#🔐 Permissões
 Roles e permissions com Spatie
 Painel administrativo controlado por acesso
 
-🧠 Arquitetura
+#🧠 Arquitetura
 O projeto segue uma arquitetura modular baseada em:
 
 Services (regras de negócio)
@@ -66,15 +83,15 @@ Models com relações bem definidas
 Events/Webhooks para pagamentos
 Camada de onboarding para empresas
 
-🖥️ Requisitos
+#🖥️ Requisitos
 PHP 8.3+
 Composer
 Node.js 18+
 MySQL 8+
 Extensões PHP padrão do Laravel
 
-⚙️ Instalação
-git clone https://github.com/seu-repo/nautical-saas.git
+#⚙️ Instalação
+git clone https://github.com/informaticalivreoficial/nautical-saas.git
 cd nautical-saas
 
 composer install

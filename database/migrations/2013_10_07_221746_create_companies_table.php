@@ -16,6 +16,7 @@ return new class extends Migration
             $table->uuid('uuid')->unique();            
             $table->string('api_token', 64)->unique()->nullable(); 
             $table->decimal('commission_rate', 5, 2)->default(10.00)->nullable();  
+            $table->integer('release_days')->default(7)->nullable();
 
             $table->string('responsable_name');
             $table->string('responsable_email');

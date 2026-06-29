@@ -6,6 +6,9 @@ use App\Livewire\Company\Booking\BookingForm as BookingBookingForm;
 use App\Livewire\Company\Booking\BookingIndex;
 use App\Livewire\Company\Company\CompanyForm as CompanyCompanyForm;
 use App\Livewire\Company\Dashboard as CompanyDashboard;
+use App\Livewire\Company\Finance\BankAccounts;
+use App\Livewire\Company\Finance\Dashboard as FinanceDashboard;
+use App\Livewire\Company\Finance\Withdrawals;
 use App\Livewire\Company\Tours\TourDates;
 use App\Livewire\Company\Tours\TourForm as ToursTourForm;
 use App\Livewire\Company\Tours\TourIndex;
@@ -107,6 +110,13 @@ Route::group([
     Route::get('/cadastrar-reserva', BookingBookingForm::class)->name('bookings.create');
     Route::get('/reserva/{booking}/editar', BookingBookingForm::class)->name('bookings.edit');
 
+    Route::prefix('financeiro')->name('finance.')->group(function () {
+        Route::get('/', FinanceDashboard::class)->name('index');
+        Route::get('/meus-bancos', BankAccounts::class)->name('banks');
+        // Route::get('/relatorios', FinancialReports::class)->name('reports');
+        // Route::get('/contratos', Contracts::class)->name('contracts');
+        Route::get('/saques', Withdrawals::class)->name('drawals');
+    });
 });
 
 

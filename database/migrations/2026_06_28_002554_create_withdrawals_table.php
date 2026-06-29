@@ -13,6 +13,24 @@ return new class extends Migration
     {
         Schema::create('withdrawals', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
+
+            $table->foreignId('company_id')
+                ->constrained()
+                ->cascadeOnDelete();
+
+            $table->decimal('amount', 10, 2);
+
+            $table->enum('status', [
+                'requested',
+                'approved',
+                'paid',
+                'rejected',
+            ])->default('requested');
+
+            $table->text('notes')->nullable();
+            $table->timestamp('paid_at')->nullable();
+
             $table->timestamps();
         });
     }

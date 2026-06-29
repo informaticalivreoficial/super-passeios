@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Booking;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Company;
+use App\Observers\BookingObserver;
 use App\Policies\CompanyPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Notifications\VerifyEmail;
@@ -25,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Booking::observe(BookingObserver::class);
         Gate::policy(Company::class, CompanyPolicy::class);
 
         Paginator::useBootstrap();

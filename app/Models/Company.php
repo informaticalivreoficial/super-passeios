@@ -18,6 +18,7 @@ class Company extends Model
         'uuid',
         'api_token',  
         'commission_rate',
+        'release_days',
         'responsable_name',
         'responsable_email',
         'responsable_cpf',      
@@ -120,6 +121,11 @@ class Company extends Model
         );
     }
 
+    public function withdrawals()
+    {
+        return $this->hasMany(Withdrawal::class);
+    }
+
     public function walletTransactions()
     {
         return $this->hasMany(WalletTransaction::class);
@@ -130,11 +136,16 @@ class Company extends Model
         return $this->hasMany(CompanyGb::class, 'company', 'id')
                     ->orderBy('order_img', 'ASC')
                     ->orderBy('cover', 'DESC'); // cover primeiro (1 antes de 0)
-    }    
-
-    public function hasImagesWithoutWatermark()
+    } 
+    
+    public function bankAccounts()
     {
-        return $this->images->where('watermark', false)->isNotEmpty();
+        return $this->hasMany(BankAccount::class);
+    }
+
+    public function defaultBankAccount()
+    {
+        return $this->hasOne(BankAccount::class)->where('is_default', true);
     }
 
     /**
@@ -148,6 +159,47 @@ class Company extends Model
 
         return asset('theme/images/image.jpg');
     }
+
+    public function getAvailableBalanceAttribute(): float
+    {
+        return (float) $this->walletTransactions()
+            ->where('status', \App\Enums\WalletStatusEnum::Available)
+            ->sum('net_amount');
+    }
+
+    public function getPendingBalanceAttribute()
+    {
+        return $this->walletTransactions()
+            ->where('status', WalletStatusEnum::Pending)
+            ->sum('net_amount');
+    }
+
+    public function getTotalCommissionAttribute()
+    {
+        return $this->walletTransactions()
+            ->sum('fee_amount');
+    }
+
+    public function getTotalSalesAttribute(): float
+    {
+        return (float) $this->walletTransactions()
+            ->where('type', \App\Enums\WalletTypeEnum::Sale)
+            ->sum('gross_amount');
+    }
+
+    public function getTotalWithdrawnAttribute(): float
+    {
+        return (float) abs(
+            $this->walletTransactions()
+                ->where('type', \App\Enums\WalletTypeEnum::Withdrawal)
+                ->sum('net_amount')
+        );
+    }
+
+    // Usar no Blade
+    // $company->available_balance;
+    // $company->pending_balance;
+    // $company->total_commission;
 
     public function setZipcodeAttribute($value)
     {
@@ -258,32 +310,9 @@ class Company extends Model
     
             $this->attributes['slug'] = $slug;
         }
-    }
+    }    
 
-    public function getAvailableBalanceAttribute()
-    {
-        return $this->walletTransactions()
-            ->where('status', WalletStatusEnum::Available)
-            ->sum('net_amount');
-    }
-
-    public function getPendingBalanceAttribute()
-    {
-        return $this->walletTransactions()
-            ->where('status', WalletStatusEnum::Pending)
-            ->sum('net_amount');
-    }
-
-    public function getTotalCommissionAttribute()
-    {
-        return $this->walletTransactions()
-            ->sum('fee_amount');
-    }
-
-    // Usar no Blade
-    // $company->available_balance;
-    // $company->pending_balance;
-    // $company->total_commission;
+    
     
     private function clearField(?string $param)
     {

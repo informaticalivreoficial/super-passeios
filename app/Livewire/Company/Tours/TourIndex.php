@@ -81,7 +81,7 @@ class TourIndex extends Component
         }
     }
 
-    #[Layout('components.layouts.company', ['title' => 'Gerenciar Passeios'])]
+    #[Layout('components.layouts.company', ['title' => 'Meus Passeios'])]
     public function render()
     {
         $tours = Tour::query()

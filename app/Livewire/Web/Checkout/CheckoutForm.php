@@ -9,6 +9,7 @@ use App\Models\Booking;
 use App\Models\Customer;
 use App\Models\TourDate;
 use App\Services\MercadoPagoService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Illuminate\Support\Str;
@@ -72,9 +73,12 @@ class CheckoutForm extends Component
  
         $this->subtotal = ($this->adults * $priceAdult) + ($this->children * $priceChildren);
  
-        $commissionPct        = (float) env('SAAS_COMMISSION', 10);
+        //$commissionPct        = (float) env('SAAS_COMMISSION', 10);
+        $commissionPct = $this->tourDate->tour->company->commission_rate;
+        //$this->commissionAmount = round($this->subtotal * ($commissionPct / 100), 2);
         $this->commissionAmount = round($this->subtotal * ($commissionPct / 100), 2);
-        $this->companyAmount  = round($this->subtotal - $this->commissionAmount, 2);
+        $this->companyAmount = $this->subtotal - $this->commissionAmount;
+        //$this->companyAmount  = round($this->subtotal - $this->commissionAmount, 2);
         $this->total          = $this->subtotal;
 
         if ($this->step === 3 && $this->paymentMethod === 'card') {
@@ -223,17 +227,12 @@ class CheckoutForm extends Component
                 ]));
             }
  
-            // 4. Atualiza booking com dados do MP
-            if (isset($response['error'])) {
-                throw new \Exception($response['message'] ?? 'Erro ao processar pagamento.');
-            }
-
-            if (isset($response['error'])) {
-                throw new \Exception($response['message'] ?? json_encode($response));
+            if (!isset($response['id'])) {
+                throw new \Exception(json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
             }
  
             $booking->update([
-                'payment_id' => $response['id'],
+                'payment_id' => $response['id'],                
             ]);
  
             // 5. PIX: exibe QR code
@@ -249,15 +248,32 @@ class CheckoutForm extends Component
  
             // 6. Cartão aprovado imediatamente
             if ($this->paymentMethod === 'card' && ($response['status'] ?? '') === 'approved') {
-                $this->confirmBooking($booking);
-                $this->step = 5; // <--- ADICIONE ESTA LINHA: Avança para o passo de sucesso
-                $this->dispatch('mercadopago:destroy'); // <--- ADICIONE ESTA LINHA: Dispara evento para destruir o form
-            }
- 
-            // 7. Envia e-mail de confirmação (pendente aguardando webhook para paid)
-            Mail::to($this->email)->queue(new BookingConfirmed($booking, $customer));
- 
+                $booking->update([
+                    'status'         => BookingStatusEnum::CONFIRMED,
+                    'payment_status' => PaymentStatusEnum::PAID,
+                    'paid_at'        => now(),
+                ]);
+                app(\App\Services\Booking\BookingPaidService::class)
+                    ->handle($booking->fresh());
+
+                Mail::to($booking->customer_email)
+                    ->queue(new BookingConfirmed(
+                        $booking->fresh(),
+                        $customer
+                    ));
+
+                $this->dispatch('mercadopago:destroy');
+
+                $this->step = 5;
+
+                return;
+            } 
         } catch (\Exception $e) {
+             Log::error('Checkout Error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             $this->errorMsg = $e->getMessage();
         } finally {
             $this->processing = false;
@@ -267,35 +283,36 @@ class CheckoutForm extends Component
     // ─────────────────────────────────────────
     // CONFIRMAR BOOKING (chamado pelo webhook também)
     // ─────────────────────────────────────────
-    public static function confirmBooking(Booking $booking): void
-    {
-        $booking->update([
-            'status'         => BookingStatusEnum::CONFIRMED,
-            'payment_status' => PaymentStatusEnum::PAID,
-            'paid_at'        => now(),
-        ]);
+    // public static function confirmBooking(Booking $booking): void
+    // {
+    //     $booking->update([
+    //         'status'         => BookingStatusEnum::CONFIRMED,
+    //         'payment_status' => PaymentStatusEnum::PAID,
+    //         'paid_at'        => now(),
+    //     ]);
  
-        // Decrementa vagas da data
-        $booking->tourDate->decrement('available_slots', $booking->adults + $booking->children);
+    //     // Decrementa vagas da data
+    //     $booking->tourDate->decrement('available_slots', $booking->adults + $booking->children);
  
-        // Verifica se lotou
-        if ($booking->tourDate->available_slots <= 0) {
-            $booking->tourDate->update(['status' => \App\Enums\TourDateStatusEnum::FULL]);
-        }
-    }
+    //     // Verifica se lotou
+    //     if ($booking->tourDate->available_slots <= 0) {
+    //         $booking->tourDate->update(['status' => \App\Enums\TourDateStatusEnum::FULL]);
+    //     }
+    // }
 
     public function checkPixStatus(MercadoPagoService $mp): void
     {
-        if (!$this->pixData || empty($this->pixData['payment_id'])) return;
+        if (!$this->pixData || empty($this->pixData['booking_uuid'])) {
+            return;
+        }
 
-        $payment = $mp->getPayment($this->pixData['payment_id']);
+        $booking = Booking::where('uuid', $this->pixData['booking_uuid'])->first();
 
-        if (($payment['status'] ?? '') === 'approved') {
-            $booking = Booking::where('uuid', $this->pixData['booking_uuid'])->first();
-            if ($booking) {
-                CheckoutForm::confirmBooking($booking);
-                $this->step = 5; // step de sucesso
-            }
+        if (
+            $booking &&
+            $booking->payment_status === PaymentStatusEnum::PAID
+        ) {
+            $this->step = 5;
         }
     }
 

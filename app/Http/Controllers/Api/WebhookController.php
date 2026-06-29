@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Livewire\Web\Checkout\CheckoutForm;
+use App\Enums\PaymentStatusEnum;
+use App\Enums\BookingStatusEnum;
 use App\Mail\BookingConfirmed;
 use App\Models\Booking;
 use App\Services\MercadoPagoService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -15,6 +18,7 @@ class WebhookController extends Controller
 {
     public function mercadopago(Request $request, MercadoPagoService $mp)
     {
+        //Log::info('Webhook Mercado Pago', $request->all());
         // Valida assinatura
         $secret    = config('services.mercadopago.access_token');
         $signature = $request->header('x-signature');
@@ -33,7 +37,7 @@ class WebhookController extends Controller
             }
         }
 
-        Log::info('MP Webhook recebido', $request->all());
+        //Log::info('MP Webhook recebido', $request->all());
  
         // MP envia 'payment' como tipo quando o pagamento muda de status
         if ($request->type !== 'payment') {
@@ -75,16 +79,29 @@ class WebhookController extends Controller
  
     private function handleApproved(Booking $booking, string $paymentId): void
     {
-        if ($booking->payment_status->value === 'PAID') return;
+        if ($booking->payment_status === PaymentStatusEnum::PAID) {
+            return;
+        }
 
-        // salva o payment_id antes de confirmar
-        $booking->update(['payment_id' => $paymentId]);
-        $booking->refresh(); // garante que confirmBooking usa o booking atualizado
+        DB::transaction(function () use ($booking, $paymentId) {
 
-        CheckoutForm::confirmBooking($booking);
+            $booking->update([
+                'payment_id'     => $paymentId,
+                'payment_status' => PaymentStatusEnum::PAID,
+                'status'         => BookingStatusEnum::CONFIRMED,
+                'paid_at'        => now(),
+            ]);
+
+            app(\App\Services\Booking\BookingPaidService::class)
+                ->handle($booking->fresh());
+
+        });
 
         Mail::to($booking->customer_email)
-            ->queue(new BookingConfirmed($booking->fresh(), $booking->customer));
+            ->queue(new BookingConfirmed(
+                $booking->fresh(),
+                $booking->customer
+            ));
     }
  
     private function handleRejected(Booking $booking): void

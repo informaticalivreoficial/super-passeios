@@ -37,6 +37,13 @@
         .section-label { color: #87c2c0; }
         .sidebar-border { border-right: 1px solid rgba(255,255,255,0.07); }
         .logo-dot { background-color: #fadd37; }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 
 </head>

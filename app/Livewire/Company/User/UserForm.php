@@ -216,7 +216,7 @@ class UserForm extends Component
         $this->complement   = $data['complemento'] ?? '';
     }
 
-    #[Layout('components.layouts.company', ['title' => 'Minha Conta'])]
+    #[Layout('components.layouts.company', ['title' => 'Minha Conta', 'bracrhumb' => 'Gerencie seus dados pessoais.'])]
     public function render()
     {
         return view('livewire.company.user.user-form');

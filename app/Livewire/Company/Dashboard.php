@@ -5,22 +5,25 @@ namespace App\Livewire\Company;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use App\Services\Wallet\FinancialDashboardService;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Company;
 
 class Dashboard extends Component
 {
-    public array $wallet = [];
-
-    public function mount(FinancialDashboardService $service)
+    private function getCompany(): Company
     {
-        $company = auth('customer')->user()->company;
-
-        $this->wallet = $service->company($company);
-        
+        return Auth::guard('customer')->user()->company;
     }
 
     #[Layout('components.layouts.company', ['title' => 'Painel de Controle'])]
-    public function render()
+    public function render(FinancialDashboardService $service)
     {
-        return view('livewire.company.dashboard');
+        $company = $this->getCompany();
+        $data    = $service->company($company);
+
+        return view('livewire.company.dashboard', [
+            'data'         => $data,
+            'company'      => $company,
+        ]);
     }
 }

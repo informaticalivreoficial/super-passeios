@@ -334,7 +334,7 @@ class CompanyForm extends Component
         $this->metaimgPreview = $this->metaimg->temporaryUrl();
     }
 
-    #[Layout('components.layouts.company', ['title' => 'Dados da Empresa'])]
+    #[Layout('components.layouts.company', ['title' => 'Dados da Empresa', 'bracrhumb' => 'Gerencie seus dados da empresa.'])]
     public function render()
     {
         return view('livewire.company.company.company-form');

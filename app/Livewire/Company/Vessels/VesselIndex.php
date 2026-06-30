@@ -79,7 +79,7 @@ class VesselIndex extends Component
         }
     }
 
-    #[Layout('components.layouts.company', ['title' => 'Minhas Embarcações'])]
+    #[Layout('components.layouts.company', ['title' => 'Minhas Embarcações', 'bracrhumb' => 'Gerencie suas embarcações.'])]
     public function render()
     {
         $vessels = auth()->user()->company->vessels()

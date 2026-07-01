@@ -39,6 +39,8 @@ class PostForm extends Component
     public $title = '';
     public $slug = '';
     public $content = '';
+    public $excerpt = '';
+    public $metaDescription = '';
     public $cat_pai;
     public $status = 1;
     public ?string $publish_at = null;
@@ -63,6 +65,8 @@ class PostForm extends Component
             ],
             'title' => 'required|min:3|string|max:191',
             'content' => 'required|string',
+            'excerpt' => 'nullable|string|max:255',
+            'metaDescription' => 'nullable|string|max:255',
             'status' => 'required|boolean',
             'publish_at' => 'nullable|date_format:d/m/Y',
             'thumb_caption' => 'nullable|string|max:255',
@@ -83,13 +87,11 @@ class PostForm extends Component
     public function mount(Post $post)
     {
         $this->autores = User::query()
-        ->when(!auth()->user()->isSuperAdmin(), function ($query) {
-            $query->whereDoesntHave('roles', function ($q) {
-                $q->where('name', 'super-admin');
-            });
-        })
+        ->whereHas('roles', fn($q) =>
+            $q->whereIn('name', ['super-admin', 'admin', 'manager'])
+        )
         ->orderBy('name')
-        ->get();        
+        ->get();       
 
         // Carregar tipos disponíveis
         $this->types = PostType::labels();
@@ -100,6 +102,8 @@ class PostForm extends Component
             $this->autor = $post->autor ?? auth()->id();
             $this->title = $post->title;            
             $this->content = $post->content;
+            $this->excerpt = $post->excerpt;
+            $this->metaDescription = $post->metaDescription;
             $this->type = $post->type;
             $this->category = $post->category; // ✅ Corrigido
             $this->status = $post->status ?? 1;
@@ -153,6 +157,8 @@ class PostForm extends Component
                 'category' => $validated['category'],
                 'title' => $validated['title'],
                 'content' => $validated['content'],
+                'excerpt' => $validated['excerpt'],
+                'metaDescription' => $validated['metaDescription'],
                 'status' => $validated['status'],
                 'publish_at' => $validated['publish_at'],
                 'thumb_caption' => $validated['thumb_caption'],
@@ -275,6 +281,8 @@ class PostForm extends Component
         $this->title = '';
         $this->slug = '';
         $this->content = '';
+        $this->excerpt = '';
+        $this->metaDescription = '';
         $this->type = '';
         $this->category = null; // ✅ Corrigido
         $this->status = 1;

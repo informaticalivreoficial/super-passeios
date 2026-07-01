@@ -4,9 +4,12 @@ namespace App\Livewire\Dashboard\Sitemap;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Artisan;
+use App\Traits\WithToastr;
 
 class SitemapGenerator extends Component
 {
+    use WithToastr;
+    
     public $totalUrls = 0;
     public $lastGenerated = null;
 
@@ -29,19 +32,11 @@ class SitemapGenerator extends Component
     public function generate()
     {
         try {
-            Artisan::call('sitemap:generate');
-            
+            Artisan::call('sitemap:generate');            
             $this->loadInfo();
-            
-            $this->dispatch('toast', [
-                'type' => 'success',
-                'message' => 'Sitemap gerado com sucesso!'
-            ]);
+            $this->toastSuccess('Sitemap gerado com sucesso!');
         } catch (\Exception $e) {
-            $this->dispatch('toast', [
-                'type' => 'error',
-                'message' => 'Erro ao gerar sitemap: ' . $e->getMessage()
-            ]);
+            $this->toastError('Erro ao gerar sitemap: ' . $e->getMessage());
         }
     }
 

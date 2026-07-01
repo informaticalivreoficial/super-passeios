@@ -8,7 +8,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">                    
-                        <li class="breadcrumb-item"><a href="{{route('admin')}}">Painel de Controle</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Painel de Controle</a></li>
                         <li class="breadcrumb-item active">Posts</li>
                     </ol>
                 </div>
@@ -63,7 +63,7 @@
 
                 <!-- DIREITA (botão) -->
                 <div class="col-12 col-sm-4 my-2 text-sm-right">
-                    <a wire:navigate href="{{ route('posts.create') }}" 
+                    <a wire:navigate href="{{ route('admin.posts.create') }}" 
                     class="btn btn-sm btn-default">
                         <i class="fas fa-plus mr-2"></i> Cadastrar Novo
                     </a>
@@ -122,7 +122,7 @@
                                             title="Visualizar">
                                             <i class="fas fa-search"></i>
                                         </a>
-                                        <a title="Editar Post" href="{{ route('posts.edit', $post->id) }}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
+                                        <a title="Editar Post" href="{{ route('admin.posts.edit', $post->id) }}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
                                         <button type="button" 
                                             class="btn btn-xs bg-danger text-white" 
                                             title="Excluir Post"

@@ -8,8 +8,8 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('admin') }}">Painel de Controle</a></li>
-                        <li class="breadcrumb-item"><a href="{{route('posts.index')}}">Posts</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Painel de Controle</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('admin.posts.index')}}">Posts</a></li>
                         <li class="breadcrumb-item active">{{ $post->exists ? 'Editar' : 'Cadastrar' }}</li>
                     </ol>
                 </div>
@@ -36,7 +36,13 @@
                     :class="tab === 'imagens' ? 'bg-white border-l border-t border-r text-blue-600' : 'text-gray-500 hover:text-blue-500'"
                     @click="tab = 'imagens'">
                 📷 Imagens
-            </button>            
+            </button>     
+            <button type="button"
+                    class="px-4 py-2 text-sm font-medium rounded-t-lg focus:outline-none transition-all duration-200"
+                    :class="tab === 'seo' ? 'bg-white border-l border-t border-r text-blue-600' : 'text-gray-500 hover:text-blue-500'"
+                    @click="tab = 'seo'">
+                🔍 Seo
+            </button>       
         </div>
 
         <form wire:submit.prevent="save" autocomplete="off">
@@ -45,7 +51,7 @@
                 <div class="bg-white">
                     <div class="card-body text-muted">
                         <div class="row">                           
-                            <div class="col-12 col-md-6 col-lg-6">   
+                            <div class="col-12 col-md-6 col-lg-9">   
                                 <div class="form-group">
                                     <label class="labelforms"><b>*Título</b></label>
                                     <input type="text" class="form-control @error('title') is-invalid @enderror"  wire:model="title">
@@ -116,7 +122,7 @@
                             </div> 
                             <div class="col-12 col-md-6 col-lg-3"> 
                                 <div class="form-group">
-                                    <label for="comments" class="labelforms"><b>Permitir Comentários?</b></label>
+                                    <label for="comments" class="labelforms text-muted"><b>Permitir Comentários?</b></label>
                                     <select 
                                         id="comments" 
                                         wire:model="comments"
@@ -127,57 +133,14 @@
                                 </div>
                             </div> 
                             <div class="col-12 col-md-3 col-lg-3">
-                                <div class="form-group">
-                                    <label class="labelforms"><b>Data de Publicação</b></label>
-
-                                    <input
-                                        type="text"
-                                        id="datepicker"
-                                        class="form-control"
-                                        wire:model="publish_at"
-                                    />
+                                <div class="form-group" x-data="{ value: @entangle('publish_at').defer }" x-init="initFlatpickr()" x-ref="datepicker">
+                                    <label class="labelforms"><b>Data da Publicação</b></label>
+                                    <input type="text" class="form-control" wire:model="publish_at" id="datepicker" />                                                                                                                                                                          
                                 </div>
-                            </div>      
+                            </div> 
+                                          
                         </div>
-                        <div class="row mb-2">
-                            <div class="col-12 mb-1"> 
-                                <div class="form-group">
-                                    <label class="labelforms"><b>MetaTags</b></label>
-                                    <div 
-                                        x-data="{
-                                            tags: @entangle('tags'),
-                                            input: '',
-                                            addTag() {
-                                                const trimmed = this.input.trim();
-                                                if (trimmed && !this.tags.includes(trimmed)) {
-                                                    this.tags.push(trimmed);
-                                                }
-                                                this.input = '';
-                                            },
-                                            removeTag(index) {
-                                                this.tags.splice(index, 1);
-                                            }
-                                        }"
-                                        class="p-4 border rounded shadow"
-                                        >
-                                        <div class="flex flex-wrap gap-2 mb-2">
-                                            <template x-for="(tag, index) in tags" :key="index">
-                                                <span class="flex items-center bg-teal-500 text-white px-3 py-1 rounded-full">
-                                                    <span x-text="tag"></span>
-                                                    <button type="button" @click="removeTag(index)" class="ml-2 hover:text-gray-200">&times;</button>
-                                                </span>
-                                            </template>
-                                        </div>                                    
-                                        <input 
-                                            type="text" 
-                                            x-model="input" 
-                                            @keydown.enter.prevent="addTag"
-                                            placeholder="Digite uma tag e pressione Enter"
-                                            class="border border-gray-300 rounded px-3 py-2 w-full"
-                                        >
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="row mb-2">                            
                             <div class="col-12">
                                 @error('content')
                                     <span class="invalid-feedback d-block">{{ $message }}</span>
@@ -269,6 +232,64 @@
                                 </button>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="tab === 'seo'" x-transition>
+                <div class="bg-white p-4">
+                    <div class="row mb-2 text-muted">                                   
+                        <div class="col-12 col-md-12 col-lg-12">   
+                            <div class="form-group">
+                                <label class="labelforms"><b>Headline</b></label>
+                                <input type="text" class="form-control" wire:model="excerpt">
+                            </div>                                                    
+                        </div>  
+                        <div class="col-12 mb-1"> 
+                            <div class="form-group">
+                                <label class="labelforms"><b>Meta Descrição</b></label>
+                                <textarea class="form-control" rows="5" wire:model="metaDescription"></textarea>
+                            </div>
+                        </div>                                                          
+                        <div class="col-12 mb-1"> 
+                            <div class="form-group">
+                                <label class="labelforms"><b>MetaTags</b></label>
+                                <div 
+                                    x-data="{
+                                        tags: @entangle('tags'),
+                                        input: '',
+                                        addTag() {
+                                            const trimmed = this.input.trim();
+                                            if (trimmed && !this.tags.includes(trimmed)) {
+                                                this.tags.push(trimmed);
+                                            }
+                                            this.input = '';
+                                        },
+                                        removeTag(index) {
+                                            this.tags.splice(index, 1);
+                                        }
+                                    }"
+                                    class="p-4 border rounded shadow"
+                                    >
+                                    <div class="flex flex-wrap gap-2 mb-2">
+                                        <template x-for="(tag, index) in tags" :key="index">
+                                            <span class="flex items-center bg-teal-500 text-white px-3 py-1 rounded-full">
+                                                <span x-text="tag"></span>
+                                                <button type="button" @click="removeTag(index)" class="ml-2 hover:text-gray-200">&times;</button>
+                                            </span>
+                                        </template>
+                                    </div>                                    
+                                    <input 
+                                        type="text" 
+                                        x-model="input" 
+                                        @keydown.enter.prevent="addTag"
+                                        placeholder="Digite uma tag e pressione Enter"
+                                        class="border border-gray-300 rounded px-3 py-2 w-full"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>

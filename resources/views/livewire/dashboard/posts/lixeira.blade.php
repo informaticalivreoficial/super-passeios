@@ -7,8 +7,8 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('admin') }}">Painel</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('posts.index') }}">Posts</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Painel</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.posts.index') }}">Posts</a></li>
                         <li class="breadcrumb-item active">Lixeira</li>
                     </ol>
                 </div>

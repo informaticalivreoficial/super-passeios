@@ -91,13 +91,11 @@ class Posts extends Component
     public function mount()
     {
         $this->autores = User::query()
-            ->when(!auth()->user()->isSuperAdmin(), function ($q) {
-                $q->whereDoesntHave('roles', fn($q) =>
-                    $q->where('name', 'super-admin')
-                );
-            })
-            ->orderBy('name')
-            ->get();
+        ->whereHas('roles', fn($q) =>
+            $q->whereIn('name', ['super-admin', 'admin', 'manager'])
+        )
+        ->orderBy('name')
+        ->get();
     }
 
     public function updatingFilterType()

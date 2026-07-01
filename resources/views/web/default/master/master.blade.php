@@ -33,8 +33,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 	
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
     <style>
         :root {
             --primary: #2563EB;
@@ -381,11 +379,15 @@
         .animate-slow-zoom {
             animation: slow-zoom 20s infinite alternate;
         }
+        [x-cloak] { display: none !important; }
     </style>
+
+    @vite(['resources/css/app.css', 'resources/js/front.js'])
+    
 	@stack('styles')
 </head>
 
-<body style="background: linear-gradient(180deg, #EEF4FB 0%, #F8FAFC 100%); color: var(--navy);">	
+<body style="background: linear-gradient(180deg, #EEF4FB 0%, #F8FAFC 100%); color: var(--navy);" x-data="cookieConsent">	
 
     {{-- HEADER --}}
     @include('web.' . $config->template . '.master.header')	
@@ -393,7 +395,73 @@
     @yield('content')
 
     {{-- FOOTER --}}
-    @include('web.' . $config->template . '.master.footer')   
+    @include('web.' . $config->template . '.master.footer')  
+    
+    <!-- BANNER -->
+    <div 
+        x-cloak
+        x-show="!accepted"
+        class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-4 z-40"
+    >
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <p>
+                Utilizamos cookies para melhorar sua experiência.
+            </p>
+
+            <div class="flex gap-3">
+                <button @click="acceptAll()" class="bg-green-600 px-4 py-2 rounded">
+                    Aceitar todos
+                </button>
+
+                <button @click="openModal()" class="bg-gray-600 px-4 py-2 rounded">
+                    Preferências
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div 
+        x-cloak
+        x-show="open"
+        x-transition
+        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+        @click.self="closeModal()"
+    >
+        <div class="bg-white text-black p-6 rounded w-96 relative">
+            
+            <button 
+                @click="closeModal()" 
+                class="absolute top-2 right-2 text-gray-500"
+            >
+                ✕
+            </button>
+
+            <h2 class="text-lg font-bold mb-4">Preferências de Cookies</h2>
+
+            <label class="block mb-2">
+                <input type="checkbox" checked disabled>
+                Essenciais
+            </label>
+
+            <label class="block mb-2">
+                <input type="checkbox" x-model="stats">
+                Estatísticos
+            </label>
+
+            <label class="block mb-4">
+                <input type="checkbox" x-model="marketing">
+                Marketing
+            </label>
+
+            <button 
+                @click="save()" 
+                class="bg-blue-600 text-white px-4 py-2 rounded w-full"
+            >
+                Salvar preferências
+            </button>
+        </div>
+    </div> 
 
     <!-- Google tag (gtag.js) -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-HQ3MRW6582"></script>

@@ -6,14 +6,13 @@
 <section class="relative h-[600px] flex items-center justify-center overflow-hidden">
     {{-- Imagem de Fundo com Overlay --}}
     <div class="absolute inset-0 z-0">
-        <img src="{{ asset('theme/images/hero-nautical.jpg') }}" class="w-full h-full object-cover scale-105 animate-slow-zoom" alt="Passeios Náuticos">
-        <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-slate-900/80"></div>
+        <img src="{{ asset('theme/images/header.png') }}" class="w-full h-full object-cover scale-105 animate-slow-zoom" alt="{{ $config->app_name ?? 'Náutica' }}">
+        <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-slate-900/80"></div>
     </div>
 
-    <div class="relative z-10 max-w-5xl w-full px-6 text-center">
+    <div class="relative z-10 max-w-6xl w-full px-6 text-center">
         <h1 class="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight drop-shadow-lg">
-            Sua próxima aventura   
-começa no <span class="text-blue-400">mar.</span>
+            Sua próxima aventura começa no <span class="text-blue-400">mar.</span>
         </h1>
         <p class="text-lg text-white/90 mb-10 font-medium max-w-2xl mx-auto drop-shadow-md">
             Reserve os melhores passeios de lancha, escuna e experiências náuticas em todo o Brasil.

@@ -17,10 +17,10 @@
             <nav class="flex items-center gap-2 text-xs mb-6" style="color: rgba(255,255,255,0.5);">
                 <a href="{{ route('web.home') }}" class="hover:text-white transition">Início</a>
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-                <span style="color: rgba(255,255,255,0.8);">Política de Privacidade</span>
+                <span style="color: rgba(255,255,255,0.8);">Preferências de Cookies</span>
             </nav>
             <h1 class="text-3xl font-800 text-white" style="font-family: 'Syne', sans-serif;">
-                Política de Privacidade
+                Preferências de Cookies
             </h1>
             <p class="text-sm mt-2" style="color: rgba(255,255,255,0.6);">
                 Atualizado em {{ now()->format('d/m/Y') }}
@@ -35,7 +35,7 @@
         <div class="bg-white rounded-3xl p-8 lg:p-12" style="border: 1px solid #e8e4d8;">
             <div class="prose prose-slate max-w-none"
                  style="color: #444; line-height: 1.8; font-size: 0.95rem;">
-                {!! $config->privacy_policy !!}
+                {!! $config->cookies_preference !!}
             </div>
         </div>
 

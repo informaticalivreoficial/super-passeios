@@ -63,6 +63,7 @@ Route::name('web.')->group(function () {
     Route::get('/atendimento', [SiteController::class, 'contact'])->name('contact');
     Route::get('/politica-de-privacidade', [SiteController::class, 'privacy'])->name('privacy');
     Route::get('/termos-e-condicoes', [SiteController::class, 'terms'])->name('terms');
+    Route::get('/preferencias-de-cookies', [SiteController::class, 'cookies'])->name('cookies');
 
     Route::get('/newsletter/cancelar/{token}', [SiteController::class, 'unsubscribe'])
         ->name('newsletter.unsubscribe');

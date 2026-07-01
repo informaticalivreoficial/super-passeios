@@ -52,7 +52,8 @@ class Config extends Model
         //Seo
         'information', 
         'privacy_policy',
-        'terms_condicions',
+        'terms_conditions',
+        'cookies_preference',
         'maps_google', 
         'metatags', 'rss', 
         'rss_data', 

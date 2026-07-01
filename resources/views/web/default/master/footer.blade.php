@@ -253,17 +253,17 @@
             </p>
             <div class="flex flex-wrap items-center gap-6">
                 @if($config->privacy_policy)
-                    <a href="#" class="text-xs transition-colors hover:text-white" style="color: rgba(184,212,232,0.6);">
+                    <a href="{{ route('web.privacy') }}" class="text-xs transition-colors hover:text-white" style="color: rgba(184,212,232,0.6);">
                         Política de Privacidade
                     </a>
                 @endif
-                @if($config->terms_condicions)
-                    <a href="#" class="text-xs transition-colors hover:text-white" style="color: rgba(184,212,232,0.6);">
+                @if($config->terms_conditions)
+                    <a href="{{ route('web.terms') }}" class="text-xs transition-colors hover:text-white" style="color: rgba(184,212,232,0.6);">
                         Termos de Uso
                     </a>
                 @endif
-                @if($config->terms_condicions)
-                    <a href="#" class="text-xs transition-colors hover:text-white" style="color: rgba(184,212,232,0.6);">
+                @if($config->cookies_preference)
+                    <a href="{{ route('web.cookies') }}" class="text-xs transition-colors hover:text-white" style="color: rgba(184,212,232,0.6);">
                         Preferências de cookies
                     </a>
                 @endif

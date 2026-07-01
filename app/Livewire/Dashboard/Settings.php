@@ -232,6 +232,18 @@ class Settings extends Component
         $this->configData['privacy_policy'] = $value;
     }
 
+    #[On('updateTermsConditions')]
+    public function updateTermsConditions($value)
+    {
+        $this->configData['terms_conditions'] = $value;
+    }
+
+    #[On('updateCookiesPreference')]
+    public function updateCookiesPreference($value)
+    {
+        $this->configData['cookies_preference'] = $value;
+    }
+
     public function getLogo()
     {
         if (empty($this->configData['logo']) || !Storage::disk('public')->exists($this->configData['logo'])) {

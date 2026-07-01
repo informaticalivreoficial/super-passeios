@@ -64,7 +64,8 @@ class CreateConfigTable extends Migration
             /** seo */
             $table->text('information')->nullable();
             $table->text('privacy_policy')->nullable();
-            $table->text('terms_condicions')->nullable();
+            $table->text('terms_conditions')->nullable();
+            $table->text('cookies_preference')->nullable();
             $table->text('maps_google')->nullable();
             $table->text('metatags')->nullable();
             $table->string('analytics_id')->nullable();

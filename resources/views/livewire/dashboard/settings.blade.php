@@ -204,8 +204,17 @@
                         <div class="col-12 pt-4" wire:ignore>   
                             <label class="labelforms text-muted"><b>Termos e Condições</b></label>
                             <x-editor-quill 
-                                :value="$configData['terms_condicions']" 
-                                model="configData.terms_condicions" 
+                                :value="$configData['terms_conditions']" 
+                                model="configData.terms_conditions" 
+                            />                                                                                     
+                        </div>                                    
+                    </div>                                        
+                    <div class="row mb-2">
+                        <div class="col-12 pt-4" wire:ignore>   
+                            <label class="labelforms text-muted"><b>Preferências de Cookies</b></label>
+                            <x-editor-quill 
+                                :value="$configData['cookies_preference']" 
+                                model="configData.cookies_preference" 
                             />                                                                                     
                         </div>                                    
                     </div>                                        

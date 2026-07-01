@@ -247,4 +247,19 @@ class SiteController extends Controller
 
         return view('web.' . $this->config->template . '.newsletter.unsubscribe');
     }
+
+    public function privacy()
+    {
+        return view('web.'.$this->config->template.'.privacy');
+    }
+
+    public function terms()
+    {
+        return view('web.'.$this->config->template.'.terms-conditions');
+    }
+
+    public function cookies()
+    {
+        return view('web.'.$this->config->template.'.cookies-preference');
+    }
 }

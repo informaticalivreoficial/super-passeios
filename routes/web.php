@@ -40,12 +40,13 @@ use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/auth.php';
 
-Route::get('/cadastro', RegisterCompany::class)->name('register.company');
+
 Route::get('/checkout/{tourDate}', CheckoutCheckoutForm::class)->name('checkout');
 
 Route::name('web.')->group(function () {    
 
     Route::get('/', [SiteController::class, 'home'])->name('home');
+    Route::get('/cadastro', RegisterCompany::class)->name('register.company');
 
     Route::get('/blog/artigo/{slug}', [SiteController::class, 'artigo'])->name('blog.artigo');
     Route::get('/blog/categoria/{slug}', [SiteController::class, 'categoria'])->name('blog.categoria');

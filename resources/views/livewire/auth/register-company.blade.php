@@ -20,10 +20,11 @@
         {{-- Logo --}}
         <div class="relative z-10">
             <a href="{{ route('web.home') }}" class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(22,163,183,0.2); border: 1px solid rgba(22,163,183,0.4);">
-                    <svg class="w-5 h-5" style="color: #16a3b7;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 17l4-8 4 4 4-6 4 10"/></svg>
-                </div>
-                <span class="text-white font-bold text-lg" style="font-family: 'Syne', sans-serif;">{{ $config->app_name ?? config('app.name') }}</span>
+                @if($config->getlogo())
+                    <img src="{{ $config->getlogo() }}" alt="{{ $config->app_name ?? config('app.name') }}" class="h-14 w-auto object-contain">
+                @else
+                    <span class="text-white font-bold text-lg" style="font-family: 'Syne', sans-serif;">{{ $config->app_name ?? config('app.name') }}</span>
+                @endif                
             </a>
         </div>
 
@@ -48,7 +49,7 @@
                 </div>
                 <div class="w-px h-8" style="background: rgba(255,255,255,0.15);"></div>
                 <div>
-                    <p class="text-2xl font-bold text-white" style="font-family: 'Syne', sans-serif;">24h</p>
+                    <p class="text-2xl font-bold text-white" style="font-family: 'Syne', sans-serif;">2h</p>
                     <p class="text-xs" style="color: rgba(255,255,255,0.5);">Para ativar</p>
                 </div>
                 <div class="w-px h-8" style="background: rgba(255,255,255,0.15);"></div>
@@ -69,9 +70,9 @@
     </div>
 
     {{-- LADO DIREITO — formulário --}}
-    <div class="w-full lg:w-1/2 flex items-center justify-center px-6 ">
+    <div class="w-full lg:w-1/2 flex items-center justify-center px-6 py-2 ">
 
-        <div class="w-full max-w-md">
+        <div class="w-full max-w-md lg:max-w-lg">
 
             {{-- Header --}}
             <div class="mb-8">
@@ -231,7 +232,7 @@
                     Ao criar uma conta você concorda com nossos
                     <a href="#" style="color: #16a3b7;">Termos de Uso</a>
                     e
-                    <a href="#" style="color: #16a3b7;">Política de Privacidade</a>.
+                    <a href="{{ route('web.privacy') }}" target="_blank" style="color: #16a3b7;">Política de Privacidade</a>.
                 </p>
 
             </form>

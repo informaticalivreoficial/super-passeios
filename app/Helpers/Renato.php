@@ -7,7 +7,7 @@ class Renato
     /**
     * <b>Saudação:</b> Ao executar este HELPER, dependendo do horário envia uma saudação
     * nome. retorna o texto informado + a saudação!
-    * @return HTML = texto informado + a saudação!
+    * @return string = texto informado + a saudação!
     */
     public static function getSaudacao($nome = null)
     {
@@ -23,9 +23,9 @@ class Renato
     }
 
     /**
-    * <b>Primeiro Nome:</b> Ao executar este HELPER, é retornado o primeiro nome
-    * do usuário!
-    * @return HTML = texto informado primeiro nome!
+     * Retorna o primeiro nome do usuário.
+     * @param string|null $nome
+     * @return string|null
     */
     public static function getPrimeiroNome(?string $nome): ?string
     {
@@ -39,7 +39,7 @@ class Renato
     /**
     * <b>Limpa Telefone:</b> Ao executar este HELPER, são eliminados
     * espaços traços e outros caracteres do numero de telefone
-    * @return HTML = texto informado número limpo!
+    * @return string|null = texto informado número limpo!
     */
     public static function limpaTelefone($telefone)
     {
@@ -53,7 +53,7 @@ class Renato
 
     /**
     * <b>Compara datas:</b> compara duas datas e retorna se expirado
-    * @return HTML = texto Expirado!
+    * @return string|null = texto Expirado!
     */
     public static function comparaDataExpira($data)
     {
@@ -76,7 +76,7 @@ class Renato
     /**
     * <b>Limpa Cpf Cnpj:</b> remove todos os caracteres e retorna 
     * somente os números
-    * @return HTML = número sem caracteres!
+    * @return string|null = número sem caracteres!
     */
     public static function limpaCPF_CNPJ($valor){
 
@@ -96,7 +96,7 @@ class Renato
     /**
     * <b>Valida CPF:</b> valida cpf 
     * somente os números
-    * @return BOOLEAN = retorna se o cpf é válido ou não True ou False!
+    * @return bool|null = retorna se o cpf é válido ou não True ou False!
     */
     public static function validaCPF($cpf) {
 
@@ -132,8 +132,8 @@ class Renato
 
     /**
      * <b>Limita os Palavras:</b> Limita a quantidade de palavras a serem exibidas em uma string!
-     * @param STRING $String = Uma string qualquer
-     * @return INT = $Limite = String limitada pelo $Limite
+     * @return string $String = Uma string qualquer
+     * @return int $Limite = $Limite = String limitada pelo $Limite
      */
     public static function Words($String, $Limite, $Pointer = null) {
         $content = strip_tags(trim($String));

@@ -6,6 +6,7 @@ use App\Enums\TourTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\Config;
+use App\Models\Newsletter;
 use App\Models\Tour;
 use Illuminate\Http\Request;
 use App\Support\Seo;
@@ -238,6 +239,12 @@ class SiteController extends Controller
         return view('web.'.$this->config->template.'.search');
     }
 
-    
+    public function unsubscribe(string $token)
+    {
+        Newsletter::where('unsubscribe_token', $token)
+            ->firstOrFail()
+            ->update(['active' => false]);
 
+        return view('web.' . $this->config->template . '.newsletter.unsubscribe');
+    }
 }

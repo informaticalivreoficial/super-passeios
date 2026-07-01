@@ -64,6 +64,9 @@ Route::name('web.')->group(function () {
     Route::get('/politica-de-privacidade', [SiteController::class, 'privacy'])->name('privacy');
     Route::get('/termos-e-condicoes', [SiteController::class, 'terms'])->name('terms');
 
+    Route::get('/newsletter/cancelar/{token}', [SiteController::class, 'unsubscribe'])
+        ->name('newsletter.unsubscribe');
+
     Route::get('/passeios', [SiteController::class, 'tours'])->name('site.tours');
 
     Route::get('/pesquisar', [SiteController::class, 'search'])->name('site.search');

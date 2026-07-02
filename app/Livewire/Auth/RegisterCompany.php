@@ -2,13 +2,15 @@
 
 namespace App\Livewire\Auth;
 
+use App\Models\Customer;
 use App\Models\User;
+use App\Notifications\NewCompanyRegistered;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Livewire\Component;
-use App\Notifications\WelcomeCompanyNotification;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 class RegisterCompany extends Component
 {
@@ -18,49 +20,25 @@ class RegisterCompany extends Component
     public ?string $password = null;
     public ?string $password_confirmation = null;
 
-    protected function rules()
+    protected function rules(): array
     {
         return [
-
-            'name' => [
-                'required',
-                'string',
-                'max:255'
-            ],
-
-            'email' => [
-                'required',
-                'email',
-                'max:255',
-                'unique:users,email'
-            ],
-
-            'cell_phone' => [
-                'required',
-                'string',
-                'max:20'
-            ],
-
-            'password' => [
-                'required',
-                'confirmed',
-                'min:6'
-            ],
+            'name'       => ['required', 'string', 'max:255'],
+            'email'      => ['required', 'email', 'max:255', 'unique:customers,email'],
+            'cell_phone' => ['required', 'string', 'max:20'],
+            'password'   => ['required', 'confirmed', 'min:6'],
         ];
     }
 
     protected $messages = [
-
-        'name.required' => 'Informe seu nome.',
-        'email.required' => 'Informe seu email.',
-        'email.email' => 'Informe um email válido.',
-        'email.unique' => 'Este email já está em uso.',
-
+        'name.required'       => 'Informe seu nome.',
+        'email.required'      => 'Informe seu email.',
+        'email.email'         => 'Informe um email válido.',
+        'email.unique'        => 'Este email já está em uso.',
         'cell_phone.required' => 'Informe seu telefone.',
-
-        'password.required' => 'Informe uma senha.',
-        'password.confirmed' => 'As senhas não conferem.',
-        'password.min' => 'A senha deve ter pelo menos 6 caracteres.',
+        'password.required'   => 'Informe uma senha.',
+        'password.confirmed'  => 'As senhas não conferem.',
+        'password.min'        => 'A senha deve ter pelo menos 6 caracteres.',
     ];
 
     public function save()
@@ -69,29 +47,27 @@ class RegisterCompany extends Component
 
         DB::transaction(function () use ($validated) {
 
-            $user = User::create([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
+            $customer = Customer::create([
+                'name'       => $validated['name'],
+                'email'      => $validated['email'],
                 'cell_phone' => $validated['cell_phone'],
-                'password' => Hash::make(
-                    $validated['password']
-                ),
-                'status' => 1,
+                'password'   => Hash::make($validated['password']),
+                'status'     => true,
             ]);
 
-            $user->assignRole('company');
+            $customer->assignRole('proprietary');
 
-            Auth::login($user);
+            Auth::guard('customer')->login($customer);
 
-            $user->sendEmailVerificationNotification();            
+            Notification::send(
+                User::role(['admin', 'manager', 'super-admin'])->get(),
+                new NewCompanyRegistered($customer)
+            );
         });
 
-        session()->flash(
-            'success',
-            'Cadastro realizado com sucesso! Verifique seu email.'
-        );
+        session()->flash('success', 'Cadastro realizado com sucesso!');
 
-        return redirect()->route('verification.notice');
+        return redirect()->route('company.dashboard');
     }
 
     #[Layout('web.client.create', ['title' => 'Cadastro de Empresa'])]

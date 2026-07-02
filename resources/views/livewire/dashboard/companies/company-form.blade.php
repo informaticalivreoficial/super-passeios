@@ -94,6 +94,12 @@
                         </div>
                         <div class="col-12 col-sm-6 col-md-3 col-lg-4">
                             <div class="form-group">
+                                <label class="labelforms"><b>Cadastur:</b></label>
+                                <input class="form-control" x-mask="99.999.999/9999-99" id="cadastur" wire:model="cadastur" />
+                            </div>
+                        </div>                                      
+                        <div class="col-12 col-sm-6 col-md-3 col-lg-4">
+                            <div class="form-group">
                                 <label class="labelforms"><b>Inscrição Estadual:</b></label>
                                 <input class="form-control" id="document_company_secondary" wire:model="document_company_secondary" />
                             </div>
@@ -421,6 +427,13 @@
                                             id="twitter" wire:model="twitter">
                                     </div>
                                 </div>
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="labelforms"><b>TikTok:</b></label>
+                                        <input type="text" class="form-control" placeholder="TikTok"
+                                            id="tiktok" wire:model="tiktok">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -687,7 +700,7 @@
                     }, 2000);
                 }
             }
-        }
+        }        
 </script>
 @endpush
 
@@ -715,80 +728,3 @@
         }
     </style>
 @endpush
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-
-<script>
-    
-</script>

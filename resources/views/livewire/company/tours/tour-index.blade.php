@@ -1,5 +1,5 @@
 <div class="max-w-7xl mx-auto">
-
+    
     {{-- HEADER --}}
     <div class="mb-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
 
@@ -300,5 +300,4 @@
         </div>
 
     @endif
-
 </div>

@@ -311,9 +311,7 @@
                         x-init="
                             flatpickr($refs.birthday, {
                                 locale: FlatpickrPortuguese,
-                                dateFormat: 'Y-m-d',
-                                altInput: true,
-                                altFormat: 'd/m/Y',
+                                dateFormat: 'd/m/Y',
                                 maxDate: 'today',
                                 allowInput: true,
                                 defaultDate: @js($birthday),
@@ -373,22 +371,23 @@
             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
 
                 {{-- Email --}}
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-sm font-bold" style="color: #051e34;">E-mail Principal <span style="color: #337bbc;">*</span></label>
-                    <div class="relative">
-                        <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style="color: #87c2c0;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                        <input type="email" wire:model="email" placeholder="seu@email.com"
-                            class="w-full border rounded-xl text-sm pl-9 pr-3 py-2.5 outline-none transition"
-                            style="border-color: #e8e4d8; color: #051e34;"
-                            onfocus="this.style.borderColor='#16a3b7'; this.style.boxShadow='0 0 0 3px rgba(22,163,183,0.15)'"
-                            onblur="this.style.borderColor='#e8e4d8'; this.style.boxShadow='none'">
-                    </div>
-                    @error('email') <p class="text-xs" style="color:#e53e3e;">{{ $message }}</p> @enderror
+                <div>
+                    <label class="block text-xs font-bold mb-1.5" style="color: #051e34;">E-mail</label>
+                    <input
+                        type="email"
+                        value="{{ auth('customer')->user()->email }}"
+                        class="w-full h-11 px-4 rounded-2xl text-sm"
+                        style="border: 1.5px solid #e8e4d8; color: #87c2c0; background: #fafaf8;"
+                        readonly
+                    >
+                    <p class="text-xs mt-1" style="color: #c5bfb2;">
+                        Para alterar o e-mail entre em contato com o suporte.
+                    </p>
                 </div>
 
                 {{-- Email adicional --}}
                 <div class="flex flex-col gap-1.5">
-                    <label class="text-sm font-bold" style="color: #051e34;">E-mail Adicional</label>
+                    <label class="text-sm font-bold" style="color: #051e34;">E-mail de recuperação</label>
                     <div class="relative">
                         <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style="color: #87c2c0;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                         <input type="email" wire:model="additional_email" placeholder="outro@email.com"

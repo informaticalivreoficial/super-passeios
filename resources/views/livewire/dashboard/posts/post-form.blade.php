@@ -249,6 +249,9 @@
                             <div class="form-group">
                                 <label class="labelforms"><b>Meta Descrição</b></label>
                                 <textarea class="form-control" rows="5" wire:model="metaDescription"></textarea>
+                                @error('metaDescription')
+                                    <span class="invalid-feedback d-block">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>                                                          
                         <div class="col-12 mb-1"> 

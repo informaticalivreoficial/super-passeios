@@ -256,6 +256,6 @@
             {{ $vessels->links() }}
         </div>
 
-    @endif
+    @endif   
 
 </div>

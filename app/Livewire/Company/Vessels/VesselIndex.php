@@ -6,7 +6,9 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\WithPagination;
 use App\Models\Vessel;
+use App\Models\Company;
 use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Auth;
 
 class VesselIndex extends Component
 {
@@ -81,12 +83,14 @@ class VesselIndex extends Component
 
     #[Layout('components.layouts.company', ['title' => 'Minhas Embarcações', 'bracrhumb' => 'Gerencie suas embarcações.'])]
     public function render()
-    {
-        $vessels = auth()->user()->company->vessels()
+    {       
+        $vessels = auth('customer')->user()->company->vessels()
             ->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
             ->latest()
             ->paginate(12);
 
-        return view('livewire.company.vessels.vessel-index', compact('vessels'));
+        return view('livewire.company.vessels.vessel-index', [
+            'vessels' => $vessels
+        ]);
     }
 }

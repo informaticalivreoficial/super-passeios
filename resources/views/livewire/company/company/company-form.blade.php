@@ -703,7 +703,7 @@
                 onmouseout="this.style.backgroundColor='#23c55e'"
             >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                {{ $company ? 'Editar' : 'Salvar' }}
+                {{ $company->exists ? 'Editar' : 'Salvar' }}
             </button>
 
         </div>
@@ -716,46 +716,28 @@
     <script>
 
         document.addEventListener('livewire:init', () => {
-
         Livewire.on('scroll-to-error', () => {
-
             setTimeout(() => {
-
                 const firstError = document.querySelector('.input-error');
-
                 if (!firstError) return;
-
                 const offset = 120;
-
                 const targetPosition =
                     firstError.getBoundingClientRect().top
                     + window.pageYOffset
                     - offset;
-
                 smoothScrollTo(targetPosition, 1200);
-
                 firstError.focus();
-
             }, 100);
-
         });
-
     });
 
     function smoothScrollTo(target, duration = 1000) {
-
         const start = window.pageYOffset;
-
         const distance = target - start;
-
         let startTime = null;
-
         function animation(currentTime) {
-
             if (!startTime) startTime = currentTime;
-
             const timeElapsed = currentTime - startTime;
-
             const progress = Math.min(timeElapsed / duration, 1);
 
             // easeInOutCubic
@@ -770,16 +752,10 @@
             );
 
             if (timeElapsed < duration) {
-
                 requestAnimationFrame(animation);
-
             }
-
         }
-
         requestAnimationFrame(animation);
-
     }
-
     </script>
 @endpush

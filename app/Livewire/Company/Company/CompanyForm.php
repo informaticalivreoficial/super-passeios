@@ -35,6 +35,9 @@ class CompanyForm extends Component
     public ?string $metaimgPath = null;
 
     // Dados principais
+    public ?string $responsable_name = null;
+    public ?string $responsable_email = null;
+    public ?string $responsable_cpf = null;
     public ?string $social_name = null;
     public ?string $alias_name = null;
     public ?string $document_company = null;
@@ -70,7 +73,7 @@ class CompanyForm extends Component
 
     public function mount(): void
     {
-        $user = auth()->user();
+        $user = auth('customer')->user();
 
         // Se o usuário já tem empresa, carrega para edição
         if ($user->company) {
@@ -102,6 +105,9 @@ class CompanyForm extends Component
     {
         $c = $this->company;
 
+        $this->responsable_name           = $c->responsable_name;
+        $this->responsable_email          = $c->responsable_email;
+        $this->responsable_cpf            = $c->responsable_cpf;
         $this->social_name                = $c->social_name;
         $this->alias_name                 = $c->alias_name;
         $this->document_company           = $c->document_company;
@@ -165,7 +171,7 @@ class CompanyForm extends Component
         'images.*.max' => 'A imagem não pode ultrapassar 2MB.',
     ]; 
 
-    public function save(): void
+    public function save()
     {
         try {
             // Regras dinâmicas — remove validação de arquivo se não foi enviado novo
@@ -182,7 +188,9 @@ class CompanyForm extends Component
             $this->validate($rules);
 
             $data = [
-                'user_id'                      => auth()->id(),
+                'responsable_name'             => auth('customer')->user()->name,
+                'responsable_email'            => auth('customer')->user()->email,
+                'responsable_cpf'              => auth('customer')->user()->cpf,
                 'alias_name'                   => $this->alias_name,
                 'social_name'                  => $this->social_name,
                 'document_company'             => $this->document_company,
@@ -215,6 +223,11 @@ class CompanyForm extends Component
                 $this->company->update($data);
             } else {
                 $this->company = Company::create($data);
+
+                // vincula o customer à company recém criada
+                auth('customer')->user()->update([
+                    'company_id' => $this->company->id,
+                ]);
             }
 
             $folder = 'company/' . $this->company->uuid;
@@ -287,15 +300,17 @@ class CompanyForm extends Component
                 $this->savedImages = $this->company->images()->orderBy('order_img')->get();
             }
 
+            $wasNew = $this->company->wasRecentlyCreated;
+
             $this->dispatch('swal:success', [
                 'title'             => 'Sucesso!',
-                'text'              => $this->company->wasRecentlyCreated
+                'text'              => $wasNew
                     ? 'Empresa cadastrada com sucesso!'
                     : 'Empresa atualizada com sucesso!',
                 'timer'             => 2000,
                 'showConfirmButton' => false,
-            ]);
-            
+                'redirectUrl'       => $wasNew ? route('company.company.edit', ['uuid' => $this->company->uuid]) : null,
+            ]);            
 
         } catch (ValidationException $e) {
             $this->dispatch('scroll-to-error');
@@ -337,6 +352,8 @@ class CompanyForm extends Component
     #[Layout('components.layouts.company', ['title' => 'Dados da Empresa', 'bracrhumb' => 'Gerencie seus dados da empresa.'])]
     public function render()
     {
-        return view('livewire.company.company.company-form');
+        return view('livewire.company.company.company-form', [
+            'company' => $this->company,
+        ]);
     }
 }

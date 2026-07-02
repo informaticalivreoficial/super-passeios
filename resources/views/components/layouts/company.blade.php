@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'Painel Náutico' }}</title>
 
+    <link rel="icon" href="{{$config->getfaveicon()}}" type="image/x-icon">
+
     @stack('styles')
 
     @vite([
@@ -123,7 +125,6 @@
             window.addEventListener(eventName, (event) => {
                 const data = event.detail?.[0] ?? {};
 
-                // Define o ícone baseado no tipo de evento
                 let defaultIcon = 'info';
                 if (eventName === 'swal:error') defaultIcon = 'error';
                 if (eventName === 'swal:success') defaultIcon = 'success';
@@ -136,9 +137,15 @@
                     timer: data.timer ?? null,
                     showConfirmButton: data.showConfirmButton ?? true,
                     confirmButtonText: data.confirmButtonText ?? 'OK',
+                }).then((result) => {
+                    // ADAPTAÇÃO AQUI: Verifica se existe uma URL para redirecionar
+                    if (data.redirectUrl) {
+                        window.location.href = data.redirectUrl;
+                    }
                 });
             });
         });
+
 
         // Listener para confirmação (precisa de lógica especial)
         window.addEventListener('swal:confirm', (event) => {

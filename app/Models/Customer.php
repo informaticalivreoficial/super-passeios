@@ -44,7 +44,7 @@ class Customer extends Authenticatable
     protected $casts = [
         'email_verified_at'      => 'datetime',
         'magic_token_expires_at' => 'datetime',
-        'birthday'             => 'date',
+        //'birthday'               => 'date',
         'status'                 => 'boolean',
     ];
     

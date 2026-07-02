@@ -82,6 +82,10 @@ class PostForm extends Component
         'category.required' => 'Selecione uma categoria',
         'title.required' => 'O título é obrigatório',
         'content.required' => 'O conteúdo é obrigatório',
+        'metaDescription.max' => 'A meta descrição não pode ter mais de 255 caracteres',
+        'images.*.image' => 'O arquivo deve ser uma imagem',
+        'images.*.mimes' => 'A imagem deve ser do tipo: jpeg, jpg, png ou webp',
+        'images.*.max' => 'A imagem não pode ser maior que 4MB',        
     ];    
 
     public function mount(Post $post)

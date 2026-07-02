@@ -143,7 +143,6 @@
             window.addEventListener(eventName, (event) => {
                 const data = event.detail?.[0] ?? {};
 
-                // Define o ícone baseado no tipo de evento
                 let defaultIcon = 'info';
                 if (eventName === 'swal:error') defaultIcon = 'error';
                 if (eventName === 'swal:success') defaultIcon = 'success';
@@ -156,6 +155,11 @@
                     timer: data.timer ?? null,
                     showConfirmButton: data.showConfirmButton ?? true,
                     confirmButtonText: data.confirmButtonText ?? 'OK',
+                }).then((result) => {
+                    // ADAPTAÇÃO AQUI: Verifica se existe uma URL para redirecionar
+                    if (data.redirectUrl) {
+                        window.location.href = data.redirectUrl;
+                    }
                 });
             });
         });

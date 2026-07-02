@@ -2,7 +2,7 @@
 
     <a class="pt-3 d-flex justify-content-center cursor-pointer">
         <img src="{{ $config->getlogoadmin() }}" alt="{{ $config->app_name }}"
-            class="brand-image elevation-3" width="147" height="53">
+            class="brand-image elevation-3 h-12 w-auto">
     </a>
 
     <div class="sidebar mt-3">

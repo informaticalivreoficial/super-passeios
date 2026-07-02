@@ -7,6 +7,8 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\WithPagination;
 use Livewire\Attributes\On;
+use App\Models\Company;
+use Illuminate\Support\Facades\Auth;
 
 class TourIndex extends Component
 {
@@ -24,7 +26,7 @@ class TourIndex extends Component
     public function toggleStatus(int $id)
     {
         $tour = Tour::query()
-            ->where('company_id', auth()->user()->company->id)
+            ->where('company_id', auth('customer')->user()->company->id)
             ->findOrFail($id);
 
         $tour->update([
@@ -86,7 +88,7 @@ class TourIndex extends Component
     {
         $tours = Tour::query()
             ->with('vessel')
-            ->where('company_id', auth()->user()->company->id)
+            ->where('company_id', auth('customer')->user()->company->id)
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('title', 'like', '%' . $this->search . '%')

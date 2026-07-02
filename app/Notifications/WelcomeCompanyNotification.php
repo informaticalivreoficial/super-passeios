@@ -19,7 +19,7 @@ class WelcomeCompanyNotification extends Notification
     public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Bem-vindo à Plataforma Náutica')
+            ->subject('Bem-vindo à Plataforma Super Passeios')
             ->greeting('Olá ' . $notifiable->name)
             ->line('Sua conta foi criada com sucesso.')
             ->line('Agora valide seu email para acessar o painel.')

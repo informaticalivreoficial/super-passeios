@@ -10,7 +10,7 @@ use App\Models\Company;
 
 class Dashboard extends Component
 {
-    private function getCompany(): Company
+    private function getCompany(): ?Company
     {
         return Auth::guard('customer')->user()->company;
     }
@@ -19,11 +19,21 @@ class Dashboard extends Component
     public function render(FinancialDashboardService $service)
     {
         $company = $this->getCompany();
-        $data    = $service->company($company);
+
+        if (!$company) {
+            return view('livewire.company.dashboard', [
+                'hasCompany' => false,
+                'data'       => null,
+                'company'    => null,
+            ]);
+        }
+
+        $data = $service->company($company);
 
         return view('livewire.company.dashboard', [
-            'data'         => $data,
-            'company'      => $company,
+            'hasCompany' => true,
+            'data'       => $data,
+            'company'    => $company,
         ]);
     }
 }

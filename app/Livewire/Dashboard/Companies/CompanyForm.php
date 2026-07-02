@@ -47,6 +47,7 @@ class CompanyForm extends Component
     public ?string $alias_name = null;
     public ?string $document_company = null;
     public ?string $document_company_secondary = null;
+    public ?string $cadastur = null;
     public ?string $information = null;        
     
     public ?string $content = null;
@@ -56,10 +57,12 @@ class CompanyForm extends Component
 
     public ?string $status    = '0';
     public ?string $highlight = '0';
-    public ?string $facebook = null;
-    public ?string $twitter = null;
+    public ?string $facebook  = null;
+    public ?string $twitter   = null;
     public ?string $instagram = null;
-    public ?string $linkedin = null;
+    public ?string $linkedin  = null;
+    public ?string $tiktok    = null;
+
 
     //Contact
     public $phone, $cell_phone, $whatsapp, $email, $additional_email, $telegram;
@@ -182,12 +185,14 @@ class CompanyForm extends Component
                 'additional_email' => $this->additional_email,
                 'document_company' => $this->document_company,
                 'document_company_secondary' => $this->document_company_secondary,
+                'cadastur' => $this->cadastur,
                 'information' => $this->information,
 
                 'facebook' => $this->facebook,
                 'twitter' => $this->twitter,
                 'instagram' => $this->instagram,
                 'linkedin' => $this->linkedin,
+                'tiktok' => $this->tiktok,
 
                 'phone' => $this->phone,
                 'whatsapp' => $this->whatsapp,

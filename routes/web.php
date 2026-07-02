@@ -20,6 +20,7 @@ use App\Livewire\Dashboard\Bookings\Bookings;
 use App\Livewire\Dashboard\Companies\Companies;
 use App\Livewire\Dashboard\Companies\CompanyForm;
 use App\Livewire\Dashboard\Dashboard;
+use App\Livewire\Dashboard\NotificationsList;
 use App\Livewire\Dashboard\Posts\CatPosts;
 use App\Livewire\Dashboard\Posts\Lixeira;
 use App\Livewire\Dashboard\Posts\PostForm;
@@ -130,6 +131,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:super-admin|admin'], 'p
     Route::get('/', Dashboard::class)->name('dashboard');
     Route::get('configuracoes', Settings::class)->name('settings');
     Route::get('sitemap-generator', SitemapGenerator::class)->name('sitemap.generator');
+    Route::get('notificacoes', NotificationsList::class)->name('notifications.index');
 
     Route::get('/empresas', Companies::class)->name('companies.index');
     Route::get('/cadastrar-empresa', CompanyForm::class)->name('companies.create');

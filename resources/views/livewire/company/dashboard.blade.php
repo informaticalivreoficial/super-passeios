@@ -47,7 +47,7 @@
 
             {{-- Pendente --}}
             <div class="bg-white rounded-3xl p-6" style="border: 1px solid #e8e4d8;">
-                <div class="flex items="center justify-between mb-4">
+                <div class="flex items-center justify-between mb-4">
                     <span class="text-sm font-semibold" style="color: #87c2c0;">Pendente</span>
                     <div class="w-10 h-10 rounded-2xl flex items-center justify-center"
                          style="background: rgba(245,158,11,0.1);">

@@ -58,7 +58,7 @@
                 @php
                     $icon = match($notification->data['type'] ?? '') {
                         'invoice_paid' => 'fas fa-money-bill-wave',
-                        'company_created' => 'fas fa-building',
+                        'new_company' => 'fas fa-building',
                         'reservation_created' => 'fas fa-calendar-check',
                         'support_ticket' => 'fas fa-life-ring',
                         'ArticleCreated' => 'fas fa-file-alt',

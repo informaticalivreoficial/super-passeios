@@ -29,7 +29,7 @@ class NewCompanyRegistered extends Notification
             ->line('**Nome:** ' . $this->customer->name)
             ->line('**E-mail:** ' . $this->customer->email)
             ->line('**Telefone:** ' . $this->customer->cell_phone)
-            ->action('Ver no painel', route('admin.dashboard'))
+            ->action('Ver no painel', route('admin.companies.index'))
             ->line('Acesse o painel para gerenciar.');
     }
 
@@ -41,7 +41,7 @@ class NewCompanyRegistered extends Notification
             'message' => "Empresa {$this->customer->name} se cadastrou na plataforma.",
             'description' => "A empresa está aguardando aprovação.",
             'color' => 'success',
-            'url' => route('admin.dashboard')
+            'url' => route('admin.companies.index')
         ];
     }
 }

@@ -7,7 +7,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">                    
-                        <li class="breadcrumb-item"><a href="{{route('admin')}}">Painel de Controle</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Painel de Controle</a></li>
                         <li class="breadcrumb-item active">Notificações</li>
                     </ol>
                 </div>
@@ -41,7 +41,7 @@
 
                     $icon = match($type) {
                         'invoice_paid'       => 'fas fa-money-bill-wave',
-                        'company_created'    => 'fas fa-building',
+                        'new_company'        => 'fas fa-building',
                         'reservation_created'=> 'fas fa-calendar-check',
                         'support_ticket'     => 'fas fa-life-ring',
                         'subscription'       => 'fas fa-credit-card',

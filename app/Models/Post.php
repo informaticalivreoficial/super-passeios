@@ -128,6 +128,11 @@ class Post extends Model
         return Str::words($this->content, '20', ' ...');
     }
 
+    public function hasCover(): bool
+    {
+        return $this->images()->exists();
+    }
+
     public function cover()
     {
         $images = $this->images();
@@ -139,7 +144,15 @@ class Post extends Model
         }
 
         return Storage::url(Cropper::thumb($cover['path'], 720, 480));
-    }    
+    } 
+    
+    public function gallery()
+    {
+        return $this->images()
+            ->where('cover', 0)
+            ->get()
+            ->map(fn ($img) => Storage::url(Cropper::thumb($img->path, 640, 480)));
+    }
 
     public function nocover()
     {

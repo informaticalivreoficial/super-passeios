@@ -2,9 +2,9 @@
 
 @section('content')
 
-{{-- 1. HERO SECTION --}}
+{{-- 1. HERO SECTION 
 <section class="relative h-[600px] flex items-center justify-center overflow-hidden">
-    {{-- Imagem de Fundo com Overlay --}}
+    {{-- Imagem de Fundo com Overlay 
     <div class="absolute inset-0 z-0">
         <img src="{{ asset('theme/images/header.png') }}" class="w-full h-full object-cover scale-105 animate-slow-zoom" alt="{{ $config->app_name ?? 'Náutica' }}">
         <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-slate-900/80"></div>
@@ -18,7 +18,7 @@
             Reserve os melhores passeios de lancha, escuna e experiências náuticas em todo o Brasil.
         </p>
 
-        {{-- Barra de Busca Flutuante --}}
+        {{-- Barra de Busca Flutuante 
         <div class="bg-white p-2 rounded-[2.5rem] shadow-2xl max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-2 border border-white/20 backdrop-blur-sm">
             <div class="flex-1 flex items-center px-6 py-3 w-full">
                 <svg class="w-5 h-5 text-blue-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
@@ -40,8 +40,8 @@
         </div>
     </div>
 </section>
-
-{{-- 2. DESTINOS EM DESTAQUE --}}
+--}}
+{{-- 2. DESTINOS EM DESTAQUE 
 <section class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-6">
         <div class="flex justify-between items-end mb-12">
@@ -63,9 +63,9 @@
         </div>
     </div>
 </section>
-
+--}}
 {{-- 3. PASSEIOS MAIS PROCURADOS --}}
-<section class="py-20 bg-slate-50/50">
+<section class="py-10 bg-slate-50/50">
     <div class="max-w-7xl mx-auto px-6">
         <div class="flex justify-between items-end mb-12">
             <div>
@@ -91,7 +91,7 @@
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                             <span>4.9 (120 avaliações)</span>
                         </div>
-                        <a href="#" class="block text-center py-3 bg-slate-50 hover:bg-blue-600 hover:text-white text-slate-700 font-bold rounded-xl transition-all text-sm">
+                        <a href="{{ route('web.site.tour', ['slug' => $tour->company->slug, 'uuid' => $tour->uuid]) }}" class="block text-center py-3 bg-slate-50 hover:bg-blue-600 hover:text-white text-slate-700 font-bold rounded-xl transition-all text-sm">
                             Ver Detalhes
                         </a>
                     </div>

@@ -1,5 +1,7 @@
 import './bootstrap';
 
+import gallery from './components/gallery';
+
 import flatpickr from "flatpickr"
 import { Portuguese } from "flatpickr/dist/l10n/pt.js"
 
@@ -61,7 +63,10 @@ document.addEventListener('alpine:init', () => {
             this.accepted = true;
             this.open = false;
         }
-    }))
+    }));
+
+    //inicialize component gallery
+    Alpine.data('gallery', gallery);
 })
 
 // Aguarda o DOM carregar para verificar se o Livewire subiu

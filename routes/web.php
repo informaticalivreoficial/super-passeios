@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Web\ArticleController;
 use App\Http\Controllers\Web\SiteController;
 use App\Livewire\Auth\RegisterCompany;
 use App\Livewire\Company\Booking\BookingForm as BookingBookingForm;
@@ -49,16 +50,23 @@ Route::name('web.')->group(function () {
     Route::get('/', [SiteController::class, 'home'])->name('home');
     Route::get('/cadastro', RegisterCompany::class)->name('register.company');
 
-    Route::get('/blog/artigo/{slug}', [SiteController::class, 'artigo'])->name('blog.artigo');
-    Route::get('/blog/categoria/{slug}', [SiteController::class, 'categoria'])->name('blog.categoria');
-    Route::get('/blog', [SiteController::class, 'artigos'])->name('blog.artigos');
+    Route::prefix('blog')->name('blog.')->group(function () {
+        Route::get('/artigos', [ArticleController::class, 'index'])->name('index');
+        Route::get('/categoria/{slug}', [ArticleController::class, 'category'])->name('category');
+        Route::get('/artigo/{slug}', [ArticleController::class, 'show'])->name('show');
+        Route::get('/pagina/{slug}', [ArticleController::class, 'page'])->name('page');
+    });
+
+    // Route::get('/blog/artigo/{slug}', [SiteController::class, 'artigo'])->name('blog.artigo');
+    // Route::get('/blog/categoria/{slug}', [SiteController::class, 'categoria'])->name('blog.categoria');
+    // Route::get('/blog', [SiteController::class, 'artigos'])->name('blog.artigos');
     
     // //*************************************** Páginas *******************************************/
-    Route::get('/noticia/{slug}', [SiteController::class, 'noticia'])->name('noticia');
-    Route::get('/noticias', [SiteController::class, 'noticias'])->name('noticias');
-    Route::get('/noticias/categoria/{slug}', [SiteController::class, 'categoria'])->name('noticia.categoria');
+    // Route::get('/noticia/{slug}', [SiteController::class, 'noticia'])->name('noticia');
+    // Route::get('/noticias', [SiteController::class, 'noticias'])->name('noticias');
+    // Route::get('/noticias/categoria/{slug}', [SiteController::class, 'categoria'])->name('noticia.categoria');
 
-    Route::get('/pagina/{slug}', [SiteController::class, 'page'])->name('pagina');
+    // Route::get('/pagina/{slug}', [SiteController::class, 'page'])->name('pagina');
 
     Route::get('/embarcacao/{slug}', [SiteController::class, 'vessel'])->name('vessel'); 
     
@@ -86,6 +94,7 @@ Route::name('web.')->group(function () {
         ->name('site.company')
         ->where('slug', '^(?!email|login|cadastro|painel|admin|minha-conta|forgot-password|reset-password)[a-z0-9-]+$');
     
+        
 });
 
 Route::group(['middleware' => ['auth', 'verified', 'role:customer'], 'prefix' => 'minha-conta', 'as' => 'customer.'], function () {

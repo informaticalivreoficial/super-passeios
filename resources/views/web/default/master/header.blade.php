@@ -37,7 +37,7 @@
                     </svg>
                     Operadoras
                 </a>
-
+                {{--  
                 @if($config->whatsapp)
                     <a href="https://wa.me/55{{ preg_replace('/\D/', '', $config->whatsapp) }}"
                     target="_blank"
@@ -49,6 +49,7 @@
                         WhatsApp
                     </a>
                 @endif
+                --}}
             </div>  
             
             {{-- Busca --}}

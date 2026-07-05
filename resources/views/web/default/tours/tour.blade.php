@@ -5,59 +5,9 @@
 
 @section('content')
 
-    {{-- GALERIA HERO MODERNIZADA --}}
-    <section class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900" style="max-height: 520px; overflow: hidden;">
-
-        @php $images = $tour->images; @endphp
-
-        @if($images->count() > 0)
-            <div class="grid h-[520px]" style="{{ $images->count() >= 3 ? 'grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;' : '' }}">
-
-                {{-- Imagem principal --}}
-                <div class="{{ $images->count() >= 3 ? 'row-span-2' : '' }} overflow-hidden relative group cursor-pointer">
-                    <img
-                        src="{{ \Illuminate\Support\Facades\Storage::url($images->first()->path) }}"
-                        alt="{{ $tour->title }}"
-                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    >
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-
-                @if($images->count() >= 3)
-                    <div class="overflow-hidden relative group cursor-pointer">
-                        <img
-                            src="{{ \Illuminate\Support\Facades\Storage::url($images->skip(1)->first()->path) }}"
-                            alt="{{ $tour->title }}"
-                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        >
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    </div>
-                    <div class="overflow-hidden relative group cursor-pointer">
-                        <img
-                            src="{{ \Illuminate\Support\Facades\Storage::url($images->skip(2)->first()->path) }}"
-                            alt="{{ $tour->title }}"
-                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        >
-                        @if($images->count() > 3)
-                            <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-900/80 to-indigo-900/80 backdrop-blur-sm">
-                                <span class="text-white font-bold text-lg px-6 py-3 rounded-2xl bg-white/20 backdrop-blur border border-white/30">
-                                    +{{ $images->count() - 3 }} fotos
-                                </span>
-                            </div>
-                        @else
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        @endif
-                    </div>
-                @endif
-
-            </div>
-        @else
-            <div class="h-72 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
-                <svg class="w-16 h-16 text-blue-300" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            </div>
-        @endif
-
-    </section>
+    {{-- GALERIA --}}
+    <x-gallery.hero :images="$tour->images" :title="$tour->title"/>
+    <x-gallery.lightbox />
 
     {{-- CONTEÚDO PRINCIPAL --}}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" style="background: linear-gradient(180deg, #EEF4FB 0%, #F8FAFC 100%);">
@@ -98,7 +48,7 @@
                         @if($tour->duration)
                             <span class="flex items-center gap-2 bg-blue-50 px-3 py-1.5 rounded-lg">
                                 <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                                {{ $tour->duration }}
+                                {{ $tour->duration }} hs
                             </span>
                         @endif
                         @if($tour->boarding_place)
@@ -219,7 +169,7 @@
                 {{-- Card de reserva --}}
                 @include('livewire.web.components.tour-calendar')
 
-                {{-- WhatsApp --}}
+                {{-- WhatsApp 
                 @if($company->whatsapp)
                     <a
                         href="https://wa.me/55{{ preg_replace('/\D/', '', $company->whatsapp) }}?text=Olá! Tenho interesse no passeio {{ urlencode($tour->title) }}"
@@ -231,9 +181,62 @@
                         Perguntar no WhatsApp
                     </a>
                 @endif
-
+                --}}
             </div>
         </div>
     </div>
 
+    <div
+        x-data="tourGallery()"
+        @open-gallery.window="open($event.detail.index)"
+    >
+
+        <div
+            x-show="opened"
+            x-transition.opacity
+            class="fixed inset-0 z-[9999] bg-black/95"
+            x-cloak
+        >
+
+            <button
+                @click="close()"
+                class="absolute top-6 right-6 text-white text-4xl z-50 hover:opacity-70"
+            >
+                ✕
+            </button>
+
+            <button
+                @click="prev()"
+                class="absolute left-6 top-1/2 -translate-y-1/2 text-white text-5xl"
+            >
+                ‹
+            </button>
+
+            <button
+                @click="next()"
+                class="absolute right-6 top-1/2 -translate-y-1/2 text-white text-5xl"
+            >
+                ›
+            </button>
+
+            <div class="h-screen flex items-center justify-center">
+
+                <img
+                    :src="images[current]"
+                    class="max-h-[90vh] max-w-[90vw] object-contain"
+                >
+
+            </div>
+
+            <div
+                class="absolute bottom-6 left-1/2 -translate-x-1/2 text-white"
+            >
+                <span x-text="current+1"></span>
+                /
+                <span x-text="images.length"></span>
+            </div>
+
+        </div>
+
+    </div>
 @endsection

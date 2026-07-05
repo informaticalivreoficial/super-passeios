@@ -26,7 +26,7 @@
             <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
 
                 {{-- Logo --}}
-                <div class="w-24 h-24 rounded-2xl overflow-hidden border-2 shrink-0" style="border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.1);">
+                <div class="w-24 h-24 rounded-2xl overflow-hidden border-2 shrink-0" style="border-color: rgba(255,255,255,0.2); background: rgb(255, 255, 255);">
                     <img
                         src="{{ $company->getLogoUrl() }}"
                         alt="{{ $company->alias_name }}"
@@ -37,10 +37,21 @@
                 {{-- Info --}}
                 <div class="flex-1">
                     <div class="flex flex-wrap items-center gap-3 mb-2">
-                        <h1 class="font-display text-3xl font-800 text-white" style="font-family: 'Syne', sans-serif;">
+                        <h1 class="font-display text-3xl font-800 text-white">
                             {{ $company->alias_name }}
                         </h1>
-                        <span class="badge badge-teal">Verificada</span>
+                        @if($company->highlight)
+                            <span class="inline-flex items-center gap-1.5 text-sky-400">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2l2.4 2.4 3.4-.5.5 3.4L21 10l-2.7 2.7.5 3.4-3.4.5L12 19l-3.4-2.4-3.4.5.5-3.4L3 10l2.7-2.7-.5-3.4 3.4.5L12 2z"/>
+                                    <path d="M10.3 13.3l-2-2 1.4-1.4 0.6 0.6 3.9-3.9 1.4 1.4-5.3 5.3z" fill="white"/>
+                                </svg>
+
+                                <span class="text-sm font-semibold">
+                                    Verificada
+                                </span>
+                            </span>
+                        @endif                      
                     </div>
 
                     <div class="flex flex-wrap items-center gap-4 text-sm" style="color: rgba(255,255,255,0.65);">
@@ -50,6 +61,7 @@
                                 {{ $company->city }}, {{ $company->state }}
                             </span>
                         @endif
+                        {{--  
                         @if($company->whatsapp)
                             <a
                                 href="https://wa.me/55{{ preg_replace('/\D/', '', $company->whatsapp) }}"
@@ -60,6 +72,7 @@
                                 {{ $company->whatsapp }}
                             </a>
                         @endif
+                        --}}
                         @if($company->email)
                             <span class="flex items-center gap-1.5">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
@@ -81,11 +94,13 @@
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                         </a>
                     @endif
+                    {{--  
                     @if($company->whatsapp)
                         <a href="https://wa.me/55{{ preg_replace('/\D/', '', $company->whatsapp) }}" target="_blank" class="btn-gold text-sm px-4">
                             Falar no WhatsApp
                         </a>
                     @endif
+                    --}}
                 </div>
 
             </div>
@@ -94,10 +109,10 @@
 
     {{-- CONTEÚDO --}}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
             {{-- PASSEIOS --}}
-            <div class="lg:col-span-2">
+            <div class="order-1 lg:order-1 lg:col-span-2">
 
                 <h2 class="section-title mb-8">
                     Passeios disponíveis
@@ -107,67 +122,90 @@
                 @forelse($tours as $tour)
                     <a
                         href="{{ route('web.site.tour', [$company->slug, $tour->uuid]) }}"
-                        class="card-tour flex flex-col sm:flex-row mb-5 block"
+                        class="group flex flex-col overflow-hidden rounded-3xl bg-white mb-6 shadow-sm border border-slate-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl lg:flex-row"
                     >
+
                         {{-- Imagem --}}
-                        <div class="relative sm:w-56 h-48 sm:h-auto overflow-hidden shrink-0">
+                        <div class="relative h-72 lg:w-80 lg:self-stretch shrink-0 overflow-hidden">
+
                             <img
                                 src="{{ $tour->cover() }}"
                                 alt="{{ $tour->title }}"
-                                class="w-full h-full object-cover"
-                                loading="lazy"
+                                class="h-full w-full object-cover transition duration-700 group-hover:scale-110 lg:absolute lg:inset-0"
                             >
+
+                            <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/70 to-transparent"></div>
+
                             @if($tour->tour_type)
-                                <div class="absolute top-3 left-3">
-                                    <span class="badge badge-teal">{{ $tour->tour_type->label() }}</span>
+                                <div class="absolute top-4 left-4">
+                                    <span class="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/15 px-3 py-1 text-xs font-semibold text-white backdrop-blur-md">
+                                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 2l2.5 5L18 8l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-1L10 2z"/>
+                                        </svg>
+
+                                        {{ $tour->tour_type->label() }}
+                                    </span>
                                 </div>
                             @endif
+
                         </div>
 
-                        {{-- Info --}}
-                        <div class="p-5 flex flex-col justify-between flex-1">
+                        {{-- Conteúdo --}}
+                        <div class="flex flex-1 flex-col p-6">
                             <div>
-                                <h3 class="font-display font-700 text-lg mb-2" style="font-family: 'Syne', sans-serif; color: var(--navy);">
+                                <h3
+                                    class="mb-3 text-2xl font-bold text-slate-900"
+                                >
                                     {{ $tour->title }}
                                 </h3>
+
                                 @if($tour->description)
-                                    <p class="text-sm leading-relaxed line-clamp-2 mb-4" style="color: #87c2c0;">
-                                        {{ Str::limit($tour->description, 120) }}
+                                    <p class="mb-5 text-[15px] leading-7 text-slate-600 line-clamp-2">
+                                        {{ Str::limit(strip_tags($tour->description),140) }}
                                     </p>
                                 @endif
+                                <div class="flex flex-wrap gap-2 mb-6">
 
-                                <div class="flex flex-wrap gap-3 text-xs" style="color: #87c2c0;">
                                     @if($tour->duration)
-                                        <span class="flex items-center gap-1">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                                            {{ $tour->duration }}
+                                        <span class="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">
+                                            🕒 {{ $tour->duration }}
                                         </span>
                                     @endif
                                     @if($tour->boarding_place)
-                                        <span class="flex items-center gap-1">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 17l4-8 4 4 4-6 4 10"/></svg>
-                                            {{ $tour->boarding_place }}
+                                        <span class="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">
+                                            📍 {{ $tour->boarding_place }}
                                         </span>
                                     @endif
                                     @if($tour->vessel)
-                                        <span class="flex items-center gap-1">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                                            até {{ $tour->vessel->capacity }} pessoas
+                                        <span class="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">
+                                            👥 {{ $tour->vessel->capacity }} pessoas
                                         </span>
                                     @endif
                                 </div>
                             </div>
 
-                            <div class="flex items-center justify-between mt-4 pt-4" style="border-top: 1px solid #f0ece4;">
+                            {{-- Rodapé --}}
+                            <div class="mt-auto flex items-end justify-between border-t border-slate-200 pt-5">
                                 <div>
-                                    <p class="text-xs" style="color: #87c2c0;">A partir de</p>
-                                    <p class="font-display font-800 text-xl" style="font-family: 'Syne', sans-serif; color: var(--navy);">
-                                        R$ {{ number_format($tour->price, 2, ',', '.') }}
+                                    <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                                        A partir de
                                     </p>
+                                    <div class="flex items-end gap-2">
+                                        <span
+                                            class="text-4xl font-extrabold text-cyan-600"
+                                        >
+                                            R$ {{ number_format($tour->price,2,',','.') }}
+                                        </span>
+                                        <span class="pb-1 text-sm text-slate-500">
+                                            por pessoa
+                                        </span>
+                                    </div>
                                 </div>
-                                <span class="btn-primary text-sm">
+                                <span class="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-3 font-semibold text-white transition group-hover:bg-cyan-600">
                                     Ver passeio
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                    <svg class="h-5 w-6 transition group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                                    </svg>
                                 </span>
                             </div>
                         </div>
@@ -177,23 +215,22 @@
                         <p style="color: #87c2c0;">Nenhum passeio disponível no momento.</p>
                     </div>
                 @endforelse
-
             </div>
 
             {{-- SIDEBAR --}}
-            <div class="space-y-6">
+            <div class="order-2 lg:order-2 lg:col-span-1">
 
                 {{-- Sobre --}}
                 @if($company->content)
                     <div class="bg-white rounded-2xl p-6" style="border: 1px solid #e8e4d8;">
-                        <h3 class="font-display font-700 text-base mb-4" style="font-family: 'Syne', sans-serif; color: var(--navy);">Sobre a empresa</h3>
+                        <h3 class="font-display font-700 text-base mb-4" style="color: var(--navy);">Sobre a empresa</h3>
                         <p class="text-sm leading-relaxed" style="color: #87c2c0;">{!! $company->content !!}</p>
                     </div>
                 @endif
 
                 {{-- Contato --}}
-                <div class="bg-white rounded-2xl p-6" style="border: 1px solid #e8e4d8;">
-                    <h3 class="font-display font-700 text-base mb-4" style="font-family: 'Syne', sans-serif; color: var(--navy);">Contato</h3>
+                <div class="bg-white rounded-2xl p-6 mb-6" style="border: 1px solid #e8e4d8;">
+                    <h3 class="font-display font-700 text-base mb-4" style="color: var(--navy);">Contato</h3>
                     <ul class="space-y-3">
                         @if($company->whatsapp)
                             <li>

@@ -116,8 +116,8 @@
                                             color="green"
                                         />      
                                         <a target="_blank" href="{{ route('web.' . (
-                                                                    $post->type == 'artigo' ? 'blog.artigo' : (
-                                                                    $post->type == 'noticia' ? 'noticia' : 'pagina')), $post->slug) }}" 
+                                                                    $post->type == 'artigo' ? 'blog.show' : (
+                                                                    $post->type == 'noticia' ? 'blog.show' : 'blog.page')), $post->slug) }}" 
                                             class="btn btn-xs btn-info" 
                                             title="Visualizar">
                                             <i class="fas fa-search"></i>

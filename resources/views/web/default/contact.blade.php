@@ -19,7 +19,7 @@
                 wire:click="$set('success', false)"
                 class="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                 Enviar nova mensagem
-            </button>
+            </button>    
         </div>
     @else
         {{-- Formulário --}}

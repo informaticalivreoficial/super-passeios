@@ -675,8 +675,6 @@ function mercadoPagoCheckout() {
                         event.preventDefault();
                         try {
                             const formData = cardFormInstance.getCardFormData();
-                            
-                            // Debug para você ver no console se o ID está vindo correto
                             console.log("Dados do Cartão:", formData);
 
                             const { token, paymentMethodId, installments } = formData;
@@ -686,14 +684,13 @@ function mercadoPagoCheckout() {
                                 return;
                             }
 
-                            // Sincroniza as propriedades explicitamente antes de chamar o pay
-                            this.$wire.set('cardToken', token);
-                            this.$wire.set('paymentMethodId', paymentMethodId);
-                            this.$wire.set('installments', Number(installments) || 1);
+                            // ✅ Passa tudo numa única chamada, sem depender de sets anteriores
+                            await this.$wire.pay({
+                                cardToken: token,
+                                paymentMethodId: paymentMethodId,
+                                installments: Number(installments) || 1,
+                            });
 
-                            // Agora chama o método de pagamento
-                            await this.$wire.pay();
-                            
                             if (this.$wire.step === 5) {
                                 this.destroy();
                             }

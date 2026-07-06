@@ -30,6 +30,8 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    'default_commission_rate' => env('SAAS_COMMISSION', 0),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode

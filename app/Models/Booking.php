@@ -74,6 +74,11 @@ class Booking extends Model
         return $this->belongsTo(Customer::class);
     }
 
+    public function company()
+    {
+        return $this->belongsTo(\App\Models\Company::class);
+    }
+
     public function getTotalPeopleAttribute(): int
     {
         return (int) $this->adults + (int) $this->children;

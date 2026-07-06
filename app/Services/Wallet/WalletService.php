@@ -30,35 +30,29 @@ class WalletService
 
             $company = $booking->company;
 
+            if (!$company) {
+                throw new \RuntimeException(
+                    "Booking #{$booking->id} não possui empresa associada (company_id: {$booking->company_id})."
+                );
+            }
+
             $values = $this->commissionService->calculate(
                 $company,
                 $booking->total
             );
 
             return WalletTransaction::create([
-
                 'uuid' => Str::uuid(),
-
                 'company_id' => $company->id,
-
                 'booking_id' => $booking->id,
-
                 'type' => WalletTypeEnum::Sale,
-
                 'status' => WalletStatusEnum::Pending,
-
                 'description' => "Reserva #{$booking->id}",
-
                 'gross_amount' => $values['gross_amount'],
-
                 'fee_percentage' => $values['fee_percentage'],
-
                 'fee_amount' => $values['fee_amount'],
-
                 'net_amount' => $values['net_amount'],
-
                 'available_at' => now()->addDays($company->release_days),
-
             ]);
         });
     }

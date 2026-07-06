@@ -82,7 +82,7 @@ class CheckoutForm extends Component
         $this->total          = $this->subtotal;
 
         if ($this->step === 3 && $this->paymentMethod === 'card') {
-            $this->dispatch('mercadopago:init', total: $this->total);
+            //$this->dispatch('mercadopago:init', total: $this->total);
         }
     }
  
@@ -144,7 +144,7 @@ class CheckoutForm extends Component
         $this->step++;
 
         if ($this->step === 3) {
-            $this->dispatch('mercadopago:init', total: $this->total);
+            //$this->dispatch('mercadopago:init', total: $this->total);
         }
     }
  
@@ -248,19 +248,8 @@ class CheckoutForm extends Component
  
             // 6. Cartão aprovado imediatamente
             if ($this->paymentMethod === 'card' && ($response['status'] ?? '') === 'approved') {
-                $booking->update([
-                    'status'         => BookingStatusEnum::CONFIRMED,
-                    'payment_status' => PaymentStatusEnum::PAID,
-                    'paid_at'        => now(),
-                ]);
                 app(\App\Services\Booking\BookingPaidService::class)
                     ->handle($booking->fresh());
-
-                Mail::to($booking->customer_email)
-                    ->queue(new BookingConfirmed(
-                        $booking->fresh(),
-                        $customer
-                    ));
 
                 $this->dispatch('mercadopago:destroy');
 
@@ -319,7 +308,7 @@ class CheckoutForm extends Component
     public function updatedPaymentMethod()
     {
         if ($this->paymentMethod === 'card') {
-            $this->dispatch('mercadopago:init', total: $this->total);
+            //$this->dispatch('mercadopago:init', total: $this->total);
         } else {
             $this->dispatch('mercadopago:destroy');
         }

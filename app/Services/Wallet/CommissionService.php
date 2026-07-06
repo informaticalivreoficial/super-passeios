@@ -8,7 +8,7 @@ class CommissionService
 {
     public function calculate(Company $company, float $gross): array
     {
-        $percentage = $company->commission_rate;
+        $percentage = $company->commission_rate ?? config('app.default_commission_rate');
         $fee = round($gross * ($percentage / 100), 2);
         $net = round($gross - $fee, 2);
 

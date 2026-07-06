@@ -96,10 +96,39 @@
 
                 <div class="flex items-center gap-2">
 
-                    <div class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl badge-online">
-                        <div class="w-1.5 h-1.5 rounded-full" style="background-color: #23c55e;"></div>
-                        <span class="text-xs font-bold">Online</span>
-                    </div>                    
+                    <a
+                        href="{{ route('web.home') }}"
+                        class="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-[#0d9488] transition"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Ir para o site"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M13.5 6H18m0 0v4.5M18 6l-7.5 7.5"/>
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M6 18h12a1 1 0 001-1V10"/>
+                        </svg>
+                    </a>
+
+                    @php
+                        $company = auth('customer')->user()?->company;
+                    @endphp
+
+                    @if($company)
+                        <div class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl"
+                            style="background-color: rgba(34,197,94,.1); color:#16a34a;">
+                            <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                            <span class="text-xs font-bold">Empresa ativa</span>
+                        </div>
+                    @else
+                        <div class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl"
+                            style="background-color: rgba(245,158,11,.1); color:#d97706;">
+                            <div class="w-1.5 h-1.5 rounded-full bg-yellow-500"></div>
+                            <span class="text-xs font-bold">Perfil incompleto</span>
+                        </div>
+                    @endif                    
 
                 </div>
 

@@ -46,10 +46,12 @@
                         </svg>
                         Empresas verificadas
                     </span>
+                    {{--  
                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border"
                         style="background: rgba(107,163,200,0.1); border-color: rgba(107,163,200,0.3); color: #b8d4e8;">
                         ⭐ 4.9/5 (2k+ avaliações)
                     </span>
+                    --}}
                 </div>
 
                 {{-- Redes sociais --}}

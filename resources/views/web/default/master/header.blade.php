@@ -58,13 +58,17 @@
             </div>
 
             
-            <a href="{{ route('customer.login') }}"
-            class="btn-outline justify-center text-sm py-2.5">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
-                </svg>
-                Entrar
-            </a>
+            @if(Auth::guard('customer')->check())
+                <a href="{{ route('company.dashboard') }}"
+                class="btn-outline justify-center text-sm py-2.5">
+                    Meu Painel
+                </a>
+            @else
+                <a href="{{ route('customer.login') }}"
+                class="btn-outline justify-center text-sm py-2.5">
+                    Entrar
+                </a>
+            @endif
             
 
             {{-- Botão Mobile --}}

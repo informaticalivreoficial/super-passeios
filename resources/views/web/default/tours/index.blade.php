@@ -31,7 +31,7 @@
             </h1>
             
             <p class="text-lg text-blue-100 mb-2">
-                {{ $tours->total() }} passeio{{ $tours->total() !== 1 ? 's' : '' }} disponível{{ $tours->total() !== 1 ? 'is' : '' }}
+                {{ $tours->total() }} passeio{{ $tours->total() !== 1 ? 's' : '' }} disponíve{{ $tours->total() !== 1 ? 'is' : 'l' }}
             </p>
         </div>
     </section>

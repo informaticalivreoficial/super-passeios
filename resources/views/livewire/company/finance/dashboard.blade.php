@@ -37,7 +37,7 @@
             </p>
             @if($data['next_release'])
                 <p class="text-xs mt-1" style="color: #c5bfb2;">
-                    Próximo em {{ $data['next_release']->available_at->diffForHumans() }}
+                    Lançamento {{ $data['next_release']->available_at->diffForHumans() }}
                 </p>
             @else
                 <p class="text-xs mt-1" style="color: #c5bfb2;">Aguardando liberação</p>
@@ -165,7 +165,7 @@
                             <p class="text-xs mt-0.5" style="color: #c5bfb2;">
                                 {{ $transaction->created_at->format('d/m/Y \à\s H:i') }}
                                 @if($isPending && $transaction->available_at)
-                                    · Libera {{ $transaction->available_at->diffForHumans() }}
+                                    · Lançado {{ $transaction->available_at->diffForHumans() }}
                                 @endif
                             </p>
                         </div>

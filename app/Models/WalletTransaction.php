@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\WalletStatusEnum;
+use App\Enums\WalletTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,8 +27,10 @@ class WalletTransaction extends Model
     ];
 
     protected $casts=[
-        'available_at'=>'datetime',
-        'paid_at'=>'datetime'
+        'available_at' =>'datetime',
+        'paid_at'      =>'datetime',
+        'type'         => WalletTypeEnum::class,
+        'status'       => WalletStatusEnum::class,
     ];
 
     public function company()

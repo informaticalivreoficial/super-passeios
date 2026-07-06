@@ -492,26 +492,39 @@
                 @endif
 
                 {{-- Código copia e cola --}}
-                <div class="bg-gray-50 rounded-xl p-4 mb-6" style="border: 1px solid #e8e4d8;">
-                    <p class="text-xs text-gray-500 mb-2 font-medium">PIX Copia e Cola</p>
-                    <div class="flex items-center gap-2">
-                        <code class="flex-1 text-xs text-gray-600 break-all text-left leading-relaxed">
-                            {{ $pixData['qr_code'] }}
-                        </code>
-                        <button
-                            x-data="{ copied: false }"
-                            @click="
-                                navigator.clipboard.writeText('{{ $pixData['qr_code'] }}');
-                                copied = true;
-                                setTimeout(() => copied = false, 2000)
-                            "
-                            class="shrink-0 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300"
-                            :style="copied ? 'background: #22c55e; color: white;' : 'background: var(--navy); color: white;'"
-                        >
-                            <span x-show="!copied">Copiar</span>
-                            <span x-show="copied">✓ Copiado!</span>
-                        </button>
-                    </div>
+                <div
+                    x-data="{
+                        copied: false,
+                        copy(text) {
+                            if (navigator.clipboard && window.isSecureContext) {
+                                navigator.clipboard.writeText(text);
+                            } else {
+                                const textarea = document.createElement('textarea');
+                                textarea.value = text;
+                                document.body.appendChild(textarea);
+                                textarea.select();
+                                document.execCommand('copy');
+                                textarea.remove();
+                            }
+
+                            this.copied = true;
+                            setTimeout(() => this.copied = false, 2000);
+                        }
+                    }"
+                    class="flex items-center gap-2"
+                >
+                    <code class="flex-1 text-xs text-gray-600 break-all text-left leading-relaxed">
+                        {{ $pixData['qr_code'] }}
+                    </code>
+
+                    <button
+                        @click="copy(@js($pixData['qr_code']))"
+                        class="shrink-0 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 bg-gray-800 text-white"
+                        :class="copied ? 'bg-green-500' : 'bg-gray-800'"
+                    >
+                        <span x-show="!copied">Copiar</span>
+                        <span x-show="copied">✓ Copiado!</span>
+                    </button>
                 </div>
 
                 {{-- Total --}}
@@ -597,7 +610,7 @@
 
                 <a href="{{ route('web.home') }}"
                 class="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-semibold text-white transition"
-                style="background: var(--navy);">
+                style="background: var(--navy, #0f172a);">
                     Voltar ao início
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path d="M5 12h14M12 5l7 7-7 7"/>

@@ -47,9 +47,7 @@
             --light: #EEF4FB;
             --white: #FFFFFF;
             --border: #E2E8F0;
-        }
- 
-       
+        }       
  
         h1, h2, h3, h4, .font-display { 
              

@@ -62,7 +62,7 @@
                 </p>
                 @if($data['next_release'])
                     <p class="text-xs mt-1" style="color: #c5bfb2;">
-                        Próximo em {{ $data['next_release']->available_at->diffForHumans() }}
+                        Lançamento {{ $data['next_release']->available_at->diffForHumans() }}
                     </p>
                 @else
                     <p class="text-xs mt-1" style="color: #c5bfb2;">Aguardando liberação</p>

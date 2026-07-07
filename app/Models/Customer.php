@@ -32,7 +32,8 @@ class Customer extends Authenticatable
         //Social
         'facebook', 'twitter', 'instagram', 'linkedin',        
         'status',
-        'information'
+        'information',
+        'magic_token', 'magic_token_expires_at',
     ];
 
     protected $hidden = [
@@ -61,6 +62,11 @@ class Customer extends Authenticatable
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
     }
 
     public function getUrlAvatarAttribute(): string

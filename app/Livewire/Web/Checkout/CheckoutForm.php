@@ -178,10 +178,18 @@ class CheckoutForm extends Component
                 [
                     'name'     => $this->name,
                     'phone'    => preg_replace('/\D/', '', $this->phone),
-                    'document' => preg_replace('/\D/', '', $this->cpf),
+                    'cpf'      => preg_replace('/\D/', '', $this->cpf),
                     'password' => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(16)),
                 ]
             );
+
+            if (!$customer->wasRecentlyCreated === false && !$customer->hasRole('client')) {
+                $customer->assignRole('client');
+            }
+
+            if (blank($customer->cpf)) {
+                $customer->update(['cpf' => preg_replace('/\D/', '', $this->cpf)]);
+            }
  
             // 2. Cria o booking com status pendente
             $booking = Booking::create([

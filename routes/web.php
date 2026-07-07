@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Web\ArticleController;
+use App\Http\Controllers\Web\BookingVoucherPdfController;
+use App\Http\Controllers\Web\CustomerMagicAccessController;
 use App\Http\Controllers\Web\SiteController;
 use App\Livewire\Auth\RegisterCompany;
 use App\Livewire\Company\Booking\BookingForm as BookingBookingForm;
@@ -38,12 +40,27 @@ use App\Livewire\Dashboard\Users\ViewUser;
 use App\Livewire\Dashboard\Vessels\VesselForm;
 use App\Livewire\Dashboard\Vessels\Vessels;
 use App\Livewire\Web\Checkout\CheckoutForm as CheckoutCheckoutForm;
+use App\Livewire\Web\Customer\FindOrders;
+use App\Livewire\Web\Customer\OrderShow;
+use App\Livewire\Web\Customer\OrdersIndex;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/auth.php';
 
 
 Route::get('/checkout/{tourDate}', CheckoutCheckoutForm::class)->name('checkout');
+Route::get('/meus-pedidos', FindOrders::class)->name('customer.orders.find');
+Route::get('/meus-pedidos/acessar/{token}', CustomerMagicAccessController::class)->name('customer.orders.access');
+
+Route::middleware(['auth:customer', 'customer.role:client'])->group(function () {
+    Route::get('/meus-pedidos/lista', OrdersIndex::class)->name('customer.orders.index');
+    Route::get('/meus-pedidos/{booking:uuid}', OrderShow::class)->name('customer.orders.show');
+    Route::get('/{booking:uuid}/pdf', BookingVoucherPdfController::class)->name('customer.orders.pdf'); // ✅ novo
+    Route::post('/meus-pedidos/logout', function () {
+        \Illuminate\Support\Facades\Auth::guard('customer')->logout();
+        return redirect()->route('customer.orders.find');
+    })->name('customer.orders.logout');
+});
 
 Route::name('web.')->group(function () {    
 
@@ -55,18 +72,7 @@ Route::name('web.')->group(function () {
         Route::get('/categoria/{slug}', [ArticleController::class, 'category'])->name('category');
         Route::get('/artigo/{slug}', [ArticleController::class, 'show'])->name('show');
         Route::get('/pagina/{slug}', [ArticleController::class, 'page'])->name('page');
-    });
-
-    // Route::get('/blog/artigo/{slug}', [SiteController::class, 'artigo'])->name('blog.artigo');
-    // Route::get('/blog/categoria/{slug}', [SiteController::class, 'categoria'])->name('blog.categoria');
-    // Route::get('/blog', [SiteController::class, 'artigos'])->name('blog.artigos');
-    
-    // //*************************************** Páginas *******************************************/
-    // Route::get('/noticia/{slug}', [SiteController::class, 'noticia'])->name('noticia');
-    // Route::get('/noticias', [SiteController::class, 'noticias'])->name('noticias');
-    // Route::get('/noticias/categoria/{slug}', [SiteController::class, 'categoria'])->name('noticia.categoria');
-
-    // Route::get('/pagina/{slug}', [SiteController::class, 'page'])->name('pagina');
+    });    
 
     Route::get('/embarcacao/{slug}', [SiteController::class, 'vessel'])->name('vessel'); 
     
@@ -97,7 +103,7 @@ Route::name('web.')->group(function () {
         
 });
 
-Route::group(['middleware' => ['auth', 'verified', 'role:customer'], 'prefix' => 'minha-conta', 'as' => 'customer.'], function () {
+Route::group(['middleware' => ['auth:customer', 'verified', 'role:customer'], 'prefix' => 'minha-conta', 'as' => 'customer.'], function () {
     Route::get('/', CompanyDashboard::class)->name('dashboard');
 });
 

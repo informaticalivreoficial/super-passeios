@@ -373,7 +373,7 @@
                         x-data="mercadoPagoCheckout()"
                         x-init="init()"
                         x-effect="update($wire.total)"
-                    >
+                    >                        
                         <form id="mp-card-form" class="mt-6 space-y-4" wire:ignore>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">Número do cartão</label>
@@ -407,15 +407,59 @@
                                 <select id="installments" style="height: 40px; border: 2px solid #e5e7eb; border-radius: 12px; padding: 4px 8px; width: 100%;"></select>
                             </div>
 
-                            <button type="submit"
-                                class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 
-                            text-white font-bold py-3 rounded-xl shadow-lg hover:shadow-xl 
-                            transform hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2
-                            disabled:opacity-50 disabled:cursor-not-allowed">
-                                Pagar Agora
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                                </svg>
+                            <template x-if="errors.length">
+                                <div class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4">
+                                    <ul class="list-disc list-inside text-sm text-red-700">
+                                        <template x-for="(error, index) in errors" :key="index">
+                                            <li x-text="error"></li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </template>
+
+                            <button
+                                type="submit"
+                                :disabled="processing"
+                                class="w-full bg-gradient-to-r from-green-500 to-emerald-600
+                                    hover:from-green-600 hover:to-emerald-700
+                                    text-white font-bold py-3 rounded-xl shadow-lg
+                                    hover:shadow-xl transition-all duration-300
+                                    flex items-center justify-center gap-2
+                                    disabled:opacity-50 disabled:cursor-not-allowed">
+
+                                <template x-if="!processing">
+                                    <span class="flex items-center gap-2">
+                                        Pagar Agora
+
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                        </svg>
+                                    </span>
+                                </template>
+
+                                <template x-if="processing">
+                                    <span class="flex items-center gap-2">
+                                        <svg class="w-5 h-5 animate-spin"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24">
+                                            <circle cx="12"
+                                                    cy="12"
+                                                    r="10"
+                                                    stroke="currentColor"
+                                                    stroke-width="4"
+                                                    class="opacity-25"/>
+                                            <path fill="currentColor"
+                                                class="opacity-75"
+                                                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+                                        </svg>
+
+                                        Processando pagamento...
+                                    </span>
+                                </template>
                             </button>
                         </form>
                     </div>
@@ -633,6 +677,8 @@ function mercadoPagoCheckout() {
 
     return {
         lastTotal: null,
+        processing: false,
+        errors: [],
 
         init() {
             // Inicializa o MP
@@ -666,7 +712,7 @@ function mercadoPagoCheckout() {
             const form = document.getElementById('mp-card-form');
             if (!form) return;
 
-            this.destroy(); // Garante que qualquer form anterior seja destruído
+            this.destroy();
 
             cardFormInstance = mpInstance.cardForm({
                 amount: String(total),
@@ -684,20 +730,46 @@ function mercadoPagoCheckout() {
                     onFormMounted: (error) => {
                         if (error) console.error(error);
                     },
+
+                    // 👇 NOVO: aqui é onde os erros de token realmente aparecem
+                    onCardTokenReceived: (error, token) => {
+                        if (error) {
+                            //console.error("Erro ao gerar token do cartão:", error);
+
+                            if (Array.isArray(error)) {
+                                this.errors = error.map(e => this.translateError(e));
+                            } else {
+                                this.errors = ['Verifique os dados do cartão e tente novamente.'];
+                            }
+
+                            this.processing = false; // libera o botão, já que o submit não vai adiante
+                        }
+                    },
+
                     onSubmit: async (event) => {
                         event.preventDefault();
+
+                        this.errors = [];
+
+                        if (this.processing) {
+                            return;
+                        }
+
+                        this.processing = true;
+
                         try {
                             const formData = cardFormInstance.getCardFormData();
-                            console.log("Dados do Cartão:", formData);
+                            //console.log("Dados do Cartão:", formData);
 
                             const { token, paymentMethodId, installments } = formData;
 
-                            if (!paymentMethodId) {
-                                console.error("ID do método de pagamento não encontrado!");
+                            // 👇 Se não tem token aqui, o onCardTokenReceived já vai tratar o erro
+                            // então só seguimos se realmente tiver token
+                            if (!token || !paymentMethodId) {
+                                this.processing = false;
                                 return;
                             }
 
-                            // ✅ Passa tudo numa única chamada, sem depender de sets anteriores
                             await this.$wire.pay({
                                 cardToken: token,
                                 paymentMethodId: paymentMethodId,
@@ -708,11 +780,47 @@ function mercadoPagoCheckout() {
                                 this.destroy();
                             }
                         } catch (e) {
-                            console.error("Erro no checkout:", e);
+                            if (Array.isArray(e)) {
+                                this.errors = e.map(error => this.translateError(error));
+                            } else {
+                                this.errors = ['Não foi possível processar os dados do cartão.'];
+                            }
+                            //console.error(e);
+                            this.processing = false;
                         }
+                        // note: removi o finally daqui porque agora quem controla
+                        // processing = false no caso de erro de token é o onCardTokenReceived
                     }
                 }
             });
+        },
+
+        translateError(error) {
+            const fieldMessages = {
+                cardNumber: 'Informe um número de cartão válido.',
+                securityCode: 'Informe um código de segurança válido.',
+                expirationDate: 'Informe uma data de validade válida.',
+                expirationMonth: 'Informe o mês de validade.',
+                expirationYear: 'Informe o ano de validade.',
+                cardholderName: 'Informe o nome impresso no cartão.',
+            };
+
+            const codeMessages = {
+                '221': 'Informe o nome impresso no cartão.',
+                '224': 'Informe um código de segurança válido.',
+                '225': 'Informe a data de validade do cartão.',
+                '226': 'Informe um número de cartão válido.',
+            };
+
+            if (error.field && fieldMessages[error.field]) {
+                return fieldMessages[error.field];
+            }
+
+            if (error.code && codeMessages[error.code]) {
+                return codeMessages[error.code];
+            }
+
+            return error.message; 
         },
 
         destroy() {

@@ -7,8 +7,15 @@
     <title>@yield( 'title', env('APP_NAME') )</title>   
 
     <link rel="icon" href="{{ asset('theme/images/security.ico')}}" type="image/x-icon">
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     @livewireStyles
+
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+
     @stack('styles')
 </head>
 

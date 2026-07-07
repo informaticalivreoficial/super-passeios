@@ -235,12 +235,14 @@ class CheckoutForm extends Component
                 ]));
             }
  
-            if (!isset($response['id'])) {
-                throw new \Exception(json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            if (! $response['success']) {
+                throw new \Exception($response['message']);
             }
+
+            $payment = $response['data'];
  
             $booking->update([
-                'payment_id' => $response['id'],                
+                'payment_id' => $payment['id'],              
             ]);
  
             // 5. PIX: exibe QR code
@@ -255,14 +257,10 @@ class CheckoutForm extends Component
             }
  
             // 6. Cartão aprovado imediatamente
-            if ($this->paymentMethod === 'card' && ($response['status'] ?? '') === 'approved') {
-                app(\App\Services\Booking\BookingPaidService::class)
-                    ->handle($booking->fresh());
-
+            if (($payment['status'] ?? '') === 'approved') {
+                app(\App\Services\Booking\BookingPaidService::class)->handle($booking->fresh());
                 $this->dispatch('mercadopago:destroy');
-
                 $this->step = 5;
-
                 return;
             } 
         } catch (\Exception $e) {
@@ -275,27 +273,7 @@ class CheckoutForm extends Component
         } finally {
             $this->processing = false;
         }
-    }
- 
-    // ─────────────────────────────────────────
-    // CONFIRMAR BOOKING (chamado pelo webhook também)
-    // ─────────────────────────────────────────
-    // public static function confirmBooking(Booking $booking): void
-    // {
-    //     $booking->update([
-    //         'status'         => BookingStatusEnum::CONFIRMED,
-    //         'payment_status' => PaymentStatusEnum::PAID,
-    //         'paid_at'        => now(),
-    //     ]);
- 
-    //     // Decrementa vagas da data
-    //     $booking->tourDate->decrement('available_slots', $booking->adults + $booking->children);
- 
-    //     // Verifica se lotou
-    //     if ($booking->tourDate->available_slots <= 0) {
-    //         $booking->tourDate->update(['status' => \App\Enums\TourDateStatusEnum::FULL]);
-    //     }
-    // }
+    }    
 
     public function checkPixStatus(MercadoPagoService $mp): void
     {

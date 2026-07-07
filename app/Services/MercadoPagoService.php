@@ -10,6 +10,23 @@ class MercadoPagoService
     protected string $baseUrl = 'https://api.mercadopago.com';
     protected string $accessToken;
 
+    protected const MP_ERRORS = [
+        205 => 'Informe o número do cartão.',
+        208 => 'Informe o mês de validade.',
+        209 => 'Informe o ano de validade.',
+        212 => 'Informe o documento do titular.',
+        213 => 'Informe o CPF do titular.',
+        214 => 'Informe o CPF do titular.',
+        220 => 'Informe o banco emissor.',
+
+        2131 => 'Não foi possível identificar a bandeira do cartão.',
+
+        3000 => 'O cartão informado é inválido.',
+        3001 => 'O cartão está vencido.',
+        3002 => 'O código de segurança é inválido.',
+        3003 => 'O pagamento foi recusado pela operadora.',
+    ];
+
     public function __construct()
     {
         $this->accessToken = config('services.mercadopago.access_token');
@@ -44,7 +61,7 @@ class MercadoPagoService
                 'date_of_expiration' => now()->addMinutes(30)->format('Y-m-d\TH:i:s.000-03:00'),
             ]);
 
-        return $response->json();
+        return $this->formatResponse($response);
     }
 
     // ─────────────────────────────────────────
@@ -71,7 +88,7 @@ class MercadoPagoService
                 'external_reference' => $data['booking_uuid'],
             ]);
 
-        return $response->json();
+        return $this->formatResponse($response);
     }
 
     // ─────────────────────────────────────────
@@ -83,5 +100,33 @@ class MercadoPagoService
             ->get("{$this->baseUrl}/v1/payments/{$paymentId}");
 
         return $response->json();
+    }
+
+    protected function getErrorMessage(array $response): string
+    {
+        $cause = $response['cause'][0] ?? [];
+
+        $code = $cause['code'] ?? null;
+
+        return self::MP_ERRORS[$code]
+            ?? 'Não foi possível processar o pagamento. Tente novamente.';
+    }
+
+    protected function formatResponse($response): array
+    {
+        $json = $response->json();
+
+        if ($response->successful()) {
+            return [
+                'success' => true,
+                'data' => $json,
+            ];
+        }
+
+        return [
+            'success' => false,
+            'message' => $this->getErrorMessage($json),
+            'data' => $json,
+        ];
     }
 }

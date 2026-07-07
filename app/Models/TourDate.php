@@ -43,6 +43,20 @@ class TourDate extends Model
         return $this->hasMany(Booking::class);
     }
 
+    public function scopeAvailable($query)
+    {
+        return $query
+            ->where('active', true)
+            ->where('date', '>=', now()->toDateString())
+            ->where('status', TourDateStatusEnum::OPEN)
+            ->whereRaw('available_slots > (
+                SELECT COALESCE(SUM(adults + children), 0)
+                FROM bookings
+                WHERE bookings.tour_date_id = tour_dates.id
+                AND bookings.payment_status IN (?, ?)
+            )', ['paid', 'pending']);
+    }
+
     public function getRemainingAvailableAttribute(): int
     {
         $booked = $this->bookings()
@@ -72,5 +86,5 @@ class TourDate extends Model
                 ->sum(DB::raw('adults + children'));
 
         return max(0, $this->available_slots - $booked);
-    }
+    }    
 }

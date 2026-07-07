@@ -104,18 +104,42 @@
 {{-- 4. AGÊNCIAS EM DESTAQUE --}}
 <section class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-6 text-center mb-16">
-        <h2 class="text-3xl font-black text-slate-900 tracking-tight">Navegue com os Melhores</h2>
-        <p class="text-slate-500 mt-2 font-medium">Agências verificadas e certificadas por nossa equipe.</p>
+        <span class="inline-block text-xs font-bold uppercase tracking-widest text-blue-600 mb-3">
+            Parceiros de Confiança
+        </span>
+        <h2 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
+            Navegue com os Melhores
+        </h2>
+        <p class="text-slate-500 mt-3 font-medium max-w-md mx-auto">
+            Agências verificadas e certificadas por nossa equipe.
+        </p>
     </div>
 
-    <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+    <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
         @foreach($companies as $company)
-            <a href="#" class="group">
-                <div class="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-4 border-slate-50 group-hover:border-blue-100 transition-all shadow-sm">
-                    <img src="{{ $company->getLogoUrl() }}" class="w-full h-full object-cover">
+            <a href="{{ route('web.site.company', ['slug' => $company->slug]) }}"
+               class="group relative flex flex-col items-center text-center p-6 rounded-2xl border border-slate-100 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-100/50 transition-all duration-300 hover:-translate-y-1">
+
+                <div class="relative w-20 h-20 mb-4">
+                    <div class="w-full h-full rounded-full overflow-hidden border-4 border-slate-50 group-hover:border-blue-100 shadow-sm transition-all duration-300">
+                        <img src="{{ $company->getLogoUrl() }}"
+                             alt="{{ $company->name }}"
+                             class="w-full h-full object-cover">
+                    </div>
+                    {{-- Selo verificado --}}
+                    <span class="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                        <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </span>
                 </div>
-                <h4 class="text-sm font-bold text-slate-800 group-hover:text-blue-600 transition-colors">{{ $company->name }}</h4>
-                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{{ $company->city }}</p>
+
+                <h4 class="text-sm font-bold text-slate-800 group-hover:text-blue-600 transition-colors line-clamp-1">
+                    {{ $company->name }}
+                </h4>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                    {{ $company->city }}
+                </p>
             </a>
         @endforeach
     </div>

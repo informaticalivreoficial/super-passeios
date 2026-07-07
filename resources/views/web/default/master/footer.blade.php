@@ -269,10 +269,12 @@
                         Preferências de cookies
                     </a>
                 @endif
-                <span class="text-xs flex items-center gap-1.5" style="color: rgba(184,212,232,0.6);">
-                    <span class="w-2 h-2 rounded-full animate-pulse" style="background: #4ade80;"></span>
-                    Reservas abertas
-                </span>
+                @if($hasOpenReservations)
+                    <span class="text-xs flex items-center gap-1.5" style="color: rgba(184,212,232,0.6);">
+                        <span class="w-2 h-2 rounded-full animate-pulse" style="background: #4ade80;"></span>
+                        Reservas abertas
+                    </span>
+                @endif
             </div>
         </div>
     </div>

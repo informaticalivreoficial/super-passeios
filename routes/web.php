@@ -18,27 +18,29 @@ use App\Livewire\Company\Tours\TourIndex;
 use App\Livewire\Company\User\UserForm;
 use App\Livewire\Company\Vessels\VesselForm as VesselsVesselForm;
 use App\Livewire\Company\Vessels\VesselIndex;
-use App\Livewire\Dashboard\Bookings\BookingForm;
+use App\Livewire\Dashboard\{
+    Bookings\BookingForm,
+    Companies\CompanyForm,
+    Dashboard,
+    NotificationsList,
+    Posts\CatPosts,
+    Posts\Lixeira,
+    Posts\PostForm,
+    Posts\Posts,
+    Reports\Posts as ReportsPosts,
+    Settings,
+    Sitemap\SitemapGenerator,
+    Tours\TourForm,
+    Tours\Tours,
+    Users\Form,
+    Users\Time,
+    Users\Users,
+    Users\ViewUser,
+    Vessels\VesselForm,
+    Vessels\Vessels
+};
 use App\Livewire\Dashboard\Bookings\Bookings;
 use App\Livewire\Dashboard\Companies\Companies;
-use App\Livewire\Dashboard\Companies\CompanyForm;
-use App\Livewire\Dashboard\Dashboard;
-use App\Livewire\Dashboard\NotificationsList;
-use App\Livewire\Dashboard\Posts\CatPosts;
-use App\Livewire\Dashboard\Posts\Lixeira;
-use App\Livewire\Dashboard\Posts\PostForm;
-use App\Livewire\Dashboard\Posts\Posts;
-use App\Livewire\Dashboard\Reports\Posts as ReportsPosts;
-use App\Livewire\Dashboard\Settings;
-use App\Livewire\Dashboard\Sitemap\SitemapGenerator;
-use App\Livewire\Dashboard\Tours\TourForm;
-use App\Livewire\Dashboard\Tours\Tours;
-use App\Livewire\Dashboard\Users\Form;
-use App\Livewire\Dashboard\Users\Time;
-use App\Livewire\Dashboard\Users\Users;
-use App\Livewire\Dashboard\Users\ViewUser;
-use App\Livewire\Dashboard\Vessels\VesselForm;
-use App\Livewire\Dashboard\Vessels\Vessels;
 use App\Livewire\Web\Checkout\CheckoutForm as CheckoutCheckoutForm;
 use App\Livewire\Web\Customer\FindOrders;
 use App\Livewire\Web\Customer\OrderShow;

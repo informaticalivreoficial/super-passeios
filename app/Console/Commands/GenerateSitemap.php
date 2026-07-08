@@ -35,8 +35,8 @@ class GenerateSitemap extends Command
             // ['url' => route('web.ondas'), 'priority' => 0.8],
             // ['url' => route('web.tempo'), 'priority' => 0.9],
             // ['url' => route('web.anunciar'), 'priority' => 0.9],
-            // ['url' => route('web.politica'), 'priority' => 0.9],
-            // ['url' => route('web.guiaUbatuba'), 'priority' => 0.9],
+            ['url' => route('web.privacy'), 'priority' => 0.9],
+            ['url' => route('web.cookies'), 'priority' => 0.9],
             // ['url' => route('web.blog.artigos'), 'priority' => 0.9],
             // ['url' => route('web.noticias'), 'priority' => 0.9],
             // ['url' => route('web.pesquisa'), 'priority' => 0.9],
@@ -61,7 +61,7 @@ class GenerateSitemap extends Command
             ->chunk(100, function ($posts) use ($sitemap) {
                 foreach ($posts as $post) {
                     $sitemap->add(
-                        Url::create(route('web.blog.artigo', $post->slug))
+                        Url::create(route('web.blog.show', $post->slug))
                             ->setLastModificationDate($post->updated_at)
                             ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
                             ->setPriority(0.6)
@@ -76,7 +76,7 @@ class GenerateSitemap extends Command
             ->chunk(100, function ($posts) use ($sitemap) {
                 foreach ($posts as $post) {
                     $sitemap->add(
-                        Url::create(route('web.pagina', $post->slug))
+                        Url::create(route('web.blog.page', $post->slug))
                             ->setLastModificationDate($post->updated_at)
                             ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
                             ->setPriority(0.8) // Páginas têm prioridade maior
@@ -85,19 +85,19 @@ class GenerateSitemap extends Command
             });
 
         // Notícias
-        Post::where('type', 'noticia')
-            ->postson()
-            ->orderBy('created_at', 'desc')
-            ->chunk(100, function ($posts) use ($sitemap) {
-                foreach ($posts as $post) {
-                    $sitemap->add(
-                        Url::create(route('web.noticia', $post->slug))
-                            ->setLastModificationDate($post->updated_at)
-                            ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY) // Notícias mudam mais
-                            ->setPriority(0.7)
-                    );
-                }
-            });
+        // Post::where('type', 'noticia')
+        //     ->postson()
+        //     ->orderBy('created_at', 'desc')
+        //     ->chunk(100, function ($posts) use ($sitemap) {
+        //         foreach ($posts as $post) {
+        //             $sitemap->add(
+        //                 Url::create(route('web.noticia', $post->slug))
+        //                     ->setLastModificationDate($post->updated_at)
+        //                     ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY) // Notícias mudam mais
+        //                     ->setPriority(0.7)
+        //             );
+        //         }
+        //     });
     }
 
         // Salva o sitemap

@@ -13,7 +13,7 @@ class ReleaseWalletTransactions extends Command
      *
      * @var string
      */
-    protected $signature = 'app:release-wallet-transactions';
+    protected $signature = 'wallet:release';
 
     /**
      * The console command description.

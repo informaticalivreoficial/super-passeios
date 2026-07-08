@@ -1,7 +1,7 @@
 <div class="max-w-7xl mx-auto space-y-8">
 
     {{-- CARDS DE SALDO --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
 
         {{-- Disponível --}}
         <div class="bg-white rounded-3xl p-6" style="border: 1px solid #e8e4d8;">
@@ -78,6 +78,24 @@
                 R$ {{ number_format($data['total_withdrawn'], 2, ',', '.') }}
             </p>
             <p class="text-xs mt-1" style="color: #c5bfb2;">Valores transferidos</p>
+        </div>
+
+        {{-- Cancelado --}}
+        <div class="bg-white rounded-3xl p-6" style="border: 1px solid #e8e4d8;">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-sm font-semibold" style="color: #87c2c0;">Cancelado</span>
+                <div class="w-10 h-10 rounded-2xl flex items-center justify-center"
+                    style="background: rgba(239,68,68,0.1);">
+                    <svg class="w-5 h-5" style="color: #dc2626;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M15 9l-6 6M9 9l6 6"/>
+                    </svg>
+                </div>
+            </div>
+            <p class="text-2xl font-extrabold" style="color: #dc2626;">
+                R$ {{ number_format($data['cancelled_balance'], 2, ',', '.') }}
+            </p>
+            <p class="text-xs mt-1" style="color: #c5bfb2;">Reservas estornadas</p>
         </div>
 
     </div>
@@ -222,17 +240,33 @@
                     </p>
                 </div>
 
-                <div class="mb-6">
+                <div class="mb-6"
+                    x-data="{
+                        display: '',
+                        format(digits) {
+                            digits = digits.replace(/\D/g, '');
+                            if (!digits) digits = '0';
+                            let num = (parseInt(digits, 10) / 100).toFixed(2);
+                            let [int, dec] = num.split('.');
+                            int = int.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                            return 'R$ ' + int + ',' + dec;
+                        },
+                        onInput(e) {
+                            let digits = e.target.value.replace(/\D/g, '');
+                            this.display = this.format(digits);
+                            $wire.set('withdrawalAmount', parseInt(digits || '0', 10) / 100);
+                        }
+                    }"
+                >
                     <label class="block text-sm font-semibold mb-2" style="color: #051e34;">
                         Valor do saque
                     </label>
                     <input
-                        type="number"
-                        wire:model="withdrawalAmount"
-                        step="0.01"
-                        min="10"
-                        max="{{ $data['available_balance'] }}"
-                        placeholder="0,00"
+                        type="text"
+                        inputmode="numeric"
+                        x-model="display"
+                        @input="onInput($event)"
+                        placeholder="R$ 0,00"
                         class="w-full h-12 px-4 rounded-2xl text-sm outline-none transition"
                         style="border: 1.5px solid #e8e4d8; color: #051e34;"
                         onfocus="this.style.borderColor='#16a3b7'"

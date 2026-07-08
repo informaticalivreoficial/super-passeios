@@ -15,7 +15,7 @@ class Dashboard extends Component
         return Auth::guard('customer')->user()->company;
     }
 
-    #[Layout('components.layouts.company', ['title' => 'Painel de Controle'])]
+    #[Layout('components.layouts.company', ['title' => 'Painel de Controle', 'bracrhumb' => 'Painel de Controle'])]
     public function render(FinancialDashboardService $service)
     {
         $company = $this->getCompany();

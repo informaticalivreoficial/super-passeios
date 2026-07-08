@@ -64,8 +64,10 @@
         {{-- LISTA --}}
         <div class="space-y-4">
             @foreach($bookings as $booking)
-                <div class="bg-white rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-md"
-                     style="border: 1px solid #e8e4d8;">
+                <a href="{{ route('company.bookings.show', $booking) }}" 
+                class="block bg-white rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-md"
+                     style="border: 1px solid #e8e4d8;"
+                     >
 
                     <div class="p-5">
                         <div class="flex flex-col lg:flex-row lg:items-center gap-4">
@@ -196,7 +198,7 @@
                         </span>
                     </div>
 
-                </div>
+                </a>
             @endforeach
         </div>
 

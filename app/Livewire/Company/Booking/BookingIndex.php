@@ -58,7 +58,7 @@ class BookingIndex extends Component
         ]);
     }
 
-    #[Layout('components.layouts.company', ['title' => 'Gerenciar Reservas'])]
+    #[Layout('components.layouts.company', ['title' => 'Gerenciar Reservas', 'bracrhumb' => 'Gerenciar Reservas'])]
     public function render()
     {
         $customer = Auth::guard('customer')->user();

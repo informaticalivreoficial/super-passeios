@@ -4,13 +4,10 @@ namespace App\Livewire\Company\Finance;
 
 use App\Models\Company;
 use App\Models\WalletTransaction;
-use App\Enums\WalletStatusEnum;
-use App\Enums\WalletTypeEnum;
 use App\Services\Wallet\FinancialDashboardService;
 use App\Services\Wallet\WithdrawalService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -56,7 +53,7 @@ class Dashboard extends Component
         return Auth::guard('customer')->user()->company;
     }
 
-    #[Layout('components.layouts.company', ['title' => 'Financeiro'])]
+    #[Layout('components.layouts.company', ['title' => 'Financeiro', 'bracrhumb' => 'Painel Financeiro'])]
     public function render(FinancialDashboardService $service)
     {
         $company = $this->getCompany();

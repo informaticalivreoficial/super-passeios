@@ -16,11 +16,12 @@ class FinancialDashboardService
             ->where('company_id', $company->id);
 
         return [
-            'available_balance' => $company->available_balance,
-            'pending_balance'   => $company->pending_balance,
-            'total_sales'       => $company->total_sales,
-            'total_commission'  => $company->total_commission,
-            'total_withdrawn'   => $company->total_withdrawn,            
+            'available_balance'  => $company->available_balance,
+            'pending_balance'    => $company->pending_balance,
+            'total_sales'        => $company->total_sales,
+            'total_commission'   => $company->total_commission,
+            'total_withdrawn'    => $company->total_withdrawn,
+            'cancelled_balance'  => $company->cancelled_balance, // 👈 novo
 
             'next_release' => WalletTransaction::query()
                     ->where('company_id', $company->id)
@@ -33,7 +34,6 @@ class FinancialDashboardService
                     ->latest()
                     ->limit(10)
                     ->get(),
-
         ];
     }
 }

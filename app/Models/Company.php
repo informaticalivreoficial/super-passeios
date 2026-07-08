@@ -203,6 +203,15 @@ class Company extends Model
         );
     }
 
+    public function getCancelledBalanceAttribute(): float
+    {
+        return (float) abs(
+            $this->walletTransactions()
+                ->where('status', WalletStatusEnum::Cancelled)
+                ->sum('net_amount')
+        );
+    }
+
     // Usar no Blade
     // $company->available_balance;
     // $company->pending_balance;

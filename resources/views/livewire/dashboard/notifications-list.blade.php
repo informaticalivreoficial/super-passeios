@@ -40,13 +40,14 @@
                     $type = $notification->data['type'] ?? 'default';
 
                     $icon = match($type) {
-                        'invoice_paid'       => 'fas fa-money-bill-wave',
-                        'new_company'        => 'fas fa-building',
-                        'reservation_created'=> 'fas fa-calendar-check',
-                        'support_ticket'     => 'fas fa-life-ring',
-                        'subscription'       => 'fas fa-credit-card',
-                        'ArticleCreated' => 'fas fa-file-alt',
-                        default              => 'fas fa-bell',
+                        'invoice_paid'         => 'fas fa-money-bill-wave',
+                        'withdrawal_requested' => 'fas fa-hand-holding-usd',
+                        'new_company'          => 'fas fa-building',
+                        'reservation_created'  => 'fas fa-calendar-check',
+                        'support_ticket'       => 'fas fa-life-ring',
+                        'subscription'         => 'fas fa-credit-card',
+                        'ArticleCreated'       => 'fas fa-file-alt',
+                        default                => 'fas fa-bell',
                     };
 
                     $color = match($notification->data['color'] ?? '') {

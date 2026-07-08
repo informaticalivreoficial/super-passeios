@@ -72,6 +72,14 @@
                     </a>
                 </li>
 
+                {{-- Financeiro --}}
+                <li class="nav-item">
+                    <a href="{{ route('admin.withdrawals.index') }}" class="nav-link {{ Route::is('admin.withdrawals.index') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-dollar-sign"></i>
+                        <p>Financeiro </p>
+                    </a>
+                </li>
+
                 {{-- Usuários --}}
                 <li class="nav-item {{ Route::is('admin.users.*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ Route::is('admin.users.*') ? 'active' : '' }}">

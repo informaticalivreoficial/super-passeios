@@ -14,6 +14,7 @@ class WalletTransaction extends Model
     protected $fillable = [
         'company_id',
         'booking_id',
+        'withdrawal_id',
         'uuid',
         'type',
         'status',
@@ -41,5 +42,10 @@ class WalletTransaction extends Model
     public function booking()
     {
         return $this->belongsTo(Booking::class);
+    }
+
+    public function withdrawal()
+    {
+        return $this->belongsTo(Withdrawal::class);
     }
 }

@@ -206,20 +206,8 @@
                     <div class="divide-y" style="border-color: #f5f2ec;">
                         @foreach($withdrawals as $withdrawal)
                             @php
-                                $statusLabel = match($withdrawal->status) {
-                                    'requested' => 'Aguardando',
-                                    'approved'  => 'Aprovado',
-                                    'paid'      => 'Pago',
-                                    'rejected'  => 'Recusado',
-                                    default     => $withdrawal->status,
-                                };
-                                $statusStyle = match($withdrawal->status) {
-                                    'requested' => ['bg' => 'rgba(245,158,11,0.1)',  'color' => '#d97706'],
-                                    'approved'  => ['bg' => 'rgba(22,163,183,0.1)',  'color' => '#16a3b7'],
-                                    'paid'      => ['bg' => 'rgba(35,197,94,0.1)',   'color' => '#15803d'],
-                                    'rejected'  => ['bg' => 'rgba(239,68,68,0.1)',   'color' => '#dc2626'],
-                                    default     => ['bg' => 'rgba(0,0,0,0.05)',      'color' => '#64748b'],
-                                };
+                                $statusLabel = $withdrawal->status->label();
+                                $statusHex = $withdrawal->status->color();
                             @endphp
                             <div class="px-6 py-5">
                                 <div class="flex justify-between items-start">
@@ -238,10 +226,8 @@
                                             </div>
                                         @endif
                                     </div>
-                                    <span
-                                        class="px-3 py-1 rounded-full text-xs font-bold"
-                                        style="background: {{ $statusStyle['bg'] }};
-                                            color: {{ $statusStyle['color'] }};">
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold"
+                                        style="background: {{ $statusHex }}1a; color: {{ $statusHex }};">
                                         {{ $statusLabel }}
                                     </span>
                                 </div>

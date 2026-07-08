@@ -57,11 +57,12 @@
 
                 @php
                     $icon = match($notification->data['type'] ?? '') {
-                        'invoice_paid' => 'fas fa-money-bill-wave',
-                        'new_company' => 'fas fa-building',
-                        'reservation_created' => 'fas fa-calendar-check',
-                        'support_ticket' => 'fas fa-life-ring',
-                        'ArticleCreated' => 'fas fa-file-alt',
+                        'invoice_paid'         => 'fas fa-money-bill-wave',
+                        'withdrawal_requested' => 'fas fa-hand-holding-usd',
+                        'new_company'          => 'fas fa-building',
+                        'reservation_created'  => 'fas fa-calendar-check',
+                        'support_ticket'       => 'fas fa-life-ring',
+                        'ArticleCreated'       => 'fas fa-file-alt',
                         default => 'fas fa-bell',
                     };
 

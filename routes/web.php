@@ -43,6 +43,7 @@ use App\Livewire\Dashboard\{
 };
 use App\Livewire\Dashboard\Bookings\Bookings;
 use App\Livewire\Dashboard\Companies\Companies;
+use App\Livewire\Dashboard\Finance\WithdrawalsIndex;
 use App\Livewire\Web\Checkout\CheckoutForm as CheckoutCheckoutForm;
 use App\Livewire\Web\Customer\FindOrders;
 use App\Livewire\Web\Customer\OrderShow;
@@ -183,4 +184,6 @@ Route::group(['middleware' => ['auth', 'verified', 'role:super-admin|admin'], 'p
     Route::get('posts/lixeira', Lixeira::class)->name('posts.lixeira');
     Route::get('posts/reports', ReportsPosts::class)->name('posts.reports');
     Route::get('posts/{post}/editar', PostForm::class)->name('posts.edit'); 
+
+    Route::get('financeiro-saques', WithdrawalsIndex::class)->name('withdrawals.index');
 });

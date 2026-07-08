@@ -33,6 +33,7 @@ class Withdrawal extends Model
         'requested_at' => 'datetime',
         'approved_at' => 'datetime',
         'paid_at' => 'datetime',
+        'status' => \App\Enums\WithdrawalStatusEnum::class,
     ];
 
     protected static function booted(): void
@@ -59,16 +60,16 @@ class Withdrawal extends Model
 
     public function isPending(): bool
     {
-        return $this->status === 'requested';
+        return $this->status === \App\Enums\WithdrawalStatusEnum::REQUESTED;
     }
 
     public function isApproved(): bool
     {
-        return $this->status === 'approved';
+        return $this->status === \App\Enums\WithdrawalStatusEnum::APPROVED;
     }
 
     public function isPaid(): bool
     {
-        return $this->status === 'paid';
+        return $this->status === \App\Enums\WithdrawalStatusEnum::PAID;
     }
 }

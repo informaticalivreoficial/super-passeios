@@ -167,7 +167,7 @@
                                     </p>
                                 </div>
 
-                                {{-- Ações --}}
+                                {{-- Ações 
                                 <div class="flex items-center gap-2">
                                     <button
                                         wire:click="setDeleteId({{ $booking->id }})"
@@ -180,7 +180,7 @@
                                         </svg>
                                     </button>
                                 </div>
-
+                                --}}
                             </div>
                         </div>
                     </div>

@@ -7,11 +7,13 @@ use App\Http\Controllers\Web\SiteController;
 use App\Livewire\Auth\RegisterCompany;
 use App\Livewire\Company\Booking\BookingForm as BookingBookingForm;
 use App\Livewire\Company\Booking\BookingIndex;
+use App\Livewire\Company\Booking\BookingShow;
 use App\Livewire\Company\Company\CompanyForm as CompanyCompanyForm;
 use App\Livewire\Company\Dashboard as CompanyDashboard;
 use App\Livewire\Company\Finance\BankAccounts;
 use App\Livewire\Company\Finance\Dashboard as FinanceDashboard;
 use App\Livewire\Company\Finance\Withdrawals;
+use App\Livewire\Company\Notifications\NotificationIndex;
 use App\Livewire\Company\Tours\TourDates;
 use App\Livewire\Company\Tours\TourForm as ToursTourForm;
 use App\Livewire\Company\Tours\TourIndex;
@@ -105,7 +107,7 @@ Route::name('web.')->group(function () {
         
 });
 
-Route::group(['middleware' => ['auth:customer', 'verified', 'role:customer'], 'prefix' => 'minha-conta', 'as' => 'customer.'], function () {
+Route::group(['middleware' => ['auth:customer', 'verified', 'role:proprietary'], 'prefix' => 'minha-conta', 'as' => 'customer.'], function () {
     Route::get('/', CompanyDashboard::class)->name('dashboard');
 });
 
@@ -131,7 +133,10 @@ Route::group([
 
     Route::get('/gerenciar-reservas', BookingIndex::class)->name('bookings.index'); 
     Route::get('/cadastrar-reserva', BookingBookingForm::class)->name('bookings.create');
+    Route::get('/visualizar-reserva/{booking}', BookingShow::class)->name('bookings.show');
     Route::get('/reserva/{booking}/editar', BookingBookingForm::class)->name('bookings.edit');
+
+    Route::get('/notificacoes', NotificationIndex::class)->name('notifications.index');
 
     Route::prefix('financeiro')->name('finance.')->group(function () {
         Route::get('/', FinanceDashboard::class)->name('index');

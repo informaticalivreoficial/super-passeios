@@ -7,6 +7,8 @@ use App\Models\Booking;
 use App\Enums\BookingStatusEnum;
 use App\Enums\PaymentStatusEnum;
 use App\Mail\BookingConfirmed;
+use App\Notifications\Customer\NewBookingNotification;
+use App\Notifications\Customer\PaymentConfirmedNotification;
 use App\Services\Wallet\WalletService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -61,9 +63,14 @@ class BookingPaidService
         Mail::to($booking->customer_email)
             ->queue(new BookingConfirmed($booking->fresh(), $booking->customer));
 
-        Log::info('BookingPaidService executado com sucesso', [
-            'booking_id' => $booking->id,
-        ]);
+        $owner = $booking->tourDate->tour->company->owner;
+
+        $owner?->notify(new NewBookingNotification($booking));
+        $owner?->notify(new PaymentConfirmedNotification($booking));
+
+        // Log::info('BookingPaidService executado com sucesso', [
+        //     'booking_id' => $booking->id,
+        // ]);
     }
 
     /**

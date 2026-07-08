@@ -33,8 +33,9 @@ class Booking extends Model
         'status',
         'payment_status',
         'paid_at',
-        'expires_at',       
-
+        'expires_at', 
+        'cancelled_at',    
+        'cancelled_reason'
     ];
 
     protected $casts = [
@@ -82,5 +83,10 @@ class Booking extends Model
     public function getTotalPeopleAttribute(): int
     {
         return (int) $this->adults + (int) $this->children;
+    }
+
+    public function walletTransaction()
+    {
+        return $this->hasOne(WalletTransaction::class);
     }
 }

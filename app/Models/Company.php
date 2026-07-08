@@ -106,6 +106,13 @@ class Company extends Model
         return $this->hasMany(Customer::class);
     }
 
+    public function owner()
+    {
+        return $this->hasOne(Customer::class)->whereHas('roles', function ($query) {
+            $query->where('name', 'proprietary');
+        });
+    }
+
     public function tours()
     {
         return $this->hasMany(Tour::class);

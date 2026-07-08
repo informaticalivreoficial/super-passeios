@@ -98,7 +98,7 @@
 
                     <a
                         href="{{ route('web.home') }}"
-                        class="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-[#0d9488] transition"
+                        class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-[#0d9488] transition"
                         target="_blank"
                         rel="noopener noreferrer"
                         title="Ir para o site"
@@ -111,6 +111,8 @@
                                 d="M6 18h12a1 1 0 001-1V10"/>
                         </svg>
                     </a>
+
+                   <livewire:company.notification-bell />
 
                     @php
                         $company = auth('customer')->user()?->company;

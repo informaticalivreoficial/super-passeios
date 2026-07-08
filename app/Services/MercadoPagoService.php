@@ -129,4 +129,23 @@ class MercadoPagoService
             'data' => $json,
         ];
     }
+
+    // ─────────────────────────────────────────
+    // REEMBOLSO
+    // ─────────────────────────────────────────
+    public function refundPayment(string $paymentId, ?float $amount = null): array
+    {
+        $payload = [];
+
+        // Se $amount for informado, é reembolso parcial. Sem ele, o MP reembolsa o valor total.
+        if ($amount !== null) {
+            $payload['amount'] = $amount;
+        }
+
+        $response = Http::withToken($this->accessToken)
+            ->withHeaders(['X-Idempotency-Key' => (string) Str::uuid()])
+            ->post("{$this->baseUrl}/v1/payments/{$paymentId}/refunds", $payload);
+
+        return $this->formatResponse($response);
+    }
 }

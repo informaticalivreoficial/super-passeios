@@ -211,7 +211,12 @@ class CheckoutForm extends Component
                 'status'            => BookingStatusEnum::PENDING,
                 'payment_status'    => PaymentStatusEnum::PENDING,
                 'expires_at'        => now()->addMinutes(30),
-            ]);
+            ]);    
+            
+            // 👇 gatilho
+            // $booking->tourDate->tour->company->owner->notify(
+            //     new \App\Notifications\Customer\NewBookingNotification($booking)
+            // );
  
             // 3. Processa o pagamento
             $nameParts = explode(' ', trim($this->name), 2);
@@ -248,10 +253,10 @@ class CheckoutForm extends Component
             // 5. PIX: exibe QR code
             if ($this->paymentMethod === 'pix') {
                 $this->pixData = [
-                    'payment_id'   => $response['id'],
+                    'payment_id'   => $payment['id'],
                     'booking_uuid' => $booking->uuid,
-                    'qr_code'        => $response['point_of_interaction']['transaction_data']['qr_code'] ?? null,
-                    'qr_code_base64' => $response['point_of_interaction']['transaction_data']['qr_code_base64'] ?? null,
+                    'qr_code'        => $payment['point_of_interaction']['transaction_data']['qr_code'] ?? null,
+                    'qr_code_base64' => $payment['point_of_interaction']['transaction_data']['qr_code_base64'] ?? null,
                 ];
                 $this->step = 4; // tela de aguardando pagamento
             }

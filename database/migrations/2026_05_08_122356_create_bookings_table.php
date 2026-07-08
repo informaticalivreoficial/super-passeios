@@ -39,35 +39,20 @@ return new class extends Migration
 
             $table->integer('adults')->default(1);
             $table->integer('children')->default(0);
-
-            $table->string('payment_method')
-                ->nullable();
-            
-            $table->string('payment_id')
-                ->nullable();
-
+            $table->string('payment_method')->nullable();            
+            $table->string('payment_id')->nullable();
             $table->decimal('subtotal', 10, 2);
-
-            $table->decimal('commission_amount', 10, 2)
-                ->default(0);
-
-            $table->decimal('company_amount', 10, 2)
-                ->default(0);
-
+            $table->decimal('commission_amount', 10, 2)->default(0);
+            $table->decimal('company_amount', 10, 2)->default(0);
             $table->decimal('total', 10, 2);
-
             $table->string('status')->nullable()->default(null);
-
             $table->string('payment_status')->nullable()->default(null);
-
-            $table->timestamp('expires_at')
-                ->nullable();
-
-            $table->timestamp('paid_at')
-                ->nullable();
-
+            $table->timestamp('expires_at')->nullable();
+            $table->timestamp('paid_at')->nullable();
             $table->index('status');
             $table->index('payment_status');
+            $table->timestamp('cancelled_at')->nullable();
+            $table->string('cancellation_reason')->nullable();
 
             $table->timestamps();
         });

@@ -1,7 +1,7 @@
 <div class="max-w-7xl mx-auto space-y-8">
 
     {{-- CARDS DE SALDO --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-4">
 
         {{-- Disponível --}}
         <div class="bg-white rounded-3xl p-6" style="border: 1px solid #e8e4d8;">
@@ -238,6 +238,69 @@
                     <p class="text-2xl font-extrabold" style="color: #23c55e;">
                         R$ {{ number_format($data['available_balance'], 2, ',', '.') }}
                     </p>
+                </div>
+
+                {{-- Conta bancária --}}
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold mb-3" style="color:#051e34;">
+                        Conta para recebimento
+                    </label>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+                        @forelse($this->getCompany()->bankAccounts as $account)
+
+                            <button
+                                type="button"
+                                wire:click="$set('bankAccountId', {{ $account->id }})"
+                                class="relative w-full text-left rounded-2xl p-3 transition-all duration-200"
+                                style="
+                                    border:2px solid {{ $bankAccountId == $account->id ? '#23c55e' : '#e8e4d8' }};
+                                    background: {{ $bankAccountId == $account->id ? 'rgba(35,197,94,.06)' : '#fff' }};
+                                "
+                            >
+
+                                @if($bankAccountId == $account->id)
+                                    <div
+                                        class="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center"
+                                        style="background:#23c55e;color:white;"
+                                    >
+                                        <i class="fas fa-check text-[10px]"></i>
+                                    </div>
+                                @endif
+
+                                <div class="font-semibold text-sm truncate" style="color:#051e34;">
+                                    {{ $account->type === 'pix' ? 'PIX' : $account->bank_name }}
+                                </div>
+
+                                <div class="text-xs mt-1 truncate" style="color:#87c2c0;">
+                                    {{ $account->label }}
+                                </div>
+
+                                <div class="text-[11px] mt-2 text-gray-500 truncate">
+                                    {{ $account->holder_name }}
+                                </div>
+
+                            </button>
+
+                        @empty
+
+                            <div
+                                class="rounded-2xl p-4 text-center"
+                                style="border:2px dashed #e8e4d8;color:#87c2c0;"
+                            >
+                                Nenhuma conta bancária cadastrada.
+                            </div>
+
+                        @endforelse
+
+                    </div>
+
+                    @error('bankAccountId')
+                        <p class="text-xs mt-2 text-red-600">
+                            {{ $message }}
+                        </p>
+                    @enderror
                 </div>
 
                 <div class="mb-6"

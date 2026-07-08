@@ -17,18 +17,42 @@ class Dashboard extends Component
 
     public float $withdrawalAmount = 0;
     public bool $showWithdrawalModal = false;
+    public ?int $bankAccountId = null;
+
+    public function openWithdrawalModal()
+    {
+        $this->bankAccountId = $this->getCompany()
+            ->bankAccounts()
+            ->where('is_default', true)
+            ->value('id');
+
+        $this->showWithdrawalModal = true;
+    }
 
     public function requestWithdrawal(WithdrawalService $service): void
     {
         $this->validate([
-            'withdrawalAmount' => 'required|numeric|min:10',
+            'withdrawalAmount' => ['required', 'numeric', 'min:10'],
+            'bankAccountId' => ['required', 'exists:bank_accounts,id'],
         ], [
             'withdrawalAmount.min' => 'Valor mínimo para saque é R$ 10,00.',
+            'bankAccountId.required' => 'Selecione uma conta bancária.',
         ]);
 
         try {
             $company = $this->getCompany();
-            $service->request($company, $this->withdrawalAmount);
+
+            $bankAccount = $company->bankAccounts()->findOrFail($this->bankAccountId);
+
+            if (!$bankAccount) {
+                throw new \Exception('Cadastre uma conta bancária antes de solicitar um saque.');
+            }
+
+            $service->request(
+                $company,
+                $bankAccount,
+                $this->withdrawalAmount
+            );           
 
             $this->showWithdrawalModal = false;
             $this->withdrawalAmount = 0;

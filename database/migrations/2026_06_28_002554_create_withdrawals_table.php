@@ -14,17 +14,19 @@ return new class extends Migration
         Schema::create('withdrawals', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
+            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('bank_account_id')->nullable()->constrained()->nullOnDelete();
+            $table->decimal('amount', 10, 2);
 
-            $table->foreignId('company_id')
-                ->constrained()
-                ->cascadeOnDelete();
-
-            $table->foreignId('bank_account_id')
+            $table->decimal('fee', 10, 2)->default(0);
+            $table->decimal('net_amount', 10, 2); 
+            $table->foreignId('approved_by')
                 ->nullable()
-                ->constrained()
+                ->after('approved_at')
+                ->constrained('users')
                 ->nullOnDelete();
 
-            $table->decimal('amount', 10, 2);
+            $table->string('payment_reference')->nullable();
 
             $table->enum('status', [
                 'requested',
@@ -32,6 +34,9 @@ return new class extends Migration
                 'paid',
                 'rejected',
             ])->default('requested');
+
+            $table->timestamp('requested_at')->nullable();
+            $table->timestamp('approved_at')->nullable();
 
             $table->text('notes')->nullable();
             $table->timestamp('paid_at')->nullable();

@@ -18,10 +18,20 @@ class Withdrawal extends Model
         'status',
         'notes',
         'paid_at',
+        'requested_at',
+        'approved_at',
+        'fee',
+        'net_amount',
+        'approved_by',
+        'payment_reference'
     ];
 
     protected $casts = [
-        'amount'  => 'decimal:2',
+        'amount' => 'decimal:2',
+        'fee' => 'decimal:2',
+        'net_amount' => 'decimal:2',
+        'requested_at' => 'datetime',
+        'approved_at' => 'datetime',
         'paid_at' => 'datetime',
     ];
 
@@ -35,6 +45,11 @@ class Withdrawal extends Model
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
     }
 
     public function isPending(): bool

@@ -8,8 +8,7 @@ use App\Models\BankAccount;
 use App\Models\Withdrawal;
 use App\Models\WalletTransaction;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use App\Services\Wallet\WithdrawalService;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -18,21 +17,21 @@ class Withdrawals extends Component
 {
     use WithPagination;
 
-    public $amount;
+    public float $amount = 0;
     public $notes;
     public $selectedAccountId;
     public $successMsg;
 
     protected $rules = [
-        'amount'            => 'required|numeric|min:50',
+        'amount'            => 'required|numeric|min:10',
         'selectedAccountId' => 'required|exists:bank_accounts,id',
         'notes'             => 'nullable|string|max:255',
     ];
 
     protected $messages = [
-        'amount.required'             => 'Informe o valor do saque.',
-        'amount.min'                  => 'Valor mínimo para saque é R$ 2,00.',
-        'selectedAccountId.required'  => 'Selecione uma conta bancária.',
+        'amount.required' => 'Informe o valor do saque.',
+        'amount.min' => 'O valor mínimo para saque é R$ 10,00.',
+        'selectedAccountId.required' => 'Selecione uma conta bancária.',
     ];
 
     private function customer()
@@ -53,21 +52,13 @@ class Withdrawals extends Component
 
     public function getBalanceProperty(): float
     {
-        $companyId = $this->customer()->company_id;
-
-        $credits = WalletTransaction::where('company_id', $companyId)
-            ->where('status', WalletStatusEnum::Available)
-            ->sum('net_amount');
-
-        $debits = Withdrawal::where('company_id', $companyId)
-            ->whereIn('status', ['requested', 'approved'])
-            ->sum('amount');
-
-        return max(0, $credits - $debits);
+        return (float) $this->customer()->company->available_balance;
     }
 
-    public function requestWithdrawal(): void
+    public function requestWithdrawal(WithdrawalService $service): void
     {
+        $this->resetErrorBag();
+        $this->resetValidation();
         $this->validate();
 
         if ($this->amount > $this->balance) {
@@ -76,37 +67,24 @@ class Withdrawals extends Component
         }
 
         try {
-            DB::transaction(function () {
-                $companyId = $this->customer()->company_id;
-                $account   = BankAccount::findOrFail($this->selectedAccountId);
+            $company = $this->customer()->company;
 
-                Withdrawal::create([
-                    'company_id'      => $companyId,
-                    'bank_account_id' => $account->id,
-                    'amount'          => $this->amount,
-                    'status'          => 'requested',
-                    'notes'           => $this->notes,
-                ]);
+            $account = $company->bankAccounts()
+                ->findOrFail($this->selectedAccountId);
 
-                WalletTransaction::create([
-                    'uuid'           => (string) Str::uuid(),
-                    'company_id'     => $companyId,
-                    'type'           => WalletTypeEnum::Withdrawal,
-                    'status'         => WalletStatusEnum::Pending,
-                    'description'    => "Saque solicitado · {$account->label}",
-                    'gross_amount'   => $this->amount,
-                    'fee_percentage' => 0,
-                    'fee_amount'     => 0,
-                    'net_amount'     => -$this->amount,
-                    'available_at'   => now(),
-                ]);
-            });
+            $service->request(
+                $company,
+                $account,
+                $this->amount
+            );
 
             $this->reset(['amount', 'notes']);
+            $this->mount();
+
             $this->successMsg = 'Saque solicitado com sucesso!';
 
         } catch (\Exception $e) {
-            $this->addError('amount', 'Erro: ' . $e->getMessage());
+            $this->addError('amount', $e->getMessage());
         }
     }
 

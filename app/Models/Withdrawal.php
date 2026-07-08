@@ -52,6 +52,11 @@ class Withdrawal extends Model
         return $this->belongsTo(User::class, 'approved_by');
     }
 
+    public function bankAccount()
+    {
+        return $this->belongsTo(BankAccount::class);
+    }
+
     public function isPending(): bool
     {
         return $this->status === 'requested';

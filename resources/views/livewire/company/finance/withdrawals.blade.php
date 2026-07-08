@@ -42,44 +42,67 @@
                         <label class="block text-xs font-bold uppercase tracking-widest mb-3" style="color: #87c2c0;">
                             Conta de Destino
                         </label>
-                        <div class="space-y-2">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             @forelse($bankAccounts as $account)
-                                <label class="flex items-center gap-3 p-3 rounded-2xl cursor-pointer transition"
+                                <label
                                     wire:click="$set('selectedAccountId', {{ $account->id }})"
-                                    style="border: 2px solid {{ $selectedAccountId == $account->id ? '#23c55e' : '#e8e4d8' }}; background: {{ $selectedAccountId == $account->id ? 'rgba(35,197,94,0.04)' : 'white' }};">
-
-                                    {{-- remove o input radio hidden --}}
-
-                                    <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                                        style="background: {{ $account->type === 'pix' ? 'rgba(35,197,94,0.1)' : 'rgba(22,163,183,0.1)' }};">
-                                        @if($account->type === 'pix')
-                                            <svg class="w-4 h-4" style="color: #23c55e;" viewBox="0 0 512 512" fill="currentColor">
-                                                <path d="M242.4 292.5C247.8 287.1 257.1 287.1 262.5 292.5L339.5 369.5C357.6 387.6 387.4 387.6 405.5 369.5L412.5 362.5L331.5 281.5C313.4 263.4 313.4 233.6 331.5 215.5L412.5 134.5L405.5 127.5C387.4 109.4 357.6 109.4 339.5 127.5L262.5 204.5C257.1 209.9 247.8 209.9 242.4 204.5L165.5 127.5C147.4 109.4 117.6 109.4 99.5 127.5L92.5 134.5L173.5 215.5C191.6 233.6 191.6 263.4 173.5 281.5L92.5 362.5L99.5 369.5C117.6 387.6 147.4 387.6 165.5 369.5L242.4 292.5z"/>
-                                            </svg>
-                                        @else
-                                            <svg class="w-4 h-4" style="color: #16a3b7;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                <path d="M3 21h18M3 10h18M3 6l9-3 9 3M4 10v11M8 10v11M12 10v11M16 10v11M20 10v11"/>
-                                            </svg>
-                                        @endif
-                                    </div>
-
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-xs font-bold truncate" style="color: #051e34;">{{ $account->label }}</p>
-                                        <p class="text-xs truncate" style="color: #87c2c0;">{{ $account->holder_name }}</p>
-                                    </div>
-
-                                    @if($account->is_default)
-                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0"
-                                            style="background: rgba(35,197,94,0.1); color: #15803d;">
-                                            Principal
-                                        </span>
-                                    @endif
+                                    class="relative cursor-pointer rounded-2xl p-3 transition-all"
+                                    style="
+                                        border:2px solid {{ $selectedAccountId == $account->id ? '#23c55e' : '#e8e4d8' }};
+                                        background:{{ $selectedAccountId == $account->id ? 'rgba(35,197,94,.05)' : '#fff' }};
+                                    "
+                                >
 
                                     @if($selectedAccountId == $account->id)
-                                        <svg class="w-5 h-5 shrink-0" style="color: #23c55e;" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                        </svg>
+                                        <div
+                                            class="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center"
+                                            style="background:#23c55e;color:white;"
+                                        >
+                                            <i class="fas fa-check text-[10px]"></i>
+                                        </div>
                                     @endif
+
+                                    <div class="flex items-center gap-2 mb-2">
+
+                                        <div
+                                            class="w-8 h-8 rounded-xl flex items-center justify-center"
+                                            style="background:{{ $account->type === 'pix'
+                                                ? 'rgba(35,197,94,.1)'
+                                                : 'rgba(22,163,183,.1)' }}"
+                                        >
+
+                                            @if($account->type === 'pix')
+                                                <i class="fa-solid fa-bolt text-sm" style="color:#23c55e;"></i>
+                                            @else
+                                                <i class="fa-solid fa-building-columns text-sm" style="color:#16a3b7;"></i>
+                                            @endif
+
+                                        </div>
+
+                                        <div class="min-w-0">
+                                            <div class="font-bold text-xs truncate" style="color:#051e34;">
+                                                {{ $account->type === 'pix' ? 'PIX' : $account->bank_name }}
+                                            </div>
+
+                                            @if($account->is_default)
+                                                <span
+                                                    class="text-[10px] font-bold"
+                                                    style="color:#16a34a;"
+                                                >
+                                                    Principal
+                                                </span>
+                                            @endif
+                                        </div>
+
+                                    </div>
+
+                                    <div class="text-[11px] truncate" style="color:#87c2c0;">
+                                        {{ $account->label }}
+                                    </div>
+
+                                    <div class="text-[11px] truncate mt-1 text-gray-500">
+                                        {{ $account->holder_name }}
+                                    </div>
 
                                 </label>
                             @empty
@@ -98,19 +121,22 @@
                     </div>
 
                     {{-- VALOR --}}
-                    <div x-data="{
-                        displayValue: '',
-                        formatMoney(value) {
-                            if (!value) return '';
-                            value = value.replace(/\D/g, '');
-                            value = (parseInt(value) / 100).toFixed(2).replace('.', ',');
-                            return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-                        },
-                        updateAmount(val) {
-                            this.displayValue = this.formatMoney(val);
-                            let numericValue = val.replace(/\D/g, '');
-                            $wire.set('amount', (parseInt(numericValue || 0) / 100).toFixed(2));
-                        }
+                    <div 
+                        x-data="{
+                            display: '',
+                            format(digits) {
+                                digits = digits.replace(/\D/g, '');
+                                if (!digits) digits = '0';
+                                let num = (parseInt(digits, 10) / 100).toFixed(2);
+                                let [int, dec] = num.split('.');
+                                int = int.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                                return 'R$ ' + int + ',' + dec;
+                            },
+                            onInput(e) {
+                                let digits = e.target.value.replace(/\D/g, '');
+                                this.display = this.format(digits);
+                                $wire.set('amount', parseInt(digits || '0', 10) / 100);
+                            }
                     }">
                         <label class="block text-xs font-bold uppercase tracking-widest mb-2" style="color: #87c2c0;">
                             Valor do saque
@@ -119,8 +145,9 @@
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold" style="color: #87c2c0;">R$</span>
                             <input
                                 type="text"
-                                x-model="displayValue"
-                                x-on:input="updateAmount($event.target.value)"
+                                inputmode="numeric"
+                                x-model="display"
+                                @input="onInput($event)"
                                 placeholder="0,00"
                                 class="w-full h-12 pl-12 pr-4 rounded-2xl text-sm font-bold outline-none transition"
                                 style="border: 1.5px solid #e8e4d8; color: #051e34;"
@@ -194,34 +221,84 @@
                                     default     => ['bg' => 'rgba(0,0,0,0.05)',      'color' => '#64748b'],
                                 };
                             @endphp
-                            <div class="px-6 py-4 flex items-center gap-4">
-
-                                <div class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0"
-                                     style="background: rgba(5,30,52,0.06);">
-                                    <svg class="w-5 h-5" style="color: #051e34;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path d="M12 5v14M5 12l7 7 7-7"/>
-                                    </svg>
+                            <div class="px-6 py-5">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <div class="text-lg font-extrabold" style="color:#051e34;">
+                                            R$ {{ number_format($withdrawal->amount,2,',','.') }}
+                                        </div>
+                                        @if($withdrawal->fee > 0)
+                                            <div class="text-xs mt-1 text-gray-500">
+                                                Taxa:
+                                                R$ {{ number_format($withdrawal->fee,2,',','.') }}
+                                            </div>
+                                            <div class="text-xs text-green-600 font-semibold">
+                                                Líquido:
+                                                R$ {{ number_format($withdrawal->net_amount,2,',','.') }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <span
+                                        class="px-3 py-1 rounded-full text-xs font-bold"
+                                        style="background: {{ $statusStyle['bg'] }};
+                                            color: {{ $statusStyle['color'] }};">
+                                        {{ $statusLabel }}
+                                    </span>
                                 </div>
-
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-bold" style="color: #051e34;">
-                                        R$ {{ number_format($withdrawal->amount, 2, ',', '.') }}
-                                    </p>
-                                    <p class="text-xs" style="color: #c5bfb2;">
-                                        {{ $withdrawal->created_at->format('d/m/Y \à\s H:i') }}
-                                    </p>
-                                    @if($withdrawal->notes)
-                                        <p class="text-xs truncate mt-0.5" style="color: #87c2c0;">
-                                            {{ $withdrawal->notes }}
-                                        </p>
+                                <div class="mt-4 grid grid-cols-2 gap-4 text-xs">
+                                    <div>
+                                        <div class="text-gray-400">
+                                            Solicitado
+                                        </div>
+                                        <div style="color:#051e34;">
+                                            {{ optional($withdrawal->requested_at)->format('d/m/Y H:i') }}
+                                        </div>
+                                    </div>
+                                    @if($withdrawal->approved_at)
+                                        <div>
+                                            <div class="text-gray-400">
+                                                Aprovado
+                                            </div>
+                                            <div style="color:#051e34;">
+                                                {{ $withdrawal->approved_at->format('d/m/Y H:i') }}
+                                            </div>
+                                        </div>
+                                    @endif
+                                    @if($withdrawal->paid_at)
+                                        <div>
+                                            <div class="text-gray-400">
+                                                Pago
+                                            </div>
+                                            <div style="color:#051e34;">
+                                                {{ $withdrawal->paid_at->format('d/m/Y H:i') }}
+                                            </div>
+                                        </div>
                                     @endif
                                 </div>
-
-                                <span class="px-3 py-1 rounded-full text-xs font-bold shrink-0"
-                                      style="background: {{ $statusStyle['bg'] }}; color: {{ $statusStyle['color'] }};">
-                                    {{ $statusLabel }}
-                                </span>
-
+                                @if($withdrawal->bankAccount)
+                                    <div class="mt-4 text-xs">
+                                        <span class="font-semibold" style="color:#87c2c0;">
+                                            Conta:
+                                        </span>
+                                        {{ $withdrawal->bankAccount->label }}
+                                    </div>
+                                @endif
+                                @if($withdrawal->payment_reference)
+                                    <div class="mt-2 text-xs break-all">
+                                        <span class="font-semibold" style="color:#87c2c0;">
+                                            Referência:
+                                        </span>
+                                        {{ $withdrawal->payment_reference }}
+                                    </div>
+                                @endif
+                                @if($withdrawal->notes)
+                                    <div
+                                        class="mt-4 p-3 rounded-xl text-xs"
+                                        style="background:#f8fafc;"
+                                    >
+                                        {{ $withdrawal->notes }}
+                                    </div>
+                                @endif
                             </div>
                         @endforeach
                     </div>

@@ -50,6 +50,29 @@
         <div x-show="tab === 'dados'" x-transition>
             <div class="bg-white">
                 <div class="card-body text-muted">
+                    <div class="row">                        
+                        <div class="col-12 col-sm-6 col-md-3 col-lg-3"> 
+                            <div class="form-group">
+                                <label class="labelforms text-muted">
+                                    <b>Marcar como Verificada?</b>
+                                </label>
+                                <div class="form-check">
+                                    <input id="highlightsim" class="form-check-input" type="radio" value="1" wire:model="highlight">
+                                    <label for="highlightsim" class="form-check-label mr-5">Sim</label>
+                                    <input id="highlightnao" class="form-check-input" type="radio" value="0" wire:model="highlight">
+                                    <label for="highlightnao" class="form-check-label">Não</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-2 col-lg-2">
+                            <x-forms.input
+                                label="Comissão:"
+                                name="commission_rate"
+                                type="number"
+                                step="0.01"
+                            />
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                             <x-forms.input
@@ -73,8 +96,11 @@
                     <div class="row mb-3">  
                         <div class="col-12 col-sm-6 col-md-3 col-lg-4">
                             <div class="form-group">
-                                <label class="labelforms"><b>*Nome Fantasia:</b></label>
-                                <input class="form-control @error('alias_name') is-invalid @enderror" placeholder="Nome da empresa" id="alias_name" wire:model="alias_name" />
+                                <x-forms.input
+                                    label="*Nome Fantasia:"
+                                    name="alias_name"
+                                    placeholder="Nome da empresa"
+                                />
                                 @error('alias_name')
                                     <span class="error erro-feedback">{{ $message }}</span>
                                 @enderror

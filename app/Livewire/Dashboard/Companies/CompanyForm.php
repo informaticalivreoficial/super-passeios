@@ -43,6 +43,7 @@ class CompanyForm extends Component
     public ?string $responsable_name = null;
     public ?string $responsable_email = null;
     public ?string $responsable_cpf = null;
+    public $commission_rate;
     public ?string $social_name = null;
     public ?string $alias_name = null;
     public ?string $document_company = null;
@@ -155,32 +156,30 @@ class CompanyForm extends Component
 
             // 🔹 Monta payload
             $data = [
-                'responsable_name' => $validated['responsable_name'],
+                'responsable_name'  => $validated['responsable_name'],
                 'responsable_email' => $validated['responsable_email'],
-                'responsable_cpf' => $this->responsable_cpf,
-                'alias_name' => $validated['alias_name'],
-                'email' => $validated['email'],
+                'responsable_cpf'   => $this->responsable_cpf,
+                'commission_rate'   => $this->commission_rate,
+                'alias_name'        => $validated['alias_name'],
 
-                'maps' => $this->maps,
-
-                'status' => $validated['status'],
-                'guia' => $this->guia ?? 0,
-                'client' => $this->client ?? 0,
-                'highlight' => $this->highlight ?? 0,
-
-                'url' => $this->url,
+                'email'      => $validated['email'],
+                'maps'       => $this->maps,
+                'status'     => $validated['status'],
+                'guia'       => $this->guia ?? 0,
+                'highlight'  => $this->highlight ?? 0,
+                'url'        => $this->url,
                 'first_year' => $this->first_year,
-                'content' => $this->content,
-                'caption_img_cover' => $this->caption_img_cover,
+                'content'    => $this->content,
 
-                'social_name' => $this->social_name,
-                'zipcode' => $this->zipcode,
-                'street' => $this->street,
-                'neighborhood' => $this->neighborhood,
-                'city' => $this->city,
-                'state' => $this->state,
-                'complement' => $this->complement,
-                'number' => $this->number,
+                'caption_img_cover' => $this->caption_img_cover,
+                'social_name'       => $this->social_name,
+                'zipcode'           => $this->zipcode,
+                'street'            => $this->street,
+                'neighborhood'      => $this->neighborhood,
+                'city'              => $this->city,
+                'state'             => $this->state,
+                'complement'        => $this->complement,
+                'number'            => $this->number,
 
                 'additional_email' => $this->additional_email,
                 'document_company' => $this->document_company,

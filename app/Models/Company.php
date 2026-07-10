@@ -236,6 +236,7 @@ class Company extends Model
         $this->attributes['document_company'] = (!empty($value) ? $this->clearField($value) : null);
     }
 
+
     public function getDocumentCompanyAttribute($value)
     {
         if (empty($value)) {

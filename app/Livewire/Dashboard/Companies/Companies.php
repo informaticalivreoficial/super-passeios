@@ -162,14 +162,15 @@ class Companies extends Component
     public function render()
     {
         $companies = Company::query()
-            ->when($this->search, function ($query) {
-                $query->where(function ($q) {
-                    $q->where('social_name', 'LIKE', "%{$this->search}%")
-                    ->orWhere('email', 'LIKE', "%{$this->search}%");
-                });
-            })
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(35);
+        ->when($this->search, fn($q) => $q->where('alias_name', 'like', "%{$this->search}%"))
+        ->withCount(['withdrawals as pending_withdrawals_count' => function ($query) {
+            $query->whereIn('status', [\App\Enums\WithdrawalStatusEnum::REQUESTED, \App\Enums\WithdrawalStatusEnum::APPROVED]);
+        }])
+        ->withSum(['withdrawals as pending_withdrawals_amount' => function ($query) {
+            $query->whereIn('status', [\App\Enums\WithdrawalStatusEnum::REQUESTED, \App\Enums\WithdrawalStatusEnum::APPROVED]);
+        }], 'net_amount')
+        ->orderBy($this->sortField, $this->sortDirection)
+        ->paginate(35);
 
         return view('livewire.dashboard.companies.companies', [
             'companies' => $companies,

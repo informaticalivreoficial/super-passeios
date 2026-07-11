@@ -4,6 +4,8 @@
 <head>  
     <x-seo.meta :seo="$seo" />
 
+    <link rel="icon" href="{{$config->getfaveicon()}}" type="image/x-icon">
+
     @vite(['resources/css/app.css', 'resources/js/front.js'])
 
     @stack('styles')

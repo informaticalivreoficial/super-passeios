@@ -66,7 +66,7 @@
                 </h1>
                 <p class="text-sm" style="color: #87c2c0;">
                     Ainda não tem conta?
-                    <a href="{{ route('web.register.company') }}" style="color: #16a3b7; font-weight: 600;">Cadastre sua empresa</a>
+                    <a href="{{ route('register.company') }}" style="color: #16a3b7; font-weight: 600;">Cadastre sua empresa</a>
                 </p>
             </div>
 

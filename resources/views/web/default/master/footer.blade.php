@@ -137,7 +137,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('web.register.company') }}" class="text-sm transition-all duration-300 hover:translate-x-1 inline-block"
+                        <a href="{{ route('register.company') }}" class="text-sm transition-all duration-300 hover:translate-x-1 inline-block"
                             style="color: #b8d4e8;"
                             onmouseover="this.style.color='#e8f0f8'" onmouseout="this.style.color='#b8d4e8'">
                             Cadastre sua empresa

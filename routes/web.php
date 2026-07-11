@@ -3,6 +3,7 @@
 use App\Http\Controllers\Web\ArticleController;
 use App\Http\Controllers\Web\BookingVoucherPdfController;
 use App\Http\Controllers\Web\CustomerMagicAccessController;
+use App\Http\Controllers\Web\PartnerLandingController;
 use App\Http\Controllers\Web\SiteController;
 use App\Livewire\Auth\RegisterCompany;
 use App\Livewire\Company\Booking\BookingForm as BookingBookingForm;
@@ -70,7 +71,8 @@ Route::middleware(['auth:customer', 'customer.role:client'])->group(function () 
 Route::name('web.')->group(function () {    
 
     Route::get('/', [SiteController::class, 'home'])->name('home');
-    Route::get('/cadastro', RegisterCompany::class)->name('register.company');
+    //Route::get('/cadastro', RegisterCompany::class)->name('register.company');
+    Route::get('/seja-parceiro', PartnerLandingController::class)->name('landing.partner');
 
     Route::prefix('blog')->name('blog.')->group(function () {
         Route::get('/artigos', [ArticleController::class, 'index'])->name('index');

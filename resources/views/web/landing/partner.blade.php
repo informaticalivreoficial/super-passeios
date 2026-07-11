@@ -1,7 +1,5 @@
 @extends('components.layouts.landing')
 
-@section('title', $title)
-
 @section('content')
     @include('web.landing.partials.navbar')
     @include('web.landing.partials.hero')

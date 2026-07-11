@@ -49,7 +49,7 @@ class SiteController extends Controller
         $head = $this->seo->render($this->config->app_name ?? config('app.name'),
             $this->config->information ?? config('app.name'),
             route('web.home'),
-            $this->config->getmetaimg() ?? url(asset('theme/images/image.jpg'))
+            $this->config->getmetaimg() ?? asset('theme/images/image.jpg')
         );
         
         return view('web.'.$this->config->template.'.home', [

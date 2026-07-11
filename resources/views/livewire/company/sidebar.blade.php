@@ -228,7 +228,7 @@
                         </a>
 
                         
-                        <a    href="#"
+                        <a    href="{{ route('company.finance.reports.index') }}"
                             @class([
                                 'flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition',
                                 'nav-active' => request()->routeIs('company.finance.reports'),

@@ -759,12 +759,9 @@ function mercadoPagoCheckout() {
 
                         try {
                             const formData = cardFormInstance.getCardFormData();
-                            //console.log("Dados do Cartão:", formData);
 
                             const { token, paymentMethodId, installments } = formData;
 
-                            // 👇 Se não tem token aqui, o onCardTokenReceived já vai tratar o erro
-                            // então só seguimos se realmente tiver token
                             if (!token || !paymentMethodId) {
                                 this.processing = false;
                                 return;
@@ -776,20 +773,30 @@ function mercadoPagoCheckout() {
                                 installments: Number(installments) || 1,
                             });
 
+                            // 👇 O PHP captura erros de pagamento (cartão recusado, bandeira não
+                            // identificada, etc) internamente e preenche $this->errorMsg,
+                            // em vez de lançar exceção pro JS. Sem essa checagem, o botão
+                            // nunca sai de "Processando..." nesses casos.
+                            if (this.$wire.errorMsg) {
+                                this.errors = [this.$wire.errorMsg];
+                                this.processing = false;
+                                return;
+                            }
+
                             if (this.$wire.step === 5) {
                                 this.destroy();
                             }
+
+                            this.processing = false;
+
                         } catch (e) {
                             if (Array.isArray(e)) {
                                 this.errors = e.map(error => this.translateError(error));
                             } else {
                                 this.errors = ['Não foi possível processar os dados do cartão.'];
                             }
-                            //console.error(e);
                             this.processing = false;
                         }
-                        // note: removi o finally daqui porque agora quem controla
-                        // processing = false no caso de erro de token é o onCardTokenReceived
                     }
                 }
             });

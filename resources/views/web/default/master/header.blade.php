@@ -111,7 +111,7 @@
         </div>
 
         <div class="px-4 pb-5 pt-2" style="border-top: 1px solid #f1f5f9;">
-            @if(Auth::guard('customer')->check() && Auth::guard('customer')->user()->hasRole('proprietary'))
+            @if(Auth::guard('customer')->check() && Auth::guard('customer')->user()->isProprietary())
                 <a href="{{ route('company.dashboard') }}"
                 class="w-full btn-outline justify-center text-sm py-2.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -119,7 +119,7 @@
                     </svg>
                     Meu Painel
                 </a>
-            @elseif(Auth::guard('customer')->check() && Auth::guard('customer')->user()->hasRole('client'))
+            @elseif(Auth::guard('customer')->check() && Auth::guard('customer')->user()->isClient())
                 <a href="{{ route('customer.orders.find') }}"
                 class="w-full btn-outline justify-center text-sm py-2.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

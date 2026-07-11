@@ -125,11 +125,86 @@
 
         </div>
 
+        {{-- RESERVAS PRÓXIMAS --}}
+        <div class="bg-white rounded-3xl overflow-hidden" style="border: 1px solid #e8e4d8;">
+            <div class="px-6 py-4 flex items-center justify-between" style="border-bottom: 1px solid #f5f2ec;">
+                <h3 class="font-extrabold text-base" style="color: #051e34;">Próximas reservas</h3>
+                <a href="{{ route('company.bookings.index') }}" class="text-xs font-bold" style="color: #16a3b7;">Ver todas</a>
+            </div>
+
+            @if($upcomingBookings->isEmpty())
+                <div class="p-10 text-center">
+                    <p class="text-sm" style="color: #87c2c0;">Nenhuma reserva nos próximos 7 dias.</p>
+                </div>
+            @else
+                <div class="divide-y" style="border-color: #f5f2ec;">
+                    @foreach($upcomingBookings as $booking)
+                        <a href="{{ route('company.bookings.show', $booking) }}" class="flex items-center gap-3 px-6 py-3.5 hover:bg-slate-50 transition-colors">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 font-extrabold text-xs"
+                                style="background: rgba(22,163,183,0.1); color: #16a3b7;">
+                                {{ strtoupper(substr($booking->customer_name, 0, 1)) }}
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-sm font-bold truncate" style="color: #051e34;">{{ $booking->customer_name }}</p>
+                                <p class="text-xs truncate" style="color: #87c2c0;">{{ $booking->tour?->title }}</p>
+                            </div>
+                            <div class="text-right shrink-0">
+                                <p class="text-xs font-bold" style="color: #051e34;">{{ $booking->tourDate->date->format('d/m') }}</p>
+                                <p class="text-xs" style="color: #c5bfb2;">{{ substr($booking->tourDate->start_time, 0, 5) }}</p>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+
+        {{-- GRÁFICO DE FATURAMENTO --}}
+        <div class="bg-white rounded-3xl p-6" style="border: 1px solid #e8e4d8;">
+            <h3 class="font-extrabold text-base mb-4" style="color: #051e34;">Faturamento — últimos 30 dias</h3>
+            <div style="position: relative; height: 260px;">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+
+        {{-- PASSEIOS COM POUCAS VAGAS --}}
+        <div class="bg-white rounded-3xl overflow-hidden" style="border: 1px solid #e8e4d8;">
+            <div class="px-6 py-4" style="border-bottom: 1px solid #f5f2ec;">
+                <h3 class="font-extrabold text-base" style="color: #051e34;">Quase lotados</h3>
+            </div>
+
+            @if($lowAvailabilityDates->isEmpty())
+                <div class="p-10 text-center">
+                    <p class="text-sm" style="color: #87c2c0;">Nenhum passeio com vagas escassas no momento.</p>
+                </div>
+            @else
+                <div class="divide-y" style="border-color: #f5f2ec;">
+                    @foreach($lowAvailabilityDates as $tourDate)
+                        <div class="flex items-center gap-3 px-6 py-3.5">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                                style="background: rgba(245,158,11,0.1);">
+                                <svg class="w-4 h-4" style="color: #d97706;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                </svg>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-sm font-bold truncate" style="color: #051e34;">{{ $tourDate->tour->title }}</p>
+                                <p class="text-xs" style="color: #87c2c0;">{{ $tourDate->date->format('d/m/Y') }} · {{ substr($tourDate->start_time, 0, 5) }}</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-bold shrink-0" style="background: rgba(245,158,11,0.1); color: #d97706;">
+                                {{ $tourDate->available_slots }} {{ $tourDate->available_slots === 1 ? 'vaga' : 'vagas' }}
+                            </span>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+
     @endif
 
 </div>
 
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
     @if(session()->has('toastr'))
         <script>
             document.addEventListener('DOMContentLoaded', function () {
@@ -144,4 +219,36 @@
             });
         </script>
     @endif
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const revenueData = @json($revenueChartData);
+
+            new Chart(document.getElementById('revenueChart'), {
+                type: 'line',
+                data: {
+                    labels: revenueData.labels,
+                    datasets: [{
+                        label: 'Faturamento',
+                        data: revenueData.values,
+                        borderColor: '#16a3b7',
+                        backgroundColor: 'rgba(22,163,183,0.08)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        pointHoverRadius: 4,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f5f2ec' }, ticks: { callback: (v) => 'R$ ' + v.toLocaleString('pt-BR') } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        });
+    </script>
 @endpush

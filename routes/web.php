@@ -13,6 +13,7 @@ use App\Livewire\Company\Company\CompanyForm as CompanyCompanyForm;
 use App\Livewire\Company\Dashboard as CompanyDashboard;
 use App\Livewire\Company\Finance\BankAccounts;
 use App\Livewire\Company\Finance\Dashboard as FinanceDashboard;
+use App\Livewire\Company\Finance\Reports;
 use App\Livewire\Company\Finance\Withdrawals;
 use App\Livewire\Company\Notifications\NotificationIndex;
 use App\Livewire\Company\Tours\TourDates;
@@ -110,9 +111,9 @@ Route::name('web.')->group(function () {
         
 });
 
-Route::group(['middleware' => ['auth:customer', 'verified', 'role:proprietary'], 'prefix' => 'minha-conta', 'as' => 'customer.'], function () {
-    Route::get('/', CompanyDashboard::class)->name('dashboard');
-});
+// Route::group(['middleware' => ['auth:customer', 'verified', 'role:proprietary'], 'prefix' => 'minha-conta', 'as' => 'customer.'], function () {
+//     Route::get('/', CompanyDashboard::class)->name('dashboard');
+// });
 
 Route::group([
     'middleware' => ['auth:customer', 'verified', 'role:proprietary'], 
@@ -147,6 +148,7 @@ Route::group([
         // Route::get('/relatorios', FinancialReports::class)->name('reports');
         // Route::get('/contratos', Contracts::class)->name('contracts');
         Route::get('/saques', Withdrawals::class)->name('drawals');
+        Route::get('/relatorios', Reports::class)->name('reports.index');
     });
 });
 

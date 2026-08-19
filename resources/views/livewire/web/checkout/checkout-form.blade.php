@@ -536,10 +536,10 @@
             </div>
         @endif
 
-        {{-- STEP 4: Confirmação PIX --}}
-        @if($step === 4 && $pixData)
+        {{-- STEP 4: Confirmação PIX / Pagamento em análise --}}
+        @if($step === 4 && ($pixData || $pendingData))
             <div class="bg-white rounded-2xl shadow-xl p-8 text-center"
-                wire:poll.5s="checkPixStatus">
+                wire:poll.5s="checkPaymentStatus">
 
                 {{-- Header --}}
                 <div class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center animate-pulse"
@@ -550,81 +550,98 @@
                 </div>
 
                 <h3 class="text-2xl font-bold text-gray-800 mb-1">Aguardando pagamento</h3>
-                <p class="text-sm text-gray-500 mb-6">Escaneie o QR Code ou copie o código PIX</p>
+                <p class="text-sm text-gray-500 mb-6">
+                    @if($pixData)
+                        Escaneie o QR Code ou copie o código PIX
+                    @else
+                        Estamos confirmando o pagamento com a operadora do cartão
+                    @endif
+                </p>
 
-                {{-- QR Code --}}
-                @if($pixData['qr_code_base64'])
-                    <div class="inline-block p-4 rounded-2xl mb-6" style="border: 2px solid #e8e4d8;">
-                        <img
-                            src="data:image/png;base64,{{ $pixData['qr_code_base64'] }}"
-                            class="w-48 h-48 mx-auto"
-                            alt="QR Code PIX"
-                        >
-                    </div>
-                @endif
+                @if($pixData)
+                    {{-- QR Code --}}
+                    @if($pixData['qr_code_base64'])
+                        <div class="inline-block p-4 rounded-2xl mb-6" style="border: 2px solid #e8e4d8;">
+                            <img
+                                src="data:image/png;base64,{{ $pixData['qr_code_base64'] }}"
+                                class="w-48 h-48 mx-auto"
+                                alt="QR Code PIX"
+                            >
+                        </div>
+                    @endif
 
-                {{-- Código copia e cola --}}
-                <div
-                    x-data="{
-                        copied: false,
-                        copy(text) {
-                            if (navigator.clipboard && window.isSecureContext) {
-                                navigator.clipboard.writeText(text);
-                            } else {
-                                const textarea = document.createElement('textarea');
-                                textarea.value = text;
-                                document.body.appendChild(textarea);
-                                textarea.select();
-                                document.execCommand('copy');
-                                textarea.remove();
+                    {{-- Código copia e cola --}}
+                    <div
+                        x-data="{
+                            copied: false,
+                            copy(text) {
+                                if (navigator.clipboard && window.isSecureContext) {
+                                    navigator.clipboard.writeText(text);
+                                } else {
+                                    const textarea = document.createElement('textarea');
+                                    textarea.value = text;
+                                    document.body.appendChild(textarea);
+                                    textarea.select();
+                                    document.execCommand('copy');
+                                    textarea.remove();
+                                }
+
+                                this.copied = true;
+                                setTimeout(() => this.copied = false, 2000);
                             }
-
-                            this.copied = true;
-                            setTimeout(() => this.copied = false, 2000);
-                        }
-                    }"
-                    class="flex items-center gap-2"
-                >
-                    <code class="flex-1 text-xs text-gray-600 break-all text-left leading-relaxed">
-                        {{ $pixData['qr_code'] }}
-                    </code>
-
-                    <button
-                        @click="copy(@js($pixData['qr_code']))"
-                        class="shrink-0 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 bg-gray-800 text-white"
-                        :class="copied ? 'bg-green-500' : 'bg-gray-800'"
+                        }"
+                        class="flex items-center gap-2"
                     >
-                        <span x-show="!copied">Copiar</span>
-                        <span x-show="copied">✓ Copiado!</span>
-                    </button>
-                </div>
+                        <code class="flex-1 text-xs text-gray-600 break-all text-left leading-relaxed">
+                            {{ $pixData['qr_code'] }}
+                        </code>
 
-                {{-- Total --}}
-                <div class="flex items-center justify-center gap-2 mb-6">
-                    <span class="text-gray-500 text-sm">Total:</span>
-                    <span class="text-2xl font-bold" style="color: var(--navy);">
-                        R$ {{ number_format($total, 2, ',', '.') }}
-                    </span>
-                </div>
-
-                {{-- Timer --}}
-                <div x-data="pixTimer(30)"
-                    x-init="start()"
-                    class="mb-6">
-                    <div class="flex items-center justify-center gap-2 text-sm text-gray-500 mb-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 6v6l4 2"/>
-                        </svg>
-                        Expira em <span class="font-semibold text-red-500" x-text="timeLeft"></span>
+                        <button
+                            @click="copy(@js($pixData['qr_code']))"
+                            class="shrink-0 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 bg-gray-800 text-white"
+                            :class="copied ? 'bg-green-500' : 'bg-gray-800'"
+                        >
+                            <span x-show="!copied">Copiar</span>
+                            <span x-show="copied">✓ Copiado!</span>
+                        </button>
                     </div>
-                    <div class="w-full bg-gray-200 rounded-full h-1.5">
-                        <div class="h-1.5 rounded-full transition-all duration-1000"
-                            style="background: var(--teal);"
-                            :style="`width: ${progress}%`">
+
+                    {{-- Total --}}
+                    <div class="flex items-center justify-center gap-2 mb-6">
+                        <span class="text-gray-500 text-sm">Total:</span>
+                        <span class="text-2xl font-bold" style="color: var(--navy);">
+                            R$ {{ number_format($total, 2, ',', '.') }}
+                        </span>
+                    </div>
+
+                    {{-- Timer --}}
+                    <div x-data="pixTimer(30)"
+                        x-init="start()"
+                        class="mb-6">
+                        <div class="flex items-center justify-center gap-2 text-sm text-gray-500 mb-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 6v6l4 2"/>
+                            </svg>
+                            Expira em <span class="font-semibold text-red-500" x-text="timeLeft"></span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-1.5">
+                            <div class="h-1.5 rounded-full transition-all duration-1000"
+                                style="background: var(--teal);"
+                                :style="`width: ${progress}%`">
+                            </div>
                         </div>
                     </div>
-                </div>
+                @else
+                    {{-- Pagamento em análise --}}
+                    <div class="flex items-center justify-center gap-2 text-sm mb-6" style="color: #87c2c0;">
+                        <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Pagamento em análise...</span>
+                    </div>
+                @endif
 
                 {{-- Aguardando --}}
                 <div class="flex items-center justify-center gap-2 text-sm" style="color: #87c2c0;">

@@ -41,9 +41,10 @@ class CheckoutForm extends Component
     public int    $installments  = 1;
  
     // ─── Resultado ───────────────────────────
-    public ?array  $pixData   = null;
-    public ?string $errorMsg  = null;
-    public bool    $processing = false;
+    public ?array  $pixData     = null;
+    public ?array  $pendingData = null;
+    public ?string $errorMsg    = null;
+    public bool    $processing  = false;
  
     // ─── Computed ────────────────────────────
     public float $subtotal        = 0;
@@ -169,6 +170,9 @@ $this->validate([
             $this->installments = $data['installments'] ?? $this->installments;
         }
 
+        $this->validateStep1();
+        if ($this->getErrorBag()->isNotEmpty()) return;
+
         $this->validateStep2();
         if ($this->getErrorBag()->isNotEmpty()) return;
  
@@ -187,7 +191,7 @@ $this->validate([
                 ]
             );
 
-            if (!$customer->wasRecentlyCreated === false && !$customer->hasRole('client')) {
+            if (!$customer->hasRole('client')) {
                 $customer->assignRole('client');
             }
 
@@ -251,10 +255,10 @@ $this->validate([
 
             $payment = $response['data'];
  
-            $booking->update([
+$booking->update([
                 'payment_id' => $payment['id'],              
             ]);
- 
+  
             // 5. PIX: exibe QR code
             if ($this->paymentMethod === 'pix') {
                 $this->pixData = [
@@ -264,15 +268,42 @@ $this->validate([
                     'qr_code_base64' => $payment['point_of_interaction']['transaction_data']['qr_code_base64'] ?? null,
                 ];
                 $this->step = 4; // tela de aguardando pagamento
+                return;
             }
- 
-            // 6. Cartão aprovado imediatamente
-            if (($payment['status'] ?? '') === 'approved') {
+
+            // 6. Cartão: trata o status retornado pelo MP
+            $status = $payment['status'] ?? null;
+
+            if ($status === 'approved') {
                 app(\App\Services\Booking\BookingPaidService::class)->handle($booking->fresh());
                 $this->dispatch('mercadopago:destroy');
                 $this->step = 5;
                 return;
-            } 
+            }
+
+            if (in_array($status, ['pending', 'in_process'], true)) {
+                $this->pendingData = [
+                    'payment_id'   => $payment['id'],
+                    'booking_uuid' => $booking->uuid,
+                ];
+                $this->dispatch('mercadopago:destroy');
+                $this->step = 4; // tela de aguardando análise
+                return;
+            }
+
+            if (in_array($status, ['rejected', 'cancelled'], true)) {
+                app(\App\Services\Booking\BookingPaidService::class)->handleFailed($booking, $status);
+                $this->errorMsg = $mp->getCardErrorMessage($payment);
+                return;
+            }
+
+            if ($status === 'expired') {
+                app(\App\Services\Booking\BookingPaidService::class)->handleExpired($booking);
+                $this->errorMsg = 'O pagamento expirou. Tente novamente.';
+                return;
+            }
+
+            $this->errorMsg = 'Não foi possível processar o pagamento. Tente novamente.';
         } catch (\Exception $e) {
              Log::error('Checkout Error', [
                 'message' => $e->getMessage(),
@@ -285,19 +316,55 @@ $this->validate([
         }
     }    
 
-    public function checkPixStatus(MercadoPagoService $mp): void
+    public function checkPaymentStatus(MercadoPagoService $mp): void
     {
-        if (!$this->pixData || empty($this->pixData['booking_uuid'])) {
+        $bookingUuid = $this->pixData['booking_uuid'] ?? $this->pendingData['booking_uuid'] ?? null;
+
+        if (!$bookingUuid) {
             return;
         }
 
-        $booking = Booking::where('uuid', $this->pixData['booking_uuid'])->first();
+        $booking = Booking::where('uuid', $bookingUuid)->first();
 
-        if (
-            $booking &&
-            $booking->payment_status === PaymentStatusEnum::PAID
-        ) {
+        if (!$booking || !$booking->payment_id) {
+            return;
+        }
+
+        if ($booking->payment_status === PaymentStatusEnum::PAID) {
             $this->step = 5;
+            return;
+        }
+
+        $payment = $mp->getPayment($booking->payment_id);
+        $status  = $payment['status'] ?? null;
+
+        match ($status) {
+            'approved' => app(\App\Services\Booking\BookingPaidService::class)->handle($booking->fresh()),
+            'rejected', 'cancelled' => app(\App\Services\Booking\BookingPaidService::class)->handleFailed($booking, $status),
+            'expired' => app(\App\Services\Booking\BookingPaidService::class)->handleExpired($booking),
+            default => null,
+        };
+
+        $booking->refresh();
+
+        if ($booking->payment_status === PaymentStatusEnum::PAID) {
+            $this->step = 5;
+            return;
+        }
+
+        if ($booking->payment_status === PaymentStatusEnum::REFUSED) {
+            $this->errorMsg = 'O pagamento foi recusado. Tente novamente com outro cartão ou forma de pagamento.';
+            $this->pixData = null;
+            $this->pendingData = null;
+            $this->step = 3;
+            return;
+        }
+
+        if ($booking->payment_status === PaymentStatusEnum::EXPIRED) {
+            $this->errorMsg = 'O pagamento expirou. Gere um novo QR Code para tentar novamente.';
+            $this->pixData = null;
+            $this->pendingData = null;
+            $this->step = 3;
         }
     }
 

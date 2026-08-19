@@ -112,6 +112,31 @@ class MercadoPagoService
             ?? 'Não foi possível processar o pagamento. Tente novamente.';
     }
 
+    public function getCardErrorMessage(array $payment): string
+    {
+        $detail = $payment['status_detail'] ?? null;
+
+        $messages = [
+            'cc_rejected_bad_filled_card_number'   => 'Número do cartão inválido. Verifique e tente novamente.',
+            'cc_rejected_bad_filled_date'          => 'Data de validade do cartão inválida.',
+            'cc_rejected_bad_filled_security_code' => 'Código de segurança (CVV) inválido.',
+            'cc_rejected_card_number'              => 'Cartão inválido. Verifique o número.',
+            'cc_rejected_insufficient_amount'      => 'Saldo insuficiente no cartão.',
+            'cc_rejected_other_reason'             => 'Pagamento recusado pela operadora do cartão.',
+            'cc_rejected_max_attempts'             => 'Você excedeu o número de tentativas. Tente novamente mais tarde.',
+            'cc_rejected_high_risk'                => 'Pagamento recusado por motivo de segurança.',
+            'cc_rejected_call_for_authorize'       => 'Entre em contato com o banco emissor para autorizar o pagamento.',
+            'cc_rejected_card_disabled'            => 'Cartão desativado. Entre em contato com o banco.',
+            'cc_rejected_duplicated_payment'       => 'Pagamento duplicado. Verifique se já foi realizado.',
+            'cc_rejected_prepaid_card'             => 'Cartão pré-pago não aceito para esta compra.',
+            'cc_rejected_invalid_installments'     => 'Número de parcelas inválido.',
+            'cc_rejected_expired_card'             => 'Cartão vencido. Utilize outro cartão.',
+        ];
+
+        return $messages[$detail]
+            ?? 'Pagamento recusado. Verifique os dados do cartão e tente novamente.';
+    }
+
     protected function formatResponse($response): array
     {
         $json = $response->json();

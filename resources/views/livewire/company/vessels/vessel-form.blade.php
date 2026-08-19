@@ -4,7 +4,7 @@
     <div class="mb-8">
 
         <h1 class="text-2xl font-extrabold tracking-tight" style="color: #051e34;">
-            {{ $vessel ? 'Editar Embarcação' : 'Cadastrar Embarcação' }}
+            {{ $vessel->exists ? 'Editar Embarcação' : 'Cadastrar Embarcação' }}
         </h1>
 
         <p class="text-sm mt-2" style="color: #87c2c0;">
@@ -643,7 +643,7 @@
                     <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
                 </svg>
 
-                {{ $vessel ? 'Atualizar Embarcação' : 'Salvar Embarcação' }}
+                {{ $vessel->exists ? 'Atualizar Embarcação' : 'Salvar Embarcação' }}
             </button>
 
         </div>

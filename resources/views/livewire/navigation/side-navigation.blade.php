@@ -137,8 +137,8 @@
                 </li>
 
                 {{-- Relatórios --}}
-                <li class="nav-item {{ Route::is('admin.posts.reports') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ Route::is('admin.posts.reports') ? 'active' : '' }}">
+                <li class="nav-item {{ Route::is('admin.posts.reports') || Route::is('admin.reports.*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is('admin.posts.reports') || Route::is('admin.reports.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-chart-bar"></i>
                         <p>Relatórios <i class="fas fa-angle-left right"></i></p>
                     </a>
@@ -147,6 +147,30 @@
                             <a href="{{ route('admin.posts.reports') }}" class="nav-link {{ Route::is('admin.posts.reports') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Relatório de Posts</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.reports.tours') }}" class="nav-link {{ Route::is('admin.reports.tours') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Relatório de Passeios</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.reports.vessels') }}" class="nav-link {{ Route::is('admin.reports.vessels') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Relatório de Embarcações</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.reports.companies') }}" class="nav-link {{ Route::is('admin.reports.companies') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Relatório de Empresas</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.reports.bookings') }}" class="nav-link {{ Route::is('admin.reports.bookings') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Relatório de Reservas</p>
                             </a>
                         </li>
                     </ul>

@@ -31,7 +31,11 @@ use App\Livewire\Dashboard\{
     Posts\Lixeira,
     Posts\PostForm,
     Posts\Posts,
+    Reports\Bookings as ReportsBookings,
+    Reports\Companies as ReportsCompanies,
     Reports\Posts as ReportsPosts,
+    Reports\Tours as ReportsTours,
+    Reports\Vessels as ReportsVessels,
     Settings,
     Sitemap\SitemapGenerator,
     Tours\TourForm,
@@ -188,6 +192,11 @@ Route::group(['middleware' => ['auth', 'verified', 'role:super-admin|admin'], 'p
     Route::get('posts/lixeira', Lixeira::class)->name('posts.lixeira');
     Route::get('posts/reports', ReportsPosts::class)->name('posts.reports');
     Route::get('posts/{post}/editar', PostForm::class)->name('posts.edit'); 
+
+    Route::get('relatorios/passeios', ReportsTours::class)->name('reports.tours');
+    Route::get('relatorios/embarcacoes', ReportsVessels::class)->name('reports.vessels');
+    Route::get('relatorios/empresas', ReportsCompanies::class)->name('reports.companies');
+    Route::get('relatorios/reservas', ReportsBookings::class)->name('reports.bookings'); 
 
     Route::get('financeiro-saques', WithdrawalsIndex::class)->name('withdrawals.index');
 });

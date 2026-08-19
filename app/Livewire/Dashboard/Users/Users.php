@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Dashboard\Users;
 
+use App\Livewire\Concerns\WithSafeSorting;
 use App\Models\User;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -10,16 +12,18 @@ use Livewire\WithPagination;
 
 class Users extends Component
 {
-    use WithPagination;
+    use WithPagination, WithSafeSorting;
 
     protected $paginationTheme = 'bootstrap';
 
     public string $search = '';
 
+    #[Locked]
     public string $sortField = 'name';
 
     public $delete_id;
 
+    #[Locked]
     public string $sortDirection = 'asc';
 
     public bool $active;
@@ -33,16 +37,14 @@ class Users extends Component
         $this->resetPage();
     }
 
-    public function sortBy(string $field): void
+    protected function sortableFields(): array
     {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
+        return ['name', 'email', 'created_at', 'status'];
+    }
 
-        $this->resetPage();
+    protected function defaultSortField(): string
+    {
+        return 'name';
     }
 
     
@@ -100,7 +102,7 @@ class Users extends Component
                 $query->orWhere('name', 'LIKE', "%{$this->search}%");
                 $query->orWhere('email', "%{$this->search}%");
             })
-            ->orderBy($this->sortField, $this->sortDirection)
+            ->orderBy($this->safeSortField(), $this->safeSortDirection())
             ->paginate(35);
         return view('livewire.dashboard.users.users',[
             'users' => $users

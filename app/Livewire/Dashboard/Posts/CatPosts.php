@@ -2,14 +2,16 @@
 
 namespace App\Livewire\Dashboard\Posts;
 
+use App\Livewire\Concerns\WithSafeSorting;
 use App\Models\CatPost;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Livewire\WithPagination;
 
 class CatPosts extends Component
 {
-    use WithPagination;
+    use WithPagination, WithSafeSorting;
 
     public int $perPage = 25;
 
@@ -19,7 +21,9 @@ class CatPosts extends Component
 
     protected $updatesQueryString = ['search'];
 
+    #[Locked]
     public string $sortField = 'created_at';
+    #[Locked]
     public string $sortDirection = 'desc';
 
     protected $listeners = ['category-saved' => '$refresh'];
@@ -29,16 +33,14 @@ class CatPosts extends Component
         $this->resetPage();
     }
 
-    public function sortBy(string $field): void
+    protected function sortableFields(): array
     {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
+        return ['title', 'created_at', 'status'];
+    }
 
-        $this->resetPage();
+    protected function defaultSortField(): string
+    {
+        return 'created_at';
     }
 
     public function toggleStatus($id): void
@@ -118,7 +120,7 @@ class CatPosts extends Component
                     }
                 });
             })
-            ->orderBy($this->sortField, $this->sortDirection)
+            ->orderBy($this->safeSortField(), $this->safeSortDirection())
             ->paginate($this->perPage);
         
         return view('livewire.dashboard.posts.cat-posts', [

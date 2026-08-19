@@ -5,6 +5,8 @@ namespace App\Livewire\Dashboard;
 use App\Models\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 use Livewire\Component;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Livewire\Attributes\On;
@@ -72,26 +74,36 @@ class Settings extends Component
     protected function saveImage(string $key, $file)
     {
         if ($file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-            // Deleta a antiga
-            if (!empty($this->configData[$key]) && Storage::disk('public')->exists($this->configData[$key])) {
-                Storage::disk('public')->delete($this->configData[$key]);
+            try {
+                $manager = new ImageManager(new Driver());
+                $img = $manager->read($file->getRealPath());
+
+                $isFavicon = $key === 'favicon';
+                $extension = $isFavicon ? 'png' : 'webp';
+                $encoded = $isFavicon
+                    ? $img->scaleDown(width: 64)->toPng()
+                    : $img->scaleDown(width: 1200)->toWebp(85);
+
+                // Deleta a antiga
+                if (!empty($this->configData[$key]) && Storage::disk('public')->exists($this->configData[$key])) {
+                    Storage::disk('public')->delete($this->configData[$key]);
+                }
+
+                // Salva sempre com o mesmo nome (sobrescrevendo)
+                $path = "config/{$key}.{$extension}";
+                Storage::disk('public')->put($path, $encoded);
+
+                // Atualiza no array
+                $this->configData[$key] = $path;
+
+                // Salva no banco imediatamente
+                Config::where('id', 1)->update([$key => $path]);
+
+                // Atualiza o preview
+                $this->loadLogos();
+            } catch (\Throwable $e) {
+                $this->addError($key, 'O arquivo enviado não é uma imagem válida.');
             }
-
-            // Salva sempre com o mesmo nome (sobrescrevendo)
-            $path = $file->storeAs(
-                'config',
-                "{$key}.".$file->getClientOriginalExtension(),
-                'public'
-            );
-
-            // Atualiza no array
-            $this->configData[$key] = $path;
-
-            // Salva no banco imediatamente
-            Config::where('id', 1)->update([$key => $path]);
-
-            // Atualiza o preview
-            $this->loadLogos();
         }
     }
 
@@ -118,7 +130,7 @@ class Settings extends Component
 
         foreach (['logo', 'logo_admin', 'logo_footer', 'favicon', 'watermark', 'metaimg', 'imgheader'] as $field) {
             $isUpload = $this->{$field} instanceof TemporaryUploadedFile;
-            $rules["configData.{$field}"] = $isUpload ? 'nullable|image|max:1024' : 'nullable|string';
+            $rules["configData.{$field}"] = $isUpload ? 'nullable|image|mimes:jpeg,jpg,png,webp|max:1024' : 'nullable|string';
         }
 
         return $rules;
@@ -319,19 +331,29 @@ class Settings extends Component
 
         foreach ($images as $key => $file) {
             if ($file instanceof TemporaryUploadedFile) {
-                // Apaga a imagem antiga, se existir
-                if (!empty($this->configData[$key]) && Storage::disk('public')->exists($this->configData[$key])) {
-                    Storage::disk('public')->delete($this->configData[$key]);
+                try {
+                    $manager = new ImageManager(new Driver());
+                    $img = $manager->read($file->getRealPath());
+
+                    $isFavicon = $key === 'favicon';
+                    $extension = $isFavicon ? 'png' : 'webp';
+                    $encoded = $isFavicon
+                        ? $img->scaleDown(width: 64)->toPng()
+                        : $img->scaleDown(width: 1200)->toWebp(85);
+
+                    // Apaga a imagem antiga, se existir
+                    if (!empty($this->configData[$key]) && Storage::disk('public')->exists($this->configData[$key])) {
+                        Storage::disk('public')->delete($this->configData[$key]);
+                    }
+
+                    // Salva a nova
+                    $path = "config/{$key}.{$extension}";
+                    Storage::disk('public')->put($path, $encoded);
+
+                    $this->configData[$key] = $path;
+                } catch (\Throwable $e) {
+                    $this->addError($key, 'O arquivo enviado não é uma imagem válida.');
                 }
-
-                // Salva a nova
-                $path = $file->storeAs(
-                    'config',
-                    "{$key}." . $file->getClientOriginalExtension(), // força o mesmo nome
-                    'public'
-                );
-
-                $this->configData[$key] = $path;
             }
         }
     }

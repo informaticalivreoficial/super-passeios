@@ -2,9 +2,11 @@
 
 namespace App\Livewire\Dashboard\Companies;
 
+use App\Livewire\Concerns\WithSafeSorting;
 use App\Models\Company;
 use App\Models\Config;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\On;
@@ -13,14 +15,16 @@ use Intervention\Image\Drivers\Gd\Driver;
 
 class Companies extends Component
 {
-    use WithPagination;
+    use WithPagination, WithSafeSorting;
 
     protected $paginationTheme = 'bootstrap';
 
     public string $search = '';
 
+    #[Locked]
     public string $sortField = 'social_name';
 
+    #[Locked]
     public string $sortDirection = 'desc';
 
     public ?int $delete_id = null;
@@ -34,16 +38,14 @@ class Companies extends Component
         $this->resetPage();
     }
 
-    public function sortBy(string $field): void
+    protected function sortableFields(): array
     {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
+        return ['social_name', 'alias_name', 'created_at', 'views', 'status'];
+    }
 
-        $this->resetPage();
+    protected function defaultSortField(): string
+    {
+        return 'social_name';
     }  
     
     public function toggleHighlight(Company $company)
@@ -169,7 +171,7 @@ class Companies extends Component
         ->withSum(['withdrawals as pending_withdrawals_amount' => function ($query) {
             $query->whereIn('status', [\App\Enums\WithdrawalStatusEnum::REQUESTED, \App\Enums\WithdrawalStatusEnum::APPROVED]);
         }], 'net_amount')
-        ->orderBy($this->sortField, $this->sortDirection)
+        ->orderBy($this->safeSortField(), $this->safeSortDirection())
         ->paginate(35);
 
         return view('livewire.dashboard.companies.companies', [

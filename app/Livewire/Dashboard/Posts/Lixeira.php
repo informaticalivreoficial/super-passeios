@@ -2,19 +2,23 @@
 
 namespace App\Livewire\Dashboard\Posts;
 
+use App\Livewire\Concerns\WithSafeSorting;
 use App\Models\Post;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\WithPagination;
 use Livewire\Component;
 
 class Lixeira extends Component
 {
-    use WithPagination;
+    use WithPagination, WithSafeSorting;
 
     public string $search      = '';
     public string $filterType  = '';
     public int    $perPage     = 25;
+    #[Locked]
     public string $sortField     = 'deleted_at';
+    #[Locked]
     public string $sortDirection = 'desc';
 
     protected $paginationTheme = 'bootstrap';
@@ -24,14 +28,14 @@ class Lixeira extends Component
         $this->resetPage();
     }
 
-    public function sortBy(string $field): void
+    protected function sortableFields(): array
     {
-        $this->sortDirection = $this->sortField === $field && $this->sortDirection === 'asc'
-            ? 'desc'
-            : 'asc';
+        return ['title', 'deleted_at', 'type'];
+    }
 
-        $this->sortField = $field;
-        $this->resetPage();
+    protected function defaultSortField(): string
+    {
+        return 'deleted_at';
     }
 
     public function restore($id): void
@@ -144,7 +148,7 @@ class Lixeira extends Component
             ->when($this->filterType, fn ($q) =>
                 $q->where('type', $this->filterType)
             )
-            ->orderBy($this->sortField, $this->sortDirection)
+            ->orderBy($this->safeSortField(), $this->safeSortDirection())
             ->paginate($this->perPage);
 
         return view('livewire.dashboard.posts.lixeira', [

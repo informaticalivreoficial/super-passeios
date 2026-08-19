@@ -14,9 +14,14 @@ class Company extends Model
 
     protected $table = 'companies';
 
+    protected $hidden = [
+        'api_token',
+        'magic_token',
+        'magic_token_expires_at',
+    ];
+
     protected $fillable = [
         'uuid',
-        'api_token',  
         'commission_rate',
         'release_days',
         'responsable_name',

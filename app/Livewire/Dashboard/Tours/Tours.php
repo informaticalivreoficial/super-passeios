@@ -2,19 +2,23 @@
 
 namespace App\Livewire\Dashboard\Tours;
 
+use App\Livewire\Concerns\WithSafeSorting;
 use App\Models\Tour;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\On;
 
 class Tours extends Component
 {
-    use WithPagination;
+    use WithPagination, WithSafeSorting;
 
     protected $paginationTheme = 'bootstrap';
     public int $perPage = 24;
     public string $search = '';
+    #[Locked]
     public string $sortField = 'title';
+    #[Locked]
     public string $sortDirection = 'desc';
     public ?int $delete_id = null;  
 
@@ -24,16 +28,14 @@ class Tours extends Component
         $this->resetPage();
     }
 
-    public function sortBy(string $field): void
+    protected function sortableFields(): array
     {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
+        return ['title', 'price', 'created_at', 'active', 'tour_type'];
+    }
 
-        $this->resetPage();
+    protected function defaultSortField(): string
+    {
+        return 'title';
     }
 
     public function loadMore()
@@ -120,7 +122,7 @@ class Tours extends Component
             });
         })
 
-        ->orderBy($this->sortField, $this->sortDirection)
+        ->orderBy($this->safeSortField(), $this->safeSortDirection())
 
         ->paginate($this->perPage);
 

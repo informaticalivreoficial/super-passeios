@@ -2,15 +2,17 @@
 
 namespace App\Livewire\Dashboard\Posts;
 
+use App\Livewire\Concerns\WithSafeSorting;
 use App\Models\Post;
 use App\Models\User;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Livewire\WithPagination;
 
 class Posts extends Component
 {
-    use WithPagination;
+    use WithPagination, WithSafeSorting;
 
     public string $filterType = '';
     public string $filterAutor = '';
@@ -24,8 +26,10 @@ class Posts extends Component
 
     protected $updatesQueryString = ['search'];
 
+    #[Locked]
     public string $sortField = 'created_at';
 
+    #[Locked]
     public string $sortDirection = 'desc';
     
 
@@ -40,16 +44,14 @@ class Posts extends Component
         $this->perPage += 12; // aumenta a quantidade de itens carregados
     }
 
-    public function sortBy(string $field): void
+    protected function sortableFields(): array
     {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
+        return ['title', 'created_at', 'status', 'type'];
+    }
 
-        $this->resetPage();
+    protected function defaultSortField(): string
+    {
+        return 'created_at';
     }    
 
     public function toggleStatus($id)
@@ -132,7 +134,7 @@ class Posts extends Component
             ->when($this->filterAutor, function ($query) {
                 $query->where('autor', $this->filterAutor);
             })
-            ->orderBy($this->sortField, $this->sortDirection)
+            ->orderBy($this->safeSortField(), $this->safeSortDirection())
             ->paginate($this->perPage);
 
         return view('livewire.dashboard.posts.posts',[

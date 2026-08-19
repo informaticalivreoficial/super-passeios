@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Dashboard\Vessels;
 
+use App\Livewire\Concerns\WithSafeSorting;
 use App\Models\Vessel;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\On;
@@ -12,7 +14,7 @@ use Intervention\Image\Drivers\Gd\Driver;
 class Vessels extends Component
 {
 
-    use WithPagination;
+    use WithPagination, WithSafeSorting;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -20,8 +22,10 @@ class Vessels extends Component
 
     public string $search = '';
 
+    #[Locked]
     public string $sortField = 'name';
 
+    #[Locked]
     public string $sortDirection = 'desc';
 
     public ?int $delete_id = null;       
@@ -32,16 +36,14 @@ class Vessels extends Component
         $this->resetPage();
     }
 
-    public function sortBy(string $field): void
+    protected function sortableFields(): array
     {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
+        return ['name', 'type', 'capacity', 'created_at', 'active'];
+    }
 
-        $this->resetPage();
+    protected function defaultSortField(): string
+    {
+        return 'name';
     }
 
     public function loadMore()
@@ -189,7 +191,7 @@ class Vessels extends Component
             });
         })
 
-        ->orderBy($this->sortField, $this->sortDirection)
+        ->orderBy($this->safeSortField(), $this->safeSortDirection())
 
         ->paginate($this->perPage);
 

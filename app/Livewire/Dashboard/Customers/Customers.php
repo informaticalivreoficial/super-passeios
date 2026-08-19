@@ -3,14 +3,16 @@
 namespace App\Livewire\Dashboard\Customers;
 
 use App\Enums\PaymentStatusEnum;
+use App\Livewire\Concerns\WithSafeSorting;
 use App\Models\Company;
 use App\Models\Customer;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Customers extends Component
 {
-    use WithPagination;
+    use WithPagination, WithSafeSorting;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -20,8 +22,10 @@ class Customers extends Component
 
     public string $statusFilter = '';
 
+    #[Locked]
     public string $sortField = 'created_at';
 
+    #[Locked]
     public string $sortDirection = 'desc';
 
     public function updatingSearch(): void
@@ -39,16 +43,14 @@ class Customers extends Component
         $this->resetPage();
     }
 
-    public function sortBy(string $field): void
+    protected function sortableFields(): array
     {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
+        return ['name', 'revenue', 'created_at'];
+    }
 
-        $this->resetPage();
+    protected function defaultSortField(): string
+    {
+        return 'created_at';
     }
 
     public function render()
@@ -66,7 +68,7 @@ class Customers extends Component
             })
             ->when($this->companyFilter, fn ($q) => $q->where('company_id', $this->companyFilter))
             ->when($this->statusFilter !== '', fn ($q) => $q->where('status', $this->statusFilter === 'active'))
-            ->orderBy($this->sortField, $this->sortDirection)
+            ->orderBy($this->safeSortField(), $this->safeSortDirection())
             ->paginate(20);
 
         $metrics = [

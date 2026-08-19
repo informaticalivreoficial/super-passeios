@@ -4,14 +4,16 @@ namespace App\Livewire\Dashboard\Bookings;
 
 use App\Enums\BookingStatusEnum;
 use App\Enums\PaymentStatusEnum;
+use App\Livewire\Concerns\WithSafeSorting;
 use App\Models\Booking;
 use App\Models\Company;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Bookings extends Component
 {
-    use WithPagination;
+    use WithPagination, WithSafeSorting;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -25,8 +27,10 @@ class Bookings extends Component
 
     public string $companyFilter = '';
 
+    #[Locked]
     public string $sortField = 'created_at';
 
+    #[Locked]
     public string $sortDirection = 'desc';
 
     public ?Booking $selectedBooking = null;
@@ -58,16 +62,14 @@ class Bookings extends Component
         $this->resetPage();
     }
 
-    public function sortBy(string $field): void
+    protected function sortableFields(): array
     {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
+        return ['uuid', 'customer_name', 'total', 'created_at', 'status', 'payment_status'];
+    }
 
-        $this->resetPage();
+    protected function defaultSortField(): string
+    {
+        return 'created_at';
     }
 
     public function openDetail(Booking $booking): void
@@ -97,7 +99,7 @@ class Bookings extends Component
             ->when($this->paymentFilter, fn ($q) => $q->where('payment_status', $this->paymentFilter))
             ->when($this->methodFilter, fn ($q) => $q->where('payment_method', $this->methodFilter))
             ->when($this->companyFilter, fn ($q) => $q->where('company_id', $this->companyFilter))
-            ->orderBy($this->sortField, $this->sortDirection)
+            ->orderBy($this->safeSortField(), $this->safeSortDirection())
             ->paginate(20);
 
         $metrics = [

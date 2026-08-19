@@ -82,7 +82,7 @@ class BankAccounts extends Component
         $this->resetForm();
 
         if ($id) {
-            $account = BankAccount::findOrFail($id);
+            $account = $this->getCompany()->bankAccounts()->findOrFail($id);
             $this->editingId      = $account->id;
             $this->type           = $account->type;
             $this->holder_name    = $account->holder_name;
@@ -126,7 +126,7 @@ class BankAccounts extends Component
         ];
 
         if ($this->editingId) {
-            BankAccount::findOrFail($this->editingId)->update($data);
+            $company->bankAccounts()->findOrFail($this->editingId)->update($data);
         } else {
             BankAccount::create($data);
         }
@@ -148,7 +148,7 @@ class BankAccounts extends Component
         BankAccount::where('company_id', $company->id)
             ->update(['is_default' => false]);
 
-        BankAccount::findOrFail($id)
+        $company->bankAccounts()->findOrFail($id)
             ->update(['is_default' => true]);
     }
 
@@ -166,7 +166,7 @@ class BankAccounts extends Component
     #[On('deleteBank')]
     public function deleteBank(int $id): void
     {
-        BankAccount::findOrFail($id)->delete();
+        $this->getCompany()->bankAccounts()->findOrFail($id)->delete();
 
         $this->dispatch('swal:success', [
             'title' => 'Excluída!',

@@ -4,6 +4,7 @@ namespace App\Livewire\Company\Vessels;
 
 use App\Models\Vessel;
 use App\Models\VesselGb;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
@@ -146,7 +147,7 @@ class VesselForm extends Component
 
             $this->validate($this->rules(), $this->messages());
     
-            $company = auth()->user()->company;
+            $company = Auth::guard('customer')->user()->company;
 
             if (!$company) {
                 $this->dispatch('swal:error', [

@@ -19,28 +19,46 @@ class WebhookController extends Controller
 {
     public function mercadopago(Request $request, MercadoPagoService $mp, BookingPaidService $bookingPaidService)
     {
-        // ✅ segredo dedicado do webhook, não o access_token
         $secret    = config('services.mercadopago.webhook_secret');
         $signature = $request->header('x-signature');
         $requestId = $request->header('x-request-id');
         $dataId    = $request->input('data.id') ?? $request->query('id');
 
-        if ($secret && $signature) {
-            $parts = collect(explode(',', $signature))
-                ->mapWithKeys(function ($part) {
-                    [$key, $value] = array_pad(explode('=', $part, 2), 2, null);
-                    return [trim($key) => trim($value)];
-                });
+        if (!$secret) {
+            Log::critical('MP Webhook: MP_WEBHOOK_SECRET não configurado');
+            return response()->json(['error' => 'Webhook not configured'], 500);
+        }
 
-            $ts = $parts->get('ts');
-            $v1 = $parts->get('v1');
-            $manifest = "id:{$dataId};request-id:{$requestId};ts:{$ts};";
-            $hash = hash_hmac('sha256', $manifest, $secret);
+        if (!$signature || !$requestId) {
+            Log::warning('MP Webhook: headers de assinatura ausentes');
+            return response()->json(['error' => 'Missing signature'], 401);
+        }
 
-            if (!$ts || !$v1 || !hash_equals($hash, $v1)) {
-                Log::warning('MP Webhook assinatura inválida');
-                return response()->json(['error' => 'Invalid signature'], 401);
-            }
+        $parts = collect(explode(',', $signature))
+            ->mapWithKeys(function ($part) {
+                [$key, $value] = array_pad(explode('=', $part, 2), 2, null);
+                return [trim($key) => trim($value)];
+            });
+
+        $ts = $parts->get('ts');
+        $v1 = $parts->get('v1');
+
+        if (!$ts || !$v1) {
+            Log::warning('MP Webhook: assinatura sem ts/v1');
+            return response()->json(['error' => 'Invalid signature'], 401);
+        }
+
+        if (abs(now()->timestamp - (int) $ts) > 300) {
+            Log::warning('MP Webhook: timestamp fora da janela permitida');
+            return response()->json(['error' => 'Expired signature'], 401);
+        }
+
+        $manifest = "id:{$dataId};request-id:{$requestId};ts:{$ts};";
+        $hash = hash_hmac('sha256', $manifest, $secret);
+
+        if (!hash_equals($hash, $v1)) {
+            Log::warning('MP Webhook assinatura inválida');
+            return response()->json(['error' => 'Invalid signature'], 401);
         }
 
         $type = $request->input('type') ?? $request->query('topic');
@@ -70,14 +88,27 @@ class WebhookController extends Controller
             return response()->json(['error' => 'Booking not found'], 404);
         }
 
+        // ✅ confere o valor pago contra o total da reserva
+        $paidAmount   = (float) ($payment['transaction_amount'] ?? 0);
+        $bookingTotal = (float) $booking->total;
+
+        if ($paidAmount < $bookingTotal) {
+            Log::warning('MP Webhook: valor pago menor que o total da reserva', [
+                'booking_uuid' => $bookingUuid,
+                'paid'         => $paidAmount,
+                'expected'     => $bookingTotal,
+            ]);
+            return response()->json(['error' => 'Amount mismatch'], 409);
+        }
+
         if (!$booking->payment_id) {
             $booking->update(['payment_id' => $payment['id']]);
         }
 
         match ($status) {
-            'approved'  => $bookingPaidService->handle($booking),
-            'rejected', 'cancelled' => $bookingPaidService->handleFailed($booking, $status),
-            'expired'   => $bookingPaidService->handleExpired($booking),
+            'approved'  => $this->handleApproved($booking, $bookingPaidService),
+            'rejected', 'cancelled' => $this->handleFailed($booking, $bookingPaidService, $status),
+            'expired'   => $this->handleExpired($booking, $bookingPaidService),
             'refunded'  => $this->handleRefunded($booking),
             default => Log::info("MP Webhook status ignorado: {$status}", ['uuid' => $bookingUuid]),
         };
@@ -85,10 +116,57 @@ class WebhookController extends Controller
         return response()->json(['ok' => true]);
     }
 
+    protected function handleApproved(Booking $booking, BookingPaidService $service): void
+    {
+        if ($booking->status === BookingStatusEnum::CANCELLED
+            || in_array($booking->payment_status, [
+                PaymentStatusEnum::REFUNDED,
+                PaymentStatusEnum::REFUSED,
+                PaymentStatusEnum::EXPIRED,
+            ], true)) {
+            Log::warning('MP Webhook: approved ignorado para booking em estado final', [
+                'booking_id'     => $booking->id,
+                'status'         => $booking->status->value,
+                'payment_status' => $booking->payment_status->value,
+            ]);
+            return;
+        }
+
+        $service->handle($booking);
+    }
+
+    protected function handleFailed(Booking $booking, BookingPaidService $service, string $status): void
+    {
+        if ($booking->payment_status === PaymentStatusEnum::PAID) {
+            Log::warning('MP Webhook: rejected/cancelled ignorado para booking pago', [
+                'booking_id' => $booking->id,
+            ]);
+            return;
+        }
+
+        $service->handleFailed($booking, $status);
+    }
+
+    protected function handleExpired(Booking $booking, BookingPaidService $service): void
+    {
+        if ($booking->payment_status === PaymentStatusEnum::PAID) {
+            return;
+        }
+
+        $service->handleExpired($booking);
+    }
+
     private function handleRefunded(Booking $booking): void
     {
         if ($booking->payment_status === PaymentStatusEnum::REFUNDED) {
             return; // idempotência
+        }
+
+        if ($booking->payment_status !== PaymentStatusEnum::PAID) {
+            Log::warning('MP Webhook: refunded ignorado para booking não pago', [
+                'booking_id' => $booking->id,
+            ]);
+            return;
         }
 
         $booking->update([

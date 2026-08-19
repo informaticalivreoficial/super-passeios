@@ -5,6 +5,7 @@ namespace App\Livewire\Company\Tours;
 use App\Models\Tour;
 use App\Models\TourGb;
 use App\Models\Vessel;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -118,7 +119,7 @@ class TourForm extends Component
         try {
             $this->validate($this->rules(), $this->messages());
 
-            $company = auth()->user()->company;
+            $company = Auth::guard('customer')->user()->company;
 
             if (!$company) {
                 $this->dispatch('swal:error', [
@@ -129,7 +130,7 @@ class TourForm extends Component
             }
 
             $data = [
-                'company_id' => auth()->user()->company->id,
+                'company_id' => Auth::guard('customer')->user()->company->id,
                 'vessel_id' => $this->vessel_id,  
                 'title' => $this->title,
                 'tour_type' => $this->tour_type,
@@ -253,7 +254,7 @@ class TourForm extends Component
     {
         return view('livewire.company.tours.tour-form', [
             'vessels' => Vessel::query()
-                ->where('company_id', auth()->user()->company->id)
+                ->where('company_id', Auth::guard('customer')->user()->company->id)
                 ->where('active', true)
                 ->orderBy('name')
                 ->get(),

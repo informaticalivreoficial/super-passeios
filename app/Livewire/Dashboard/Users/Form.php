@@ -77,6 +77,7 @@ class Form extends Component
             'cell_phone'   => 'required',
             'birthday'     => 'required|date_format:d/m/Y',
             'information'  => 'nullable|string|max:2000',
+            'roleSelected' => 'required|in:manager,admin,super-admin',
         ];
     }     
 
@@ -99,6 +100,8 @@ class Form extends Component
     public function create(): void
     {
         try {
+            $this->authorize('create', User::class);
+
             $validated = $this->validate($this->rulesCreate());
 
             if ($this->foto) {
@@ -147,6 +150,8 @@ class Form extends Component
             $validated = $this->validate($this->rulesUpdate());
 
             $user = User::findOrFail($this->userId);
+
+            $this->authorize('update', $user);
 
             if ($this->foto) {
                 if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {

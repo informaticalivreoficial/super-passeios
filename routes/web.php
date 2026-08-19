@@ -124,7 +124,7 @@ Route::name('web.')->group(function () {
 // });
 
 Route::group([
-    'middleware' => ['auth:customer', 'verified', 'role:proprietary'], 
+    'middleware' => ['auth:customer', 'customer.role:proprietary'], 
     'prefix'     => 'painel', 'as' => 'company.'
     ], function () {
 

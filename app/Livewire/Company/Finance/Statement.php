@@ -5,6 +5,7 @@ namespace App\Livewire\Company\Finance;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\WalletTransaction;
+use Illuminate\Support\Facades\Auth;
 
 class Statement extends Component
 {
@@ -16,7 +17,7 @@ class Statement extends Component
 
     public function render()
     {
-        $company = auth()->user()->company;
+        $company = Auth::guard('customer')->user()->company;
 
         $transactions = WalletTransaction::query()
             ->whereCompanyId($company->id)

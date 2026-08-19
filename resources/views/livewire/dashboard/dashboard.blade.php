@@ -18,92 +18,59 @@
         </nav>
     </div>
 
-    {{-- ============ CONTEÚDO ============ --}}
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <a href="{{ route('admin.companies.index') }}" class="group bg-white rounded-2xl border border-slate-100 p-5 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300">
-            <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-blue-50 text-blue-600">
+    {{-- ============ VISÃO GERAL ============ --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <a href="{{ route('admin.companies.index') }}" class="group bg-white rounded-2xl border border-slate-100 p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-blue-50 text-blue-600 shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 </div>
-            </div>
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Empresas</p>
-            <p class="text-2xl font-black text-slate-900">{{ $companyCount }}</p>
-            <p class="text-xs text-slate-400 font-medium mt-1">{{ now()->year }}: {{ $companyYearCount }}</p>
-        </a>
-
-        <a href="{{ route('admin.posts.index') }}" class="group bg-white rounded-2xl border border-slate-100 p-5 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300">
-            <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-teal-50 text-teal-600">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                <div class="min-w-0">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Empresas</p>
+                    <p class="text-xl font-black text-slate-900 leading-tight">{{ $companyCount }}</p>
+                    <p class="text-[10px] text-slate-400 font-medium">{{ now()->year }}: {{ $companyYearCount }}</p>
                 </div>
             </div>
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Notícias</p>
-            <p class="text-2xl font-black text-slate-900">{{ $noticiasCount }}</p>
-            <p class="text-xs text-slate-400 font-medium mt-1">{{ now()->year }}: {{ $noticiasYearCount }}</p>
         </a>
 
-        <a href="{{ route('admin.posts.index') }}" class="group bg-white rounded-2xl border border-slate-100 p-5 hover:shadow-lg hover:shadow-slate-200/50 hover:-translate-y-0.5 transition-all duration-300">
-            <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-purple-50 text-purple-600">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                </div>
-            </div>
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Artigos</p>
-            <p class="text-2xl font-black text-slate-900">{{ $articlesCount }}</p>
-            <p class="text-xs text-slate-400 font-medium mt-1">{{ now()->year }}: {{ $articlesYearCount }}</p>
-        </a>
-
-        <div class="group bg-white rounded-2xl border border-slate-100 p-5">
-            <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-50 text-amber-600">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                </div>
-            </div>
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Sem Passeios</p>
-            <p class="text-2xl font-black text-slate-900">{{ $companiesWithNoToursCount }}</p>
-            <p class="text-xs text-slate-400 font-medium mt-1">Operadoras</p>
-        </div>
-    </div>
-
-    {{-- ============ PASSEIOS ============ --}}
-    <h2 class="text-sm font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-        Passeios
-    </h2>
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-        <div class="bg-white rounded-2xl border border-slate-100 p-5">
+        <a href="{{ route('admin.tours.index') }}" class="group bg-white rounded-2xl border border-slate-100 p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-green-50 text-green-600 shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 </div>
-                <div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Ativos</p>
-                    <p class="text-xl font-black text-slate-900">{{ $toursActiveCount }}</p>
+                <div class="min-w-0">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Passeios</p>
+                    <p class="text-xl font-black text-slate-900 leading-tight">{{ $toursActiveCount }}</p>
+                    <p class="text-[10px] text-slate-400 font-medium">{{ $toursInactiveCount }} inativos</p>
                 </div>
             </div>
-        </div>
-        <div class="bg-white rounded-2xl border border-slate-100 p-5">
+        </a>
+
+        <a href="{{ route('admin.bookings.index') }}" class="group bg-white rounded-2xl border border-slate-100 p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-slate-100 text-slate-500 shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-indigo-50 text-indigo-600 shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </div>
-                <div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Inativos</p>
-                    <p class="text-xl font-black text-slate-900">{{ $toursInactiveCount }}</p>
+                <div class="min-w-0">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Reservas</p>
+                    <p class="text-xl font-black text-slate-900 leading-tight">{{ $bookingsThisMonthCount }}</p>
+                    <p class="text-[10px] text-slate-400 font-medium">{{ $bookingsTodayCount }} hoje</p>
                 </div>
             </div>
-        </div>
-        <div class="bg-white rounded-2xl border border-slate-100 p-5">
+        </a>
+
+        <a href="{{ route('admin.withdrawals.index') }}" class="group bg-white rounded-2xl border border-slate-100 p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-red-50 text-red-600 shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-emerald-50 text-emerald-600 shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
-                <div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Sem Datas</p>
-                    <p class="text-xl font-black text-slate-900">{{ $toursWithoutDatesCount }}</p>
+                <div class="min-w-0">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Receita</p>
+                    <p class="text-xl font-black text-slate-900 leading-tight">R$ {{ number_format($totalPaidGross, 0, ',', '.') }}</p>
+                    <p class="text-[10px] text-slate-400 font-medium">R$ {{ number_format($commissionEarned, 0, ',', '.') }} comissão</p>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
     {{-- ============ RESERVAS ============ --}}
@@ -111,30 +78,30 @@
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         Reservas
     </h2>
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-        <div class="bg-white rounded-2xl border border-slate-100 p-4">
+    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-8">
+        <div class="bg-white rounded-xl border border-slate-100 p-4">
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Hoje</p>
-            <p class="text-xl font-black text-slate-900">{{ $bookingsTodayCount }}</p>
+            <p class="text-lg font-black text-slate-900">{{ $bookingsTodayCount }}</p>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-100 p-4">
+        <div class="bg-white rounded-xl border border-slate-100 p-4">
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">No Mês</p>
-            <p class="text-xl font-black text-slate-900">{{ $bookingsThisMonthCount }}</p>
+            <p class="text-lg font-black text-slate-900">{{ $bookingsThisMonthCount }}</p>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-100 p-4">
+        <div class="bg-white rounded-xl border border-amber-100 p-4">
             <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-1">Pendentes</p>
-            <p class="text-xl font-black text-slate-900">{{ $bookingsPendingCount }}</p>
+            <p class="text-lg font-black text-amber-600">{{ $bookingsPendingCount }}</p>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-100 p-4">
+        <div class="bg-white rounded-xl border border-red-100 p-4">
             <p class="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-1">Canceladas</p>
-            <p class="text-xl font-black text-slate-900">{{ $bookingsCancelledThisMonthCount }}</p>
+            <p class="text-lg font-black text-red-600">{{ $bookingsCancelledThisMonthCount }}</p>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-100 p-4">
+        <div class="bg-white rounded-xl border border-slate-100 p-4">
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Ticket Médio</p>
-            <p class="text-xl font-black text-slate-900">R$ {{ number_format($averageTicket, 0, ',', '.') }}</p>
+            <p class="text-lg font-black text-slate-900">R$ {{ number_format($averageTicket, 0, ',', '.') }}</p>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-100 p-4">
+        <div class="bg-white rounded-xl border border-slate-100 p-4">
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Conversão</p>
-            <p class="text-xl font-black text-slate-900">{{ $conversionRate }}%</p>
+            <p class="text-lg font-black text-slate-900">{{ $conversionRate }}%</p>
         </div>
     </div>
 
@@ -143,26 +110,69 @@
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
         Financeiro
     </h2>
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-        <div class="bg-white rounded-2xl border border-slate-100 p-4">
+    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 mb-8">
+        <div class="bg-white rounded-xl border border-slate-100 p-4">
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Pago</p>
             <p class="text-lg font-black text-slate-900">R$ {{ number_format($totalPaidGross, 0, ',', '.') }}</p>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-100 p-4">
+        <div class="bg-white rounded-xl border border-slate-100 p-4">
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Pago no Mês</p>
             <p class="text-lg font-black text-slate-900">R$ {{ number_format($totalPaidThisMonth, 0, ',', '.') }}</p>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-100 p-4">
+        <div class="bg-white rounded-xl border border-blue-100 p-4">
             <p class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">Comissão</p>
-            <p class="text-lg font-black text-slate-900">R$ {{ number_format($commissionEarned, 0, ',', '.') }}</p>
+            <p class="text-lg font-black text-blue-600">R$ {{ number_format($commissionEarned, 0, ',', '.') }}</p>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-100 p-4">
+        <div class="bg-white rounded-xl border border-amber-100 p-4">
             <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-1">Pendente</p>
-            <p class="text-lg font-black text-slate-900">R$ {{ number_format($pendingPayout, 0, ',', '.') }}</p>
+            <p class="text-lg font-black text-amber-600">R$ {{ number_format($pendingPayout, 0, ',', '.') }}</p>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-100 p-4">
+        <div class="bg-white rounded-xl border border-green-100 p-4">
             <p class="text-[10px] font-bold text-green-500 uppercase tracking-widest mb-1">A Sacar</p>
-            <p class="text-lg font-black text-slate-900">R$ {{ number_format($availableForWithdraw, 0, ',', '.') }}</p>
+            <p class="text-lg font-black text-green-600">R$ {{ number_format($availableForWithdraw, 0, ',', '.') }}</p>
+        </div>
+    </div>
+
+    {{-- ============ PASSEIOS ============ --}}
+    <h2 class="text-sm font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Passeios
+    </h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">
+        <div class="bg-white rounded-xl border border-green-100 p-4">
+            <p class="text-[10px] font-bold text-green-500 uppercase tracking-widest mb-1">Ativos</p>
+            <p class="text-lg font-black text-green-600">{{ $toursActiveCount }}</p>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-100 p-4">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Inativos</p>
+            <p class="text-lg font-black text-slate-900">{{ $toursInactiveCount }}</p>
+        </div>
+        <div class="bg-white rounded-xl border border-red-100 p-4">
+            <p class="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-1">Sem Datas</p>
+            <p class="text-lg font-black text-red-600">{{ $toursWithoutDatesCount }}</p>
+        </div>
+    </div>
+
+    {{-- ============ CONTEÚDO ============ --}}
+    <h2 class="text-sm font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        Conteúdo
+    </h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">
+        <div class="bg-white rounded-xl border border-teal-100 p-4">
+            <p class="text-[10px] font-bold text-teal-500 uppercase tracking-widest mb-1">Notícias</p>
+            <p class="text-lg font-black text-teal-600">{{ $noticiasCount }}</p>
+            <p class="text-[10px] text-slate-400 font-medium">{{ now()->year }}: {{ $noticiasYearCount }}</p>
+        </div>
+        <div class="bg-white rounded-xl border border-purple-100 p-4">
+            <p class="text-[10px] font-bold text-purple-500 uppercase tracking-widest mb-1">Artigos</p>
+            <p class="text-lg font-black text-purple-600">{{ $articlesCount }}</p>
+            <p class="text-[10px] text-slate-400 font-medium">{{ now()->year }}: {{ $articlesYearCount }}</p>
+        </div>
+        <div class="bg-white rounded-xl border border-amber-100 p-4">
+            <p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-1">Sem Passeios</p>
+            <p class="text-lg font-black text-amber-600">{{ $companiesWithNoToursCount }}</p>
+            <p class="text-[10px] text-slate-400 font-medium">Operadoras</p>
         </div>
     </div>
 

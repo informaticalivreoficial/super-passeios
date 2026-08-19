@@ -481,6 +481,27 @@
 
                     </div>
 
+                    {{-- PREÇO MEIA ENTRADA (CRIANÇAS 6 A 10) --}}
+                    <div>
+
+                        <label class="mb-1 block text-sm font-semibold">
+                            Preço meia entrada (crianças 6 a 10)
+                        </label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            wire:model.live="half_price"
+                            class="w-full rounded-xl border px-3 py-2"
+                            placeholder="Opcional"
+                        >
+
+                        <p class="mt-1 text-xs text-slate-400">
+                            Se vazio, será usado metade do preço cheio.
+                        </p>
+
+                    </div>
+
                     {{-- STATUS --}}
                     <div>
 

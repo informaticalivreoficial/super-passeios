@@ -24,6 +24,7 @@ class Booking extends Model
         'customer_phone',
         'adults',
         'children',
+        'children_free',
         'payment_method',
         'payment_id',
         'subtotal',
@@ -42,6 +43,7 @@ class Booking extends Model
         'total' => 'decimal:2',
         'adults' => 'integer',
         'children' => 'integer',
+        'children_free' => 'integer',
         'paid_at' => 'datetime',
         'expires_at' => 'datetime',
         'status' => BookingStatusEnum::class,
@@ -82,7 +84,7 @@ class Booking extends Model
 
     public function getTotalPeopleAttribute(): int
     {
-        return (int) $this->adults + (int) $this->children;
+        return (int) $this->adults + (int) $this->children + (int) $this->children_free;
     }
 
     public function walletTransaction()

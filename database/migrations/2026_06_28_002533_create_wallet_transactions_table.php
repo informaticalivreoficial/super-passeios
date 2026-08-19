@@ -18,7 +18,7 @@ return new class extends Migration
                 ->nullable()
                 ->constrained()
                 ->nullOnDelete();
-            $table->foreignId('withdrawal_id')->nullable()->constrained()->nullOnDelete();
+            $table->unsignedBigInteger('withdrawal_id')->nullable();
 
             $table->uuid()->unique();
             $table->string('type');

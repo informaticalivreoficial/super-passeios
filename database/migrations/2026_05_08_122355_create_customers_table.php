@@ -17,8 +17,9 @@ return new class extends Migration
             $table->string('email')->unique();
 
             $table->foreignId('company_id')
+                ->nullable()
                 ->constrained()
-                ->cascadeOnDelete();
+                ->nullOnDelete();
 
             $table->boolean('status')->default(true);
 

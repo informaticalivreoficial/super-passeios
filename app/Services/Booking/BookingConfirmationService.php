@@ -24,7 +24,7 @@ class BookingConfirmationService
 
                 $booking->tourDate->decrement(
                     'available_slots',
-                    $booking->adults + $booking->children
+                    $booking->adults + $booking->children + $booking->children_free
                 );
 
             }

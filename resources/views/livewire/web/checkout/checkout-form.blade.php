@@ -124,37 +124,65 @@
                     </div>
                 </div>
 
-                {{-- Crianças (se houver meia entrada) --}}
-                @if($tourDate->half_price)
-                    <div class="bg-gradient-to-r from-orange-50 to-white p-4 rounded-xl mb-6 border border-orange-200 hover:shadow-md transition-all duration-300">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <div class="font-semibold text-gray-800 flex items-center gap-2">
-                                    <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197"/>
-                                    </svg>
-                                    Crianças
-                                    <span class="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-medium">meia entrada</span>
-                                </div>
-                                <div class="text-sm text-gray-500 mt-1">R$ {{ number_format($tourDate->half_price, 2, ',', '.') }} por criança</div>
+                {{-- Crianças de 6 a 10 (meia) --}}
+                <div class="bg-gradient-to-r from-orange-50 to-white p-4 rounded-xl mb-6 border border-orange-200 hover:shadow-md transition-all duration-300">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="font-semibold text-gray-800 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197"/>
+                                </svg>
+                                Crianças de 6 a 10
+                                <span class="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-medium">meia entrada</span>
                             </div>
-                            <div class="flex items-center gap-4">
-                                <button wire:click="$set('children', {{ max(0, $children - 1) }})"
-                                    class="w-10 h-10 rounded-lg border-2 border-gray-200 hover:border-orange-400 hover:bg-orange-50 
-                                        flex items-center justify-center text-gray-600 hover:text-orange-600 transition-all duration-200">
-                                    −
-                                </button>
-                                <span class="text-xl font-bold text-gray-800 min-w-[2rem] text-center">{{ $children }}</span>
-                                <button wire:click="$set('children', {{ $children + 1 }})"
-                                    class="w-10 h-10 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 
-                                        text-white flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
-                                    +
-                                </button>
-                            </div>
+                            <div class="text-sm text-gray-500 mt-1">R$ {{ number_format($tourDate->half_price ?? $tourDate->price / 2, 2, ',', '.') }} por criança</div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button wire:click="$set('children', {{ max(0, $children - 1) }})"
+                                class="w-10 h-10 rounded-lg border-2 border-gray-200 hover:border-orange-400 hover:bg-orange-50 
+                                    flex items-center justify-center text-gray-600 hover:text-orange-600 transition-all duration-200">
+                                −
+                            </button>
+                            <span class="text-xl font-bold text-gray-800 min-w-[2rem] text-center">{{ $children }}</span>
+                            <button wire:click="$set('children', {{ $children + 1 }})"
+                                class="w-10 h-10 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 
+                                    text-white flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                                +
+                            </button>
                         </div>
                     </div>
-                @endif
+                </div>
+
+                {{-- Crianças de 0 a 5 (grátis) --}}
+                <div class="bg-gradient-to-r from-green-50 to-white p-4 rounded-xl mb-6 border border-green-200 hover:shadow-md transition-all duration-300">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="font-semibold text-gray-800 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197"/>
+                                </svg>
+                                Crianças de 0 a 5
+                                <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">grátis</span>
+                            </div>
+                            <div class="text-sm text-gray-500 mt-1">Não pagam</div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button wire:click="$set('childrenFree', {{ max(0, $childrenFree - 1) }})"
+                                class="w-10 h-10 rounded-lg border-2 border-gray-200 hover:border-green-400 hover:bg-green-50 
+                                    flex items-center justify-center text-gray-600 hover:text-green-600 transition-all duration-200">
+                                −
+                            </button>
+                            <span class="text-xl font-bold text-gray-800 min-w-[2rem] text-center">{{ $childrenFree }}</span>
+                            <button wire:click="$set('childrenFree', {{ $childrenFree + 1 }})"
+                                class="w-10 h-10 rounded-lg bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 
+                                    text-white flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                                +
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
                 {{-- Vagas disponíveis --}}
                 <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl mb-6 border border-green-200">
@@ -643,7 +671,8 @@
                         <span class="text-gray-500">Pessoas</span>
                         <span class="font-semibold" style="color: var(--navy);">
                             {{ $adults }} adulto(s)
-                            @if($children > 0) + {{ $children }} criança(s) @endif
+                            @if($children > 0) + {{ $children }} criança(s) (meia) @endif
+                            @if($childrenFree > 0) + {{ $childrenFree }} criança(s) (grátis) @endif
                         </span>
                     </div>
                     <div class="flex justify-between text-sm pt-3 mt-3" style="border-top: 1px solid #e8e4d8;">

@@ -30,7 +30,7 @@
                                     </svg>
                                     {{ $booking->tourDate->date->format('d/m/Y') }}
                                 </span>
-                                <span>{{ $booking->adults }} adulto(s) @if($booking->children) + {{ $booking->children }} criança(s) @endif</span>
+                                <span>{{ $booking->adults }} adulto(s) @if($booking->children) + {{ $booking->children }} criança(s) (meia) @endif @if($booking->children_free) + {{ $booking->children_free }} criança(s) (grátis) @endif</span>
                             </div>
                         </div>
 

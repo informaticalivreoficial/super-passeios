@@ -34,7 +34,11 @@ class AppServiceProvider extends ServiceProvider
 
         Paginator::useBootstrap();
 
-        $config = \App\Models\Config::first(); 
+        try {
+            $config = \App\Models\Config::first();
+        } catch (\Throwable $e) {
+            $config = null;
+        }
         View()->share('config', $config);
 
         VerifyEmail::toMailUsing(function ($notifiable, $url) {

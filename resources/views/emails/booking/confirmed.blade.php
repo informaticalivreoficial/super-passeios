@@ -27,7 +27,10 @@ Recebemos sua reserva. Assim que o pagamento for confirmado, você receberá out
 |---|---|
 | Adultos | {{ $booking->adults }} |
 @if($booking->children > 0)
-| Crianças (meia) | {{ $booking->children }} |
+| Crianças (6 a 10, meia) | {{ $booking->children }} |
+@endif
+@if($booking->children_free > 0)
+| Crianças (0 a 5, grátis) | {{ $booking->children_free }} |
 @endif
 | Total pago | **R$ {{ number_format($booking->total, 2, ',', '.') }}** |
 | Forma de pagamento | {{ match($booking->payment_method) {

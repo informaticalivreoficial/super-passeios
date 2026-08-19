@@ -26,6 +26,7 @@ class TourDate extends Model
 
     protected $casts = [
         'price' => 'decimal:2',
+        'half_price' => 'decimal:2',
         'date' => 'date',
         'active' => 'boolean',
         'start_time' => TimeCast::class,
@@ -50,7 +51,7 @@ class TourDate extends Model
             ->where('date', '>=', now()->toDateString())
             ->where('status', TourDateStatusEnum::OPEN)
             ->whereRaw('available_slots > (
-                SELECT COALESCE(SUM(adults + children), 0)
+                SELECT COALESCE(SUM(adults + children + children_free), 0)
                 FROM bookings
                 WHERE bookings.tour_date_id = tour_dates.id
                 AND bookings.payment_status IN (?, ?)
@@ -61,7 +62,7 @@ class TourDate extends Model
     {
         $booked = $this->bookings()
             ->whereIn('payment_status', ['paid', 'pending'])
-            ->sum(DB::raw('adults + children'));
+            ->sum(DB::raw('adults + children + children_free'));
 
         return max($this->attributes['available_slots'] - $booked, 0);
     }
@@ -70,7 +71,7 @@ class TourDate extends Model
     {
         return $this->bookings()
             ->whereIn('payment_status', ['paid', 'pending'])
-            ->sum(DB::raw('adults + children'));
+            ->sum(DB::raw('adults + children + children_free'));
     }
 
     public function getIsSoldOutAttribute(): bool
@@ -83,7 +84,7 @@ class TourDate extends Model
         $booked =
             $this->bookings()
                 ->whereIn('status', ['confirmed', 'pending'])
-                ->sum(DB::raw('adults + children'));
+                ->sum(DB::raw('adults + children + children_free'));
 
         return max(0, $this->available_slots - $booked);
     }    

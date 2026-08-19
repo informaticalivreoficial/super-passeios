@@ -97,7 +97,7 @@ class WebhookController extends Controller
         ]);
 
         // Devolve as vagas
-        $booking->tourDate()->increment('available_slots', $booking->adults + $booking->children);
+        $booking->tourDate()->increment('available_slots', $booking->adults + $booking->children + $booking->children_free);
 
         // Se a data estava FULL, reabre
         $tourDate = $booking->tourDate()->first();

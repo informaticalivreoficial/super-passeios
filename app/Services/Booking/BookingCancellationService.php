@@ -37,7 +37,7 @@ class BookingCancellationService
 
         DB::transaction(function () use ($booking, $reason, $wasPaid) {
             $tourDate = $booking->tourDate()->lockForUpdate()->first();
-            $seats    = $booking->adults + $booking->children;
+            $seats    = $booking->adults + $booking->children + $booking->children_free;
 
             $tourDate->increment('available_slots', $seats);
             $tourDate->refresh();

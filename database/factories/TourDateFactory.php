@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\TourDateStatusEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,14 @@ class TourDateFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'date' => fake()->dateTimeBetween('+1 day', '+30 days')->format('Y-m-d'),
+            'price' => fake()->randomFloat(2, 50, 500),
+            'half_price' => null,
+            'start_time' => '09:00',
+            'end_time' => '12:00',
+            'available_slots' => fake()->numberBetween(1, 20),
+            'active' => true,
+            'status' => TourDateStatusEnum::OPEN,
         ];
     }
 }

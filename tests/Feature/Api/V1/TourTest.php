@@ -41,12 +41,12 @@ class TourTest extends TestCase
     public function test_can_show_single_tour_by_slug(): void
     {
         $company = Company::factory()->create();
-        $tour = Tour::factory()->create(['company_id' => $company->id, 'slug' => 'passeio-teste']);
+        $tour = Tour::factory()->create(['company_id' => $company->id, 'title' => 'Passeio Teste']);
 
-        $response = $this->getJson('/api/v1/tours/passeio-teste');
+        $response = $this->getJson("/api/v1/tours/{$tour->slug}");
 
         $response->assertStatus(200)
-            ->assertJsonPath('data.slug', 'passeio-teste');
+            ->assertJsonPath('data.slug', $tour->slug);
     }
 
     public function test_show_returns_404_for_nonexistent_slug(): void

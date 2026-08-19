@@ -24,8 +24,9 @@ class CheckoutForm extends Component
     public TourDate $tourDate;
  
     // ─── Passo 1: quantidades ─────────────────
-    public int $adults   = 1;
-    public int $children = 0;
+    public int $adults       = 1;
+    public int $children     = 0;
+    public int $childrenFree = 0;
  
     // ─── Passo 2: dados do cliente ────────────
     public string $name  = '';
@@ -88,6 +89,7 @@ class CheckoutForm extends Component
  
     public function updatedAdults(): void   { $this->recalculate(); }
     public function updatedChildren(): void { $this->recalculate(); }
+    public function updatedChildrenFree(): void { $this->recalculate(); }
  
     // ─────────────────────────────────────────
     // VALIDAÇÕES POR PASSO
@@ -96,15 +98,17 @@ class CheckoutForm extends Component
     {
         $maxSlots = $this->tourDate->available_slots;
  
-        $this->validate([
-            'adults'   => ['required', 'integer', 'min:1'],
-            'children' => ['required', 'integer', 'min:0'],
+$this->validate([
+            'adults'       => ['required', 'integer', 'min:1'],
+            'children'     => ['required', 'integer', 'min:0'],
+            'childrenFree' => ['required', 'integer', 'min:0'],
         ], [
-            'adults.min'   => 'É necessário pelo menos 1 adulto.',
-            'children.min' => 'Número de crianças inválido.',
+            'adults.min'       => 'É necessário pelo menos 1 adulto.',
+            'children.min'     => 'Número de crianças inválido.',
+            'childrenFree.min' => 'Número de crianças inválido.',
         ]);
- 
-        if (($this->adults + $this->children) > $maxSlots) {
+
+        if (($this->adults + $this->children + $this->childrenFree) > $maxSlots) {
             $this->addError('adults', "Apenas {$maxSlots} vagas disponíveis para esta data.");
             return;
         }
@@ -203,6 +207,7 @@ class CheckoutForm extends Component
                 'customer_phone'    => preg_replace('/\D/', '', $this->phone),
                 'adults'            => $this->adults,
                 'children'          => $this->children,
+                'children_free'     => $this->childrenFree,
                 'payment_method'    => $this->paymentMethod,
                 'subtotal'          => $this->subtotal,
                 'commission_amount' => $this->commissionAmount,

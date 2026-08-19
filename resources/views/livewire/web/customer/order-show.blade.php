@@ -37,7 +37,7 @@
             <div><span class="text-gray-500">Código</span><br><strong>{{ strtoupper(substr($booking->uuid, 0, 8)) }}</strong></div>
             <div><span class="text-gray-500">Data</span><br><strong>{{ $booking->tourDate->date->format('d/m/Y') }}</strong></div>
             <div><span class="text-gray-500">Horário</span><br><strong>{{ $booking->tourDate->start_time }}</strong></div>
-            <div><span class="text-gray-500">Pessoas</span><br><strong>{{ $booking->adults }} adulto(s) @if($booking->children) + {{ $booking->children }} criança(s) @endif</strong></div>
+            <div><span class="text-gray-500">Pessoas</span><br><strong>{{ $booking->adults }} adulto(s) @if($booking->children) + {{ $booking->children }} criança(s) (meia) @endif @if($booking->children_free) + {{ $booking->children_free }} criança(s) (grátis) @endif</strong></div>
             <div><span class="text-gray-500">Cliente</span><br><strong>{{ $booking->customer_name }}</strong></div>
             <div><span class="text-gray-500">Total pago</span><br><strong>R$ {{ number_format($booking->total, 2, ',', '.') }}</strong></div>
         </div>

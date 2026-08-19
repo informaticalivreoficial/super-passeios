@@ -96,7 +96,8 @@
                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
                           style="background: rgba(245,158,11,0.08); color: #d97706;">
                         {{ $booking->adults }} adulto(s)
-                        @if($booking->children > 0) · {{ $booking->children }} criança(s) @endif
+                        @if($booking->children > 0) · {{ $booking->children }} criança(s) (meia) @endif
+                        @if($booking->children_free > 0) · {{ $booking->children_free }} criança(s) (grátis) @endif
                     </span>
                 </div>
             </div>

@@ -185,7 +185,8 @@
                     <span class="info-label">Passageiros</span>
                     <span class="info-value">
                         {{ $booking->adults }} adulto(s)
-                        @if($booking->children) + {{ $booking->children }} criança(s) @endif
+                        @if($booking->children) + {{ $booking->children }} criança(s) (meia) @endif
+                        @if($booking->children_free) + {{ $booking->children_free }} criança(s) (grátis) @endif
                     </span>
                 </td>
                 <td>

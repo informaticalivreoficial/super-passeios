@@ -15,14 +15,13 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('bank_account_id')->nullable()->constrained()->nullOnDelete();
+            $table->unsignedBigInteger('bank_account_id')->nullable();
             $table->decimal('amount', 10, 2);
 
             $table->decimal('fee', 10, 2)->default(0);
             $table->decimal('net_amount', 10, 2); 
             $table->foreignId('approved_by')
                 ->nullable()
-                ->after('approved_at')
                 ->constrained('users')
                 ->nullOnDelete();
 

@@ -22,6 +22,7 @@ class TourDates extends Component
     public $available_slots;
     public $active = true;
     public $price;
+    public $half_price;
 
     public ?string $status = null;
 
@@ -58,6 +59,12 @@ class TourDates extends Component
 
             'price' => [
                 'required',
+                'numeric',
+                'min:0'
+            ],
+
+            'half_price' => [
+                'nullable',
                 'numeric',
                 'min:0'
             ],
@@ -137,6 +144,7 @@ class TourDates extends Component
                 'end_time'         => $this->end_time,
                 'available_slots'  => $this->available_slots,
                 'price'            => $this->price,
+                'half_price'       => $this->half_price,
                 'active'           => $this->active,
                 'status'           => $this->status,
             ]);
@@ -155,6 +163,7 @@ class TourDates extends Component
                 'end_time'        => $this->end_time,
                 'available_slots' => $this->available_slots,
                 'price'           => $this->price,
+                'half_price'      => $this->half_price,
                 'active'          => $this->active,
                 'status'          => $this->status,
             ]);
@@ -188,6 +197,9 @@ class TourDates extends Component
         $this->price =
             $date->price;
 
+        $this->half_price =
+            $date->half_price;
+
         $this->active =
             $date->active;
 
@@ -215,6 +227,7 @@ class TourDates extends Component
             'end_time',
             'available_slots',
             'price',
+            'half_price',
             'active',
             'status',
         ]);
@@ -224,6 +237,8 @@ class TourDates extends Component
 
         $this->price =
             $this->tour->price ?? 0;
+
+        $this->half_price = null;
 
         $this->active = true;
 

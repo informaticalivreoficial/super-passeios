@@ -34,7 +34,7 @@ class BookingPaidService
 
         DB::transaction(function () use ($booking) {
             $tourDate = $booking->tourDate()->lockForUpdate()->first();
-            $seats    = $booking->adults + $booking->children;
+            $seats    = $booking->adults + $booking->children + $booking->children_free;
 
             if ($tourDate->available_slots < $seats) {
                 Log::error('BookingPaidService: vagas insuficientes no momento da confirmação', [

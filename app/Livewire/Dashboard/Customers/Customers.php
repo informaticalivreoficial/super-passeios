@@ -24,10 +24,6 @@ class Customers extends Component
 
     public string $sortDirection = 'desc';
 
-    public ?Customer $selectedCustomer = null;
-
-    public bool $showDetailModal = false;
-
     public function updatingSearch(): void
     {
         $this->resetPage();
@@ -53,18 +49,6 @@ class Customers extends Component
         }
 
         $this->resetPage();
-    }
-
-    public function openDetail(Customer $customer): void
-    {
-        $this->selectedCustomer = $customer->load(['company', 'bookings.tour']);
-        $this->showDetailModal = true;
-    }
-
-    public function closeDetail(): void
-    {
-        $this->showDetailModal = false;
-        $this->selectedCustomer = null;
     }
 
     public function render()

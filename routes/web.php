@@ -25,6 +25,7 @@ use App\Livewire\Company\Vessels\VesselIndex;
 use App\Livewire\Dashboard\{
     Bookings\BookingForm,
     Companies\CompanyForm,
+    Customers\CustomerShow,
     Customers\Customers,
     Dashboard,
     NotificationsList,
@@ -181,7 +182,8 @@ Route::group(['middleware' => ['auth', 'verified', 'role:super-admin|admin'], 'p
     Route::get('/cadastrar-reserva', BookingForm::class)->name('bookings.create');
     Route::get('/reserva/{booking}/editar', BookingForm::class)->name('bookings.edit');   
 
-    Route::get('/clientes', Customers::class)->name('customers.index');   
+    Route::get('/clientes', Customers::class)->name('customers.index');
+    Route::get('/cliente/{customer}/visualizar', CustomerShow::class)->name('customers.view');   
 
     Route::get('usuarios/clientes', Users::class)->name('users.index');
     Route::get('usuarios/time', Time::class)->name('users.time');

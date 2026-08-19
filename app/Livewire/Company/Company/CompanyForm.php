@@ -4,6 +4,10 @@ namespace App\Livewire\Company\Company;
 
 use App\Models\Company;
 use App\Models\CompanyGb;
+use App\Models\User;
+use App\Notifications\CompanyDeletionCancelled;
+use App\Notifications\CompanyDeletionRequested;
+use App\Notifications\CompanyDeletionScheduled;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
@@ -318,6 +322,67 @@ class CompanyForm extends Component
         }
 
         
+    }
+
+    public function requestDeletion()
+    {
+        if (!$this->company->exists) {
+            return;
+        }
+
+        if ($this->company->available_balance > 0) {
+            $this->dispatch('swal:warning', [
+                'title'             => 'Saldo pendente!',
+                'text'              => 'Saque seu saldo disponível antes de solicitar a exclusão da conta.',
+                'icon'              => 'warning',
+                'showConfirmButton' => false,
+            ]);
+            return;
+        }
+
+        $this->company->update([
+            'deletion_requested_at'  => now(),
+            'deletion_scheduled_for' => now()->addDays(7),
+            'deletion_cancelled_at'  => null,
+        ]);
+
+        $this->company->refresh();
+
+        $admins = User::role(['super-admin', 'admin'])->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new CompanyDeletionRequested($this->company));
+        }
+
+        auth('customer')->user()->notify(new CompanyDeletionScheduled($this->company));
+
+        $this->dispatch('swal:success', [
+            'title'             => 'Exclusão agendada!',
+            'text'              => 'Sua conta será excluída em ' . $this->company->deletion_scheduled_for->format('d/m/Y') . '. Você pode cancelar dentro desse período.',
+            'timer'             => 4000,
+            'showConfirmButton' => false,
+        ]);
+    }
+
+    public function cancelDeletion()
+    {
+        if (!$this->company->exists || !$this->company->isDeletionPending()) {
+            return;
+        }
+
+        $this->company->update([
+            'deletion_cancelled_at' => now(),
+        ]);
+
+        $this->company->refresh();
+
+        auth('customer')->user()->notify(new CompanyDeletionCancelled($this->company));
+
+        $this->dispatch('swal:success', [
+            'title'             => 'Exclusão cancelada!',
+            'text'              => 'Sua conta continua ativa normalmente.',
+            'timer'             => 3000,
+            'showConfirmButton' => false,
+        ]);
     }
 
     public function updatedZipcode(string $value)

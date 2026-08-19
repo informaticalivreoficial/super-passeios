@@ -136,6 +136,31 @@
             {{-- PAGE --}}
             <main class="flex-1 p-4 lg:p-8">
 
+                @php
+                    $pendingDeletion = auth('customer')->user()?->company;
+                @endphp
+
+                @if($pendingDeletion && $pendingDeletion->isDeletionPending())
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl px-4 py-3 mb-6"
+                        style="background-color: rgba(229,62,62,0.08); border: 1px solid rgba(229,62,62,0.35);">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 mt-0.5 shrink-0" style="color: #e53e3e;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                            <p class="text-sm" style="color: #7a1f1f;">
+                                <strong>Sua conta será excluída em {{ $pendingDeletion->deletion_scheduled_for->format('d/m/Y') }}.</strong>
+                                Você pode cancelar a exclusão dentro desse período.
+                            </p>
+                        </div>
+                        <a href="{{ route('company.company.edit', $pendingDeletion->uuid) }}"
+                            class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-extrabold transition shrink-0"
+                            style="background-color: #e53e3e; color: #ffffff;"
+                            onmouseover="this.style.backgroundColor='#c53030'"
+                            onmouseout="this.style.backgroundColor='#e53e3e'"
+                        >
+                            Cancelar exclusão
+                        </a>
+                    </div>
+                @endif
+
                 {{ $slot }}
 
             </main>

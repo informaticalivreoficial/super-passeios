@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('notifications:clean-old')->everyMinute()->withoutOverlapping();
         $schedule->command('app:clear-logs')->everyMinute()->withoutOverlapping(); 
         $schedule->command('wallet:release')->everyMinute()->withoutOverlapping();
+        $schedule->command('companies:purge-deleted')->everyMinute()->withoutOverlapping();
     }
 
     protected function commands(): void

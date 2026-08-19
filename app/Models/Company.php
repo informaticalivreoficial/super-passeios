@@ -40,6 +40,9 @@ class Company extends Model
         'cadastur',
         'information',
         'status',
+        'deletion_requested_at',
+        'deletion_scheduled_for',
+        'deletion_cancelled_at',
         //Redes Sociais
         'facebook', 'twitter', 'instagram', 'linkedin', 'tiktok',
         //contact 
@@ -53,6 +56,9 @@ class Company extends Model
         'magic_token_expires_at' => 'datetime',
         'highlight' => 'boolean',
         'commission_rate' => 'decimal:2',
+        'deletion_requested_at' => 'datetime',
+        'deletion_scheduled_for' => 'datetime',
+        'deletion_cancelled_at' => 'datetime',
     ];
 
     protected static function boot()
@@ -86,6 +92,17 @@ class Company extends Model
         $token = Str::random(64);
         $this->update(['api_token' => $token]);
         return $token;
+    }
+
+    public function isDeletionPending(): bool
+    {
+        return $this->deletion_requested_at !== null
+            && $this->deletion_cancelled_at === null;
+    }
+
+    public function isDeletionCancelled(): bool
+    {
+        return $this->deletion_cancelled_at !== null;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Web\ArticleController;
 use App\Http\Controllers\Web\BookingVoucherPdfController;
+use App\Http\Controllers\Web\CompanyReportPdfController;
 use App\Http\Controllers\Web\CustomerMagicAccessController;
 use App\Http\Controllers\Web\PartnerLandingController;
 use App\Http\Controllers\Web\SiteController;
@@ -51,6 +52,7 @@ use App\Livewire\Dashboard\{
 };
 use App\Livewire\Dashboard\Bookings\Bookings;
 use App\Livewire\Dashboard\Companies\Companies;
+use App\Livewire\Dashboard\Companies\CompanyShow;
 use App\Livewire\Dashboard\Finance\WithdrawalsIndex;
 use App\Livewire\Web\Checkout\CheckoutForm as CheckoutCheckoutForm;
 use App\Livewire\Web\Customer\FindOrders;
@@ -169,6 +171,8 @@ Route::group(['middleware' => ['auth', 'verified', 'role:super-admin|admin'], 'p
     Route::get('/empresas', Companies::class)->name('companies.index');
     Route::get('/cadastrar-empresa', CompanyForm::class)->name('companies.create');
     Route::get('/empresa/{company}/editar', CompanyForm::class)->name('companies.edit');
+    Route::get('/empresa/{company}/visualizar', CompanyShow::class)->name('companies.view');
+    Route::get('/empresa/{company}/relatorio-pdf', CompanyReportPdfController::class)->name('companies.report');
 
     Route::get('/embarcacoes', Vessels::class)->name('vessels.index');
     Route::get('/cadastrar-embarcacao', VesselForm::class)->name('vessels.create');

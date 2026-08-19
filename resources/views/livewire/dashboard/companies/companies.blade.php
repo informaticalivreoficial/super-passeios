@@ -133,7 +133,7 @@
                                 </svg>
                                 Editar
                             </a>
-                            <a href="{{-- rota de visualização pública --}}" target="_blank"
+                            <a href="{{ route('admin.companies.view', ['company' => $company->id]) }}"
                                class="h-10 w-10 inline-flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" title="Visualizar">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <circle cx="11" cy="11" r="8"/>

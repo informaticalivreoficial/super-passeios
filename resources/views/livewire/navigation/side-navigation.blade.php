@@ -72,6 +72,14 @@
                     </a>
                 </li>
 
+                {{-- Clientes --}}
+                <li class="nav-item">
+                    <a href="{{ route('admin.customers.index') }}" class="nav-link {{ Route::is('admin.customers.index') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-user-friends"></i>
+                        <p>Clientes <span class="badge badge-info right">{{ $customersCount }}</span></p>
+                    </a>
+                </li>
+
                 {{-- Financeiro --}}
                 <li class="nav-item">
                     <a href="{{ route('admin.withdrawals.index') }}" class="nav-link {{ Route::is('admin.withdrawals.index') ? 'active' : '' }}">

@@ -5,6 +5,7 @@ namespace App\Livewire\Navigation;
 use App\Models\Booking;
 use App\Models\Company;
 use App\Models\Config;
+use App\Models\Customer;
 use App\Models\Post;
 use App\Models\Property;
 use App\Models\Tour;
@@ -43,6 +44,7 @@ class SideNavigation extends Component
 
         $toursCount = Tour::count();
         $bookingsCount = Booking::count();
+        $customersCount = Customer::count();
 
         return view('livewire.navigation.side-navigation',[
             'companiesCount' => $companiesCount > 0 ? $companiesCount : null,
@@ -50,6 +52,7 @@ class SideNavigation extends Component
             'vesselsCount' => $vesselsCount > 0 ? $vesselsCount : null,
             'toursCount' => $toursCount > 0 ? $toursCount : null,
             'bookingsCount' => $bookingsCount > 0 ? $bookingsCount : null,
+            'customersCount' => $customersCount > 0 ? $customersCount : null,
         ]);
     }
 }

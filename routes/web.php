@@ -48,7 +48,9 @@ use App\Livewire\Dashboard\{
     Users\Users,
     Users\ViewUser,
     Vessels\VesselForm,
-    Vessels\Vessels
+    Vessels\Vessels,
+    Newsletter\Newsletters,
+    Newsletter\NewsletterCategories
 };
 use App\Livewire\Dashboard\Bookings\Bookings;
 use App\Livewire\Dashboard\Companies\Companies;
@@ -208,4 +210,7 @@ Route::group(['middleware' => ['auth', 'verified', 'role:super-admin|admin'], 'p
     Route::get('relatorios/reservas', ReportsBookings::class)->name('reports.bookings'); 
 
     Route::get('financeiro-saques', WithdrawalsIndex::class)->name('withdrawals.index');
+
+    Route::get('newsletter', Newsletters::class)->name('newsletter.index');
+    Route::get('newsletter/categorias', NewsletterCategories::class)->name('newsletter.categories.index');
 });

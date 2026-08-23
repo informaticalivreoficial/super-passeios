@@ -10,6 +10,7 @@ class Newsletter extends Model
     use HasFactory;
 
     protected $fillable = [
+        'category_id',
         'email',
         'name',
         'active',
@@ -22,9 +23,9 @@ class Newsletter extends Model
         'confirmed_at' => 'datetime',
     ];
 
-    protected static function boot()
+    public function category()
     {
-        parent::boot();        
+        return $this->belongsTo(NewsletterCategory::class, 'category_id');
     }
 
     protected static function booted()

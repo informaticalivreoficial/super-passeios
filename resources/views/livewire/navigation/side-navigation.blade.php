@@ -80,6 +80,28 @@
                     </a>
                 </li>
 
+                {{-- Newsletter --}}
+                <li class="nav-item {{ Route::is('admin.newsletter.*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ Route::is('admin.newsletter.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-envelope-open-text"></i>
+                        <p>Newsletter <i class="fas fa-angle-left right"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.newsletter.index') }}" class="nav-link {{ Route::is('admin.newsletter.index') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>E-mails</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.newsletter.categories.index') }}" class="nav-link {{ Route::is('admin.newsletter.categories.index') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Categorias</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
                 {{-- Financeiro --}}
                 <li class="nav-item">
                     <a href="{{ route('admin.withdrawals.index') }}" class="nav-link {{ Route::is('admin.withdrawals.index') ? 'active' : '' }}">

@@ -161,7 +161,29 @@
 
                 </div>
 
-            @endif
+                <a
+                    href="{{ route('login') }}"
+                    class="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-extrabold text-sm transition"
+                    style="background: #16a3b7; color: white; box-shadow: 0 2px 0 #0e7a8a; font-family: 'Syne', sans-serif;"
+                    onmouseover="this.style.background='#13919e'"
+                    onmouseout="this.style.background='#16a3b7'"
+                >
+
+                    <svg class="w-4 h-4"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2.5"
+                         viewBox="0 0 24 24">
+
+                        <path d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+
+                    </svg>
+
+                    Ir para o login
+
+                </a>
+
+            @else
 
             {{-- FORM --}}
             <form
@@ -219,7 +241,8 @@
                 </div>
 
                 {{-- SENHA --}}
-                <div class="flex flex-col gap-1.5">
+                <div class="flex flex-col gap-1.5"
+                     x-data="{ show: false }">
 
                     <label class="text-sm font-bold"
                            style="color: #051e34;">
@@ -242,14 +265,49 @@
                         </svg>
 
                         <input
-                            type="password"
+                            :type="show ? 'text' : 'password'"
                             wire:model="password"
                             placeholder="********"
-                            class="w-full border rounded-xl text-sm pl-9 pr-3 py-2.5 outline-none transition"
+                            class="w-full border rounded-xl text-sm pl-9 pr-10 py-2.5 outline-none transition"
                             style="border-color: #e8e4d8; color: #051e34;"
                             onfocus="this.style.borderColor='#16a3b7'; this.style.boxShadow='0 0 0 3px rgba(22,163,183,0.15)'"
                             onblur="this.style.borderColor='#e8e4d8'; this.style.boxShadow='none'"
                         >
+
+                        <button
+                            type="button"
+                            @click="show = !show"
+                            class="absolute right-3 top-1/2 -translate-y-1/2"
+                            style="color: #b0a98a;"
+                        >
+
+                            <svg x-show="!show"
+                                 class="w-4 h-4"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 viewBox="0 0 24 24">
+
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+
+                                <circle cx="12" cy="12" r="3"/>
+
+                            </svg>
+
+                            <svg x-show="show"
+                                 class="w-4 h-4"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 viewBox="0 0 24 24">
+
+                                <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/>
+
+                                <line x1="1" y1="1" x2="23" y2="23"/>
+
+                            </svg>
+
+                        </button>
 
                     </div>
 
@@ -267,7 +325,8 @@
                 </div>
 
                 {{-- CONFIRMAR SENHA --}}
-                <div class="flex flex-col gap-1.5">
+                <div class="flex flex-col gap-1.5"
+                     x-data="{ show: false }">
 
                     <label class="text-sm font-bold"
                            style="color: #051e34;">
@@ -290,14 +349,49 @@
                         </svg>
 
                         <input
-                            type="password"
+                            :type="show ? 'text' : 'password'"
                             wire:model="password_confirmation"
                             placeholder="********"
-                            class="w-full border rounded-xl text-sm pl-9 pr-3 py-2.5 outline-none transition"
+                            class="w-full border rounded-xl text-sm pl-9 pr-10 py-2.5 outline-none transition"
                             style="border-color: #e8e4d8; color: #051e34;"
                             onfocus="this.style.borderColor='#16a3b7'; this.style.boxShadow='0 0 0 3px rgba(22,163,183,0.15)'"
                             onblur="this.style.borderColor='#e8e4d8'; this.style.boxShadow='none'"
                         >
+
+                        <button
+                            type="button"
+                            @click="show = !show"
+                            class="absolute right-3 top-1/2 -translate-y-1/2"
+                            style="color: #b0a98a;"
+                        >
+
+                            <svg x-show="!show"
+                                 class="w-4 h-4"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 viewBox="0 0 24 24">
+
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+
+                                <circle cx="12" cy="12" r="3"/>
+
+                            </svg>
+
+                            <svg x-show="show"
+                                 class="w-4 h-4"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 viewBox="0 0 24 24">
+
+                                <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/>
+
+                                <line x1="1" y1="1" x2="23" y2="23"/>
+
+                            </svg>
+
+                        </button>
 
                     </div>
 
@@ -364,6 +458,8 @@
                 </div>
 
             </form>
+
+            @endif
 
         </div>
 

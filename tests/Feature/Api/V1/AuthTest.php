@@ -137,4 +137,23 @@ class AuthTest extends TestCase
         // Confirma que o token foi realmente revogado
         $this->assertDatabaseCount('personal_access_tokens', 0);
     }
+
+    public function test_customer_can_update_profile(): void
+    {
+        $customer = Customer::factory()->create();
+
+        $response = $this->actingAs($customer, 'sanctum')
+            ->putJson('/api/v1/me', [
+                'name'  => 'Novo Nome',
+                'phone' => '48999999999',
+            ]);
+
+        $response->assertStatus(200)
+            ->assertJsonPath('customer.name', 'Novo Nome');
+
+        $this->assertDatabaseHas('customers', [
+            'id'   => $customer->id,
+            'name' => 'Novo Nome',
+        ]);
+    }
 }

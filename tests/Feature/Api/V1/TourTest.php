@@ -93,4 +93,44 @@ class TourTest extends TestCase
         $response->assertStatus(200);
         $this->assertCount(1, $response->json('data'));
     }
+
+    public function test_can_filter_tours_by_type(): void
+    {
+        $company = Company::factory()->create();
+        Tour::factory()->create(['company_id' => $company->id, 'active' => true, 'tour_type' => 'private']);
+        Tour::factory()->create(['company_id' => $company->id, 'active' => true, 'tour_type' => 'shared']);
+
+        $response = $this->getJson('/api/v1/tours?type=private');
+
+        $response->assertStatus(200);
+        $this->assertCount(1, $response->json('data'));
+        $this->assertEquals('private', $response->json('data.0.tour_type'));
+    }
+
+    public function test_cities_endpoint_returns_cities_with_available_tours(): void
+    {
+        $company = Company::factory()->create(['city' => 'Florianópolis']);
+        $tour = Tour::factory()->create(['company_id' => $company->id, 'active' => true]);
+        TourDate::factory()->create([
+            'tour_id' => $tour->id,
+            'active' => true,
+            'date' => now()->addDays(5),
+            'status' => TourDateStatusEnum::OPEN,
+            'available_slots' => 10,
+        ]);
+
+        $response = $this->getJson('/api/v1/cities');
+
+        $response->assertStatus(200)
+            ->assertJsonFragment(['Florianópolis']);
+    }
+
+    public function test_tour_types_endpoint_returns_enum_options(): void
+    {
+        $response = $this->getJson('/api/v1/tour-types');
+
+        $response->assertStatus(200)
+            ->assertJsonFragment(['value' => 'private', 'label' => 'Privativo'])
+            ->assertJsonFragment(['value' => 'shared', 'label' => 'Compartilhado']);
+    }
 }

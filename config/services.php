@@ -37,4 +37,12 @@ return [
         'webhook_secret' => env('MP_WEBHOOK_SECRET'),
         'webhook_url'    => env('MP_WEBHOOK_URL'),
     ],
+
+    'pagbank' => [
+        'sandbox'      => env('PAGBANK_SANDBOX', true),
+        'token'        => env('PAGBANK_TOKEN'),
+        'client_id'    => env('PAGBANK_CLIENT_ID'),
+        'client_secret' => env('PAGBANK_CLIENT_SECRET'),
+        'webhook_url'  => env('PAGBANK_WEBHOOK_URL'),
+    ],
 ];

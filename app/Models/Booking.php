@@ -26,6 +26,7 @@ class Booking extends Model
         'children',
         'children_free',
         'payment_method',
+        'gateway',
         'payment_id',
         'subtotal',
         'commission_amount',    
@@ -46,6 +47,7 @@ class Booking extends Model
         'children_free' => 'integer',
         'paid_at' => 'datetime',
         'expires_at' => 'datetime',
+        'cancelled_at' => 'datetime',
         'status' => BookingStatusEnum::class,
         'payment_status' => PaymentStatusEnum::class,
     ];

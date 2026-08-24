@@ -213,6 +213,7 @@ $this->validate([
                 'children'          => $this->children,
                 'children_free'     => $this->childrenFree,
                 'payment_method'    => $this->paymentMethod,
+                'gateway'           => 'mercadopago',
                 'subtotal'          => $this->subtotal,
                 'commission_amount' => $this->commissionAmount,
                 'company_amount'    => $this->companyAmount,

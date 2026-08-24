@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Livewire\Web\Checkout\CheckoutForm;
 use App\Enums\PaymentStatusEnum;
 use App\Enums\BookingStatusEnum;
+use App\Enums\TourDateStatusEnum;
 use App\Mail\BookingConfirmed;
 use App\Models\Booking;
 use App\Services\Booking\BookingPaidService;
 use App\Services\MercadoPagoService;
+use App\Services\PagBankService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -181,6 +183,65 @@ class WebhookController extends Controller
         $tourDate = $booking->tourDate()->first();
         if ($tourDate->status === \App\Enums\TourDateStatusEnum::FULL) {
             $tourDate->update(['status' => \App\Enums\TourDateStatusEnum::OPEN]);
+        }
+    }
+
+    public function pagbank(Request $request, PagBankService $pagBank, BookingPaidService $bookingPaidService)
+    {
+        $orderId = $request->input('id')
+            ?? $request->input('resource.id')
+            ?? $request->input('order.id')
+            ?? $request->input('resource');
+
+        if (!$orderId) {
+            return response()->json(['ok' => true]);
+        }
+
+        $order = $pagBank->getPayment($orderId);
+
+        $booking = Booking::where('payment_id', $orderId)->first();
+
+        if (!$booking) {
+            Log::warning("PagBank Webhook: booking não encontrado para order {$orderId}");
+            return response()->json(['ok' => true]);
+        }
+
+        $charge = $order['charges'][0] ?? [];
+        $status = strtoupper((string) ($charge['status'] ?? ''));
+
+        match ($status) {
+            'PAID'     => $bookingPaidService->handle($booking),
+            'DECLINED', 'CANCELED' => $bookingPaidService->handleFailed($booking, $status),
+            'REFUNDED' => $this->handlePagBankRefunded($booking),
+            default    => Log::info("PagBank Webhook status ignorado: {$status}", ['order' => $orderId]),
+        };
+
+        return response()->json(['ok' => true]);
+    }
+
+    private function handlePagBankRefunded(Booking $booking): void
+    {
+        if ($booking->payment_status === PaymentStatusEnum::REFUNDED) {
+            return;
+        }
+
+        if ($booking->payment_status !== PaymentStatusEnum::PAID) {
+            return;
+        }
+
+        $booking->update([
+            'payment_status' => PaymentStatusEnum::REFUNDED,
+            'status'         => BookingStatusEnum::CANCELLED,
+        ]);
+
+        $tourDate = $booking->tourDate()->first();
+
+        if ($tourDate) {
+            $tourDate->increment('available_slots', $booking->adults + $booking->children + $booking->children_free);
+
+            if ($tourDate->status === TourDateStatusEnum::FULL) {
+                $tourDate->update(['status' => TourDateStatusEnum::OPEN]);
+            }
         }
     }
 }

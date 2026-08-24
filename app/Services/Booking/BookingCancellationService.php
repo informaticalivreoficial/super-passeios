@@ -9,6 +9,7 @@ use App\Models\Booking;
 use App\Mail\BookingCancelled;
 use App\Notifications\Customer\BookingCancelledNotification;
 use App\Services\MercadoPagoService;
+use App\Services\PagBankService;
 use App\Services\Wallet\WalletService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -17,8 +18,7 @@ use Illuminate\Support\Facades\Mail;
 class BookingCancellationService
 {
     public function __construct(
-        protected WalletService $walletService,
-        protected MercadoPagoService $mercadoPagoService
+        protected WalletService $walletService
     ) {
     }
 
@@ -79,17 +79,23 @@ class BookingCancellationService
     protected function refundPayment(Booking $booking): void
     {
         if (!$booking->payment_id) {
-            Log::warning('BookingCancellationService: booking pago sem payment_id, não é possível estornar no MP', [
+            Log::warning('BookingCancellationService: booking pago sem payment_id, não é possível estornar', [
                 'booking_id' => $booking->id,
             ]);
             return;
         }
 
-        $result = $this->mercadoPagoService->refundPayment($booking->payment_id);
+        $gateway = match ($booking->gateway) {
+            'pagbank' => app(PagBankService::class),
+            default => app(MercadoPagoService::class),
+        };
+
+        $result = $gateway->refundPayment($booking->payment_id);
 
         if (!$result['success']) {
-            Log::error('BookingCancellationService: falha ao solicitar reembolso no Mercado Pago', [
+            Log::error('BookingCancellationService: falha ao solicitar reembolso', [
                 'booking_id' => $booking->id,
+                'gateway' => $booking->gateway,
                 'payment_id' => $booking->payment_id,
                 'error' => $result['message'] ?? null,
                 'data' => $result['data'] ?? null,
@@ -97,8 +103,9 @@ class BookingCancellationService
             return;
         }
 
-        Log::info('BookingCancellationService: reembolso solicitado com sucesso no Mercado Pago', [
+        Log::info('BookingCancellationService: reembolso solicitado com sucesso', [
             'booking_id' => $booking->id,
+            'gateway' => $booking->gateway,
             'payment_id' => $booking->payment_id,
         ]);
     }

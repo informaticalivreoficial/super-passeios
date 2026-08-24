@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
+use App\Services\Payment\PaymentGatewayInterface;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
-class MercadoPagoService
+class MercadoPagoService implements PaymentGatewayInterface
 {
     protected string $baseUrl = 'https://api.mercadopago.com';
     protected string $accessToken;
@@ -30,6 +31,11 @@ class MercadoPagoService
     public function __construct()
     {
         $this->accessToken = config('services.mercadopago.access_token');
+    }
+
+    public function getName(): string
+    {
+        return 'mercadopago';
     }
 
     // ─────────────────────────────────────────

@@ -8,9 +8,15 @@
             <path d="M6 18L18 6M6 6l12 12"/>
         </svg>
     </div>
-    <h1 class="text-2xl font-bold mb-3" style="color: var(--navy);">Inscrição cancelada</h1>
+    <h1 class="text-2xl font-bold mb-3" style="color: var(--navy);">
+        {{ isset($found) && !$found ? 'E-mail não encontrado' : 'Inscrição cancelada' }}
+    </h1>
     <p class="text-sm mb-6" style="color: #87c2c0;">
-        Você foi removido da nossa lista de e-mails. Sentiremos sua falta!
+        @if(isset($found) && !$found)
+            Este e-mail não está cadastrado na nossa lista de newsletter.
+        @else
+            Você foi removido da nossa lista de e-mails. Sentiremos sua falta!
+        @endif
     </p>
     <a href="{{ route('web.home') }}" class="btn-primary text-sm">
         Voltar ao início

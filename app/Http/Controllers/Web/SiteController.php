@@ -248,6 +248,26 @@ class SiteController extends Controller
         return view('web.' . $this->config->template . '.newsletter.unsubscribe');
     }
 
+    public function unsubscribeByEmail(Request $request, ?string $email = null)
+    {
+        $email = trim($email ?: (string) $request->query('email', ''));
+
+        $found = false;
+
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $newsletter = Newsletter::where('email', $email)->first();
+
+            if ($newsletter) {
+                $newsletter->update(['active' => false]);
+                $found = true;
+            }
+        }
+
+        return view('web.' . $this->config->template . '.newsletter.unsubscribe', [
+            'found' => $found,
+        ]);
+    }
+
     public function privacy()
     {
         return view('web.'.$this->config->template.'.privacy');

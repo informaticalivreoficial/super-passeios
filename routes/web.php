@@ -102,6 +102,9 @@ Route::name('web.')->group(function () {
     Route::get('/newsletter/cancelar/{token}', [SiteController::class, 'unsubscribe'])
         ->name('newsletter.unsubscribe');
 
+    Route::get('/newsletter/cancelar-email/{email?}', [SiteController::class, 'unsubscribeByEmail'])
+        ->name('newsletter.unsubscribe.email');
+
     Route::get('/passeios', [SiteController::class, 'tours'])->name('site.tours');
 
     Route::get('/pesquisar', [SiteController::class, 'search'])->name('site.search');

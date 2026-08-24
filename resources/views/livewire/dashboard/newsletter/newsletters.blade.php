@@ -48,17 +48,19 @@
         </div>
 
         {{-- AÇÕES / FILTROS --}}
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-6">
-            <div class="relative w-full lg:max-w-xs">
-                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <circle cx="11" cy="11" r="8"/>
-                    <path d="M21 21l-4.35-4.35"/>
-                </svg>
-                <input type="text" wire:model.live.debounce.300ms="search" placeholder="Buscar por nome ou e-mail..."
-                    class="w-full h-11 pl-10 pr-4 rounded-xl border border-slate-200 bg-white text-sm outline-none focus:border-blue-400 transition">
-            </div>
+        <div class="space-y-3 mb-6">
+            {{-- Linha 1: busca + filtros --}}
+            <div class="flex flex-col lg:flex-row lg:items-center gap-3">
+                <div class="relative w-full lg:max-w-xs">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="M21 21l-4.35-4.35"/>
+                    </svg>
+                    <input type="text" wire:model.live.debounce.300ms="search" placeholder="Buscar por nome ou e-mail..."
+                        class="w-full h-11 pl-10 pr-4 rounded-xl border border-slate-200 bg-white text-sm outline-none focus:border-blue-400 transition">
+                </div>
 
-            <div class="flex flex-col sm:flex-row gap-3">
+                <div class="flex flex-col sm:flex-row gap-3">
                 <select wire:model.live="statusFilter"
                     class="w-full sm:w-auto h-11 px-3 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 outline-none focus:border-blue-400 transition">
                     <option value="">Ativos e inativos</option>
@@ -80,7 +82,11 @@
                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                     @endforeach
                 </select>
+            </div>
+            </div>
 
+            {{-- Linha 2: ações --}}
+            <div class="flex flex-col sm:flex-row sm:flex-wrap sm:justify-end gap-3">
                 <button wire:click="exportCsv"
                     class="inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-slate-700 text-white text-sm font-bold hover:bg-slate-800 transition-colors"
                     title="Exportar CSV">
@@ -116,6 +122,7 @@
                     Cadastrar
                 </button>
             </div>
+        </div>
         </div>
 
         {{-- TABELA --}}

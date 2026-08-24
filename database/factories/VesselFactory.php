@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Company;
+use App\Models\Vessel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -19,8 +20,6 @@ class VesselFactory extends Factory
     public function definition(): array
     {
         return [
-            'company_id' => Company::factory(),
-            'uuid' => Str::uuid(),
             'name' => fake()->word(),
             'slug' => fake()->slug(),
             'type' => fake()->randomElement([
@@ -39,5 +38,14 @@ class VesselFactory extends Factory
             'kitchen' => fake()->boolean(),
             'active' => true,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (Vessel $vessel) {
+            if (!$vessel->company_id) {
+                $vessel->company_id = Company::factory()->create()->id;
+            }
+        });
     }
 }

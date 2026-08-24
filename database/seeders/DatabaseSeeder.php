@@ -19,10 +19,9 @@ class DatabaseSeeder extends Seeder
             RolesAndPermissionsSeeder::class,
             UsersTableSeeder::class, 
             CatPostsTableSeeder::class,
-            CompanySeeder::class,    
-            CustomerSeeder::class,        
-            TourDateSeeder::class,
-            BookingSeeder::class,            
+            CompanySeeder::class,
+            CustomerSeeder::class,
+            BookingSeeder::class,
             PostsTableSeeder::class,
         ]);
     }

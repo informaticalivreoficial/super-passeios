@@ -5,13 +5,14 @@ namespace Database\Seeders;
 use App\Models\Company;
 use App\Models\Customer;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class CustomerSeeder extends Seeder
 {
     public function run(): void
     {
         Company::all()->each(function ($company) {
-            // 1 proprietary por company
+            // 1 proprietário por company
             Customer::factory()
                 ->for($company)
                 ->afterCreating(fn ($customer) => $customer->assignRole('proprietary'))
@@ -23,5 +24,15 @@ class CustomerSeeder extends Seeder
                 ->afterCreating(fn ($customer) => $customer->assignRole('client'))
                 ->create();
         });
+
+        // Cliente demo com credenciais conhecidas para testar a API do app
+        $company = Company::first();
+
+        $demo = Customer::factory()->for($company)->create([
+            'name' => 'Cliente Demo',
+            'email' => 'cliente@demo.com',
+            'password' => Hash::make('password'),
+        ]);
+        $demo->assignRole('client');
     }
 }

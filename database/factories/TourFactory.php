@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Company;
+use App\Models\Tour;
 use App\Models\Vessel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -20,15 +21,9 @@ class TourFactory extends Factory
     public function definition(): array
     {
         return [
-            'company_id' => Company::factory(),
-            'vessel_id' => Vessel::factory(),
-            'uuid' => Str::uuid(),
             'title' => fake()->sentence(3),
             'slug' => fake()->slug(),
-            'tour_type' => fake()->randomElement([
-                'private',
-                'shared',
-            ]),
+            'tour_type' => fake()->randomElement(['private', 'shared']),
             'price' => fake()->randomFloat(2, 100, 5000),
             'duration' => fake()->numberBetween(2, 12),
             'boarding_place' => fake()->streetName(),
@@ -36,5 +31,19 @@ class TourFactory extends Factory
             'rules' => fake()->paragraph(),
             'active' => true,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (Tour $tour) {
+            if (!$tour->vessel_id) {
+                $tour->vessel_id = Vessel::factory()->create()->id;
+            }
+            if (!$tour->company_id) {
+                $tour->company_id = $tour->vessel_id
+                    ? (Vessel::find($tour->vessel_id)?->company_id ?? Company::factory()->create()->id)
+                    : Company::factory()->create()->id;
+            }
+        });
     }
 }

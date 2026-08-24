@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -18,59 +19,53 @@ class CompanyFactory extends Factory
     public function definition(): array
     {
         return [
-            'uuid' => Str::uuid(),
-            'api_token' => Str::random(64), 
+            'responsable_name' => fake()->name(),
+            'responsable_email' => fake()->safeEmail(),
+            'responsable_cpf' => fake()->cpf(false),
 
-            'responsable_name' => $this->faker->name(),
-            'responsable_email' => $this->faker->email(),
-            'responsable_cpf' => $this->faker->cpf(),           
-
-            'content' => $this->faker->paragraph(),
-            'url' => $this->faker->url(),
-            'slug' => Str::slug($this->faker->unique()->sentence()),
-            'first_year' => $this->faker->year(),
-            'maps' => $this->faker->url(),
+            'content' => fake()->paragraph(),
+            'url' => fake()->url(),
+            'first_year' => fake()->year(),
+            'maps' => fake()->url(),
 
             'magic_token' => null,
             'magic_token_expires_at' => null,
 
-            'social_name' => $this->faker->company(),
-            'alias_name' => $this->faker->companySuffix(),
+            'social_name' => fake()->company(),
+            'alias_name' => fake()->companySuffix(),
 
-            'document_company' => $this->faker->cnpj,
+            'document_company' => fake()->cnpj(),
             'document_company_secondary' => null,
 
-            'information' => $this->faker->paragraph(),
+            'information' => fake()->paragraph(),
 
-            'status' => $this->faker->boolean(),
+            'status' => true,
+            'commission_rate' => fake()->randomFloat(2, 5, 15),
+            'release_days' => fake()->numberBetween(1, 7),
 
-            // imagens
             'logo' => null,
             'metaimg' => null,
 
-            // redes sociais
-            'facebook' => $this->faker->url(),
-            'twitter' => $this->faker->url(),
-            'instagram' => $this->faker->url(),
-            'linkedin' => $this->faker->url(),
-            'tiktok' => $this->faker->url(),
+            'facebook' => fake()->url(),
+            'twitter' => fake()->url(),
+            'instagram' => fake()->url(),
+            'linkedin' => fake()->url(),
+            'tiktok' => fake()->url(),
 
-            // endereço
-            'zipcode' => $this->faker->numerify('########'),
-            'street' => $this->faker->streetName(),
-            'number' => $this->faker->buildingNumber(),
-            'complement' => $this->faker->secondaryAddress(),
-            'neighborhood' => $this->faker->word(),
-            'state' => $this->faker->stateAbbr(),
-            'city' => $this->faker->city(),
+            'zipcode' => fake()->numerify('########'),
+            'street' => fake()->streetName(),
+            'number' => fake()->buildingNumber(),
+            'complement' => fake()->secondaryAddress(),
+            'neighborhood' => fake()->word(),
+            'state' => fake()->stateAbbr(),
+            'city' => fake()->city(),
 
-            // contato
-            'phone' => $this->faker->numerify('##########'),
-            'cell_phone' => $this->faker->numerify('###########'),
-            'whatsapp' => $this->faker->numerify('###########'),
-            'telegram' => $this->faker->userName(),
-            'additional_email' => $this->faker->safeEmail(),
-            'email' => $this->faker->unique()->safeEmail(),
+            'phone' => fake()->numerify('##########'),
+            'cell_phone' => fake()->numerify('###########'),
+            'whatsapp' => fake()->numerify('###########'),
+            'telegram' => fake()->userName(),
+            'additional_email' => fake()->safeEmail(),
+            'email' => fake()->unique()->safeEmail(),
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Company;
+use App\Models\Customer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -17,8 +18,6 @@ class CustomerFactory extends Factory
         $name = $this->faker->name();
 
         return [
-            'company_id' => Company::inRandomOrder()->first()?->id ?? Company::factory(),
-
             /** access */
             'password'           => Hash::make('password'),
             'remember_token'     => Str::random(10),
@@ -31,7 +30,7 @@ class CustomerFactory extends Factory
             'email'      => $this->faker->unique()->safeEmail(),
             'phone'      => $this->faker->numerify('(##) ####-####'),
             'cell_phone' => $this->faker->numerify('(##) #####-####'),
-            'cpf'   => $this->faker->cpf(false), // sem máscara
+            'cpf'   => $this->faker->cpf(false),
             'birthday' => $this->faker->dateTimeBetween('-60 years', '-18 years')->format('Y-m-d'),
             'gender'     => $this->faker->randomElement(['masculino', 'feminino']),
             'avatar'     => null,
@@ -46,6 +45,15 @@ class CustomerFactory extends Factory
             'city'         => $this->faker->city(),
             'state'        => $this->faker->stateAbbr(),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (Customer $customer) {
+            if (!$customer->company_id) {
+                $customer->company_id = Company::factory()->create()->id;
+            }
+        });
     }
 
     public function admin(): static

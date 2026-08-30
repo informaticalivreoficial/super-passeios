@@ -200,7 +200,7 @@ class VesselForm extends Component
                 ->scaleDown(width: 1920)
                 ->toWebp(85);
 
-            Storage::disk('public')->put($path, $img);
+            Storage::disk('r2')->put($path, $img);
 
             $maxOrder = VesselGb::where('vessel_id', $this->vessel->id)->max('order_img') ?? 0;
 
@@ -243,7 +243,7 @@ class VesselForm extends Component
     {
         $image = VesselGb::find($id);
         if ($image) {
-            Storage::disk('public')->delete($image->path);
+            Storage::disk('r2')->delete($image->path);
             $image->delete();
             $this->savedImages = collect($this->savedImages)->filter(fn ($img) => $img->id !== $id);
             $this->vessel->refresh(); // Para garantir que os dados estejam atualizados

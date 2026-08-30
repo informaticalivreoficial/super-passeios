@@ -52,7 +52,7 @@ class Tour extends Model
 
         static::deleting(function ($tour) {
             // Deleta a pasta inteira com todas as imagens
-            Storage::disk('public')->deleteDirectory("company/{$tour->company->uuid}/tours/{$tour->uuid}");
+            Storage::disk('r2')->deleteDirectory("company/{$tour->company->uuid}/tours/{$tour->uuid}");
 
             // Deleta os registros do banco
             $tour->images()->delete();
@@ -119,7 +119,7 @@ class Tour extends Model
         $cover = $images->where('cover', 1)->first(['path'])
             ?? $images->first(['path']);
 
-        if (empty($cover['path']) || !Storage::disk()->exists($cover['path'])) {
+        if (empty($cover['path']) || !Storage::disk('r2')->exists($cover['path'])) {
             return asset('theme/images/image.jpg');
         }
         

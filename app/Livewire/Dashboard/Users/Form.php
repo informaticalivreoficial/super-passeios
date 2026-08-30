@@ -154,8 +154,8 @@ class Form extends Component
             $this->authorize('update', $user);
 
             if ($this->foto) {
-                if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-                    Storage::disk('public')->delete($user->avatar);
+                if ($user->avatar && Storage::disk('r2')->exists($user->avatar)) {
+                    Storage::disk('r2')->delete($user->avatar);
                 }
                 $validated['avatar'] = $this->foto->store('user', 'public');
             }

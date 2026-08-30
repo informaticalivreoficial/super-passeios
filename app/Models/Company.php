@@ -84,7 +84,7 @@ class Company extends Model
 
         static::deleting(function ($company) {
             // Deleta a pasta inteira com todas as imagens
-            Storage::disk('public')->deleteDirectory("company/{$company->uuid}");
+            Storage::disk('r2')->deleteDirectory("company/{$company->uuid}");
 
             // Deleta os registros do banco
             $company->images()->delete();
@@ -182,7 +182,7 @@ class Company extends Model
     */
     public function getLogoUrl(): string
     {
-        if ($this->logo && Storage::disk('public')->exists($this->logo)) {
+        if ($this->logo && Storage::disk('r2')->exists($this->logo)) {
             return Storage::url($this->logo);
         }
 

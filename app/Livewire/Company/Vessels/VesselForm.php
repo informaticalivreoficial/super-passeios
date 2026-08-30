@@ -219,7 +219,7 @@ class VesselForm extends Component
                         ->scaleDown(width: 1920)
                         ->toWebp(85);
 
-                    Storage::disk('public')->put($path, $img);
+                    Storage::disk('r2')->put($path, $img);
 
                     VesselGb::create([
                         'vessel_id'   => $this->vessel->id,
@@ -257,7 +257,7 @@ class VesselForm extends Component
 
         $this->authorize('update', $this->vessel);
 
-        Storage::disk('public')->delete($image->path);
+        Storage::disk('r2')->delete($image->path);
 
         $image->delete();
 

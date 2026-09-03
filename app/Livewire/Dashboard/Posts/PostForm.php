@@ -203,7 +203,7 @@ class PostForm extends Component
                 $img->scaleDown(width: 1920);
                 $encoded = $img->toWebp(85);
 
-                Storage::disk()->put($path, $encoded);
+                Storage::disk('public')->put($path, $encoded);
 
                 // Primeira imagem é capa se não tiver nenhuma
                 $hasCover = PostGb::where('post', $this->post->id)
@@ -253,7 +253,7 @@ class PostForm extends Component
     {
         $image = PostGb::find($id);
         if ($image) {
-            Storage::disk()->delete($image->path);
+            Storage::disk('public')->delete($image->path);
             $image->delete();
             $this->savedImages = collect($this->savedImages)->filter(fn ($img) => $img->id !== $id);
             $this->post->refresh(); // Para garantir que os dados estejam atualizados

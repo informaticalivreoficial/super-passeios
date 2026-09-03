@@ -199,7 +199,7 @@ class TourForm extends Component
                         ->scaleDown(width: 1920)
                         ->toWebp(85);
 
-                    Storage::disk()->put($path, $img);
+                    Storage::disk('public')->put($path, $img);
 
                     TourGb::create([
                         'tour_id'   => $this->tour->id,
@@ -241,7 +241,7 @@ class TourForm extends Component
     public function deleteImage($id): void
     {
         $image = TourGb::findOrFail($id);
-        Storage::disk()->delete($image->path);
+        Storage::disk('public')->delete($image->path);
         $image->delete();
         $this->tour->refresh();
     }

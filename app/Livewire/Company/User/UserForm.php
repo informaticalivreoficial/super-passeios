@@ -178,7 +178,7 @@ class UserForm extends Component
 
             if ($this->avatar) {
                 if ($this->customer?->avatar) {
-                    Storage::disk()->delete($this->customer->avatar);
+                    Storage::disk('public')->delete($this->customer->avatar);
                 }
 
                 $data['avatar'] = $this->avatar->store(

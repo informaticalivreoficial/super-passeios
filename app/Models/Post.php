@@ -67,7 +67,7 @@ class Post extends Model
         static::deleting(function ($post) {
             // Só deleta as imagens no forceDelete
             if ($post->isForceDeleting()) {
-                Storage::disk()->deleteDirectory("posts/{$post->type}/{$post->id}");
+                Storage::disk('public')->deleteDirectory("posts/{$post->type}/{$post->id}");
                 $post->images()->delete();
             }
         });
@@ -162,7 +162,7 @@ class Post extends Model
         $cover = $images->where('cover', 1)->first(['path'])
             ?? $images->first(['path']);
 
-        if (empty($cover['path']) || !Storage::disk()->exists($cover['path'])) {
+        if (empty($cover['path']) || !Storage::disk('public')->exists($cover['path'])) {
             return asset('theme/images/image.jpg');
         }
         

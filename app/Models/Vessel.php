@@ -57,7 +57,7 @@ class Vessel extends Model
 
         static::deleting(function ($vessel) {
             // Deleta a pasta inteira com todas as imagens
-            Storage::disk()->deleteDirectory("company/{$vessel->company->uuid}/vessels/{$vessel->uuid}");
+            Storage::disk('public')->deleteDirectory("company/{$vessel->company->uuid}/vessels/{$vessel->uuid}");
 
             // Deleta os registros do banco
             $vessel->images()->delete();
@@ -112,7 +112,7 @@ class Vessel extends Model
         $cover = $images->where('cover', 1)->first(['path'])
             ?? $images->first(['path']);
 
-        if (empty($cover['path']) || !Storage::disk()->exists($cover['path'])) {
+        if (empty($cover['path']) || !Storage::disk('public')->exists($cover['path'])) {
             return asset('theme/images/image.jpg');
         }
         

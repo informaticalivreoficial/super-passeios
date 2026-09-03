@@ -212,8 +212,8 @@ class CompanyForm extends Component
 
             // 🔹 Upload logo
             if ($this->logo instanceof TemporaryUploadedFile) {
-                if ($this->logoPath && Storage::disk()->exists($this->logoPath)) {
-                    Storage::disk()->delete($this->logoPath);
+                if ($this->logoPath && Storage::disk('public')->exists($this->logoPath)) {
+                    Storage::disk('public')->delete($this->logoPath);
                 }
 
                 $filename = uniqid('logo_') . '.webp';
@@ -223,7 +223,7 @@ class CompanyForm extends Component
                     ->scaleDown(width: config('app.logomarca_width', 600))
                     ->toWebp(85);
 
-                Storage::disk()->put($path, $img);
+                Storage::disk('public')->put($path, $img);
 
                 $this->logoPath = $path;
                 $this->company->update(['logo' => $path]);
@@ -231,8 +231,8 @@ class CompanyForm extends Component
 
             // 🔹 Upload metaimg
             if ($this->metaimg instanceof TemporaryUploadedFile) {
-                if ($this->metaimgPath && Storage::disk()->exists($this->metaimgPath)) {
-                    Storage::disk()->delete($this->metaimgPath);
+                if ($this->metaimgPath && Storage::disk('public')->exists($this->metaimgPath)) {
+                    Storage::disk('public')->delete($this->metaimgPath);
                 }
 
                 $filename = uniqid('metaimg_') . '.webp';
@@ -242,7 +242,7 @@ class CompanyForm extends Component
                     ->scaleDown(width: config('app.metaimg_width', 1200))
                     ->toWebp(85);
 
-                Storage::disk()->put($path, $img);
+                Storage::disk('public')->put($path, $img);
 
                 $this->metaimgPath = $path;
                 $this->company->update(['metaimg' => $path]);
@@ -278,7 +278,7 @@ class CompanyForm extends Component
                     ->scaleDown(width: 1920)
                     ->toWebp(85);
 
-                Storage::disk()->put($path, $img);
+                Storage::disk('public')->put($path, $img);
 
                 $maxOrder = CompanyGb::where('company', $this->company->id)->max('order_img') ?? 0;
 
@@ -326,7 +326,7 @@ class CompanyForm extends Component
     {
         $image = CompanyGb::find($id);
         if ($image) {
-            Storage::disk()->delete($image->path);
+            Storage::disk('public')->delete($image->path);
             $image->delete();
             $this->savedImages = collect($this->savedImages)->filter(fn ($img) => $img->id !== $id);
             $this->company->refresh(); // Para garantir que os dados estejam atualizados
@@ -416,7 +416,7 @@ class CompanyForm extends Component
             return $this->logo->temporaryUrl();
         }
 
-        if ($this->logoPath && Storage::disk()->exists($this->logoPath)) {
+        if ($this->logoPath && Storage::disk('public')->exists($this->logoPath)) {
             return Storage::url($this->logoPath);
         }
 
@@ -429,7 +429,7 @@ class CompanyForm extends Component
             return $this->metaimg->temporaryUrl();
         }
 
-        if ($this->metaimgPath && Storage::disk()->exists($this->metaimgPath)) {
+        if ($this->metaimgPath && Storage::disk('public')->exists($this->metaimgPath)) {
             return Storage::url($this->metaimgPath);
         }
 

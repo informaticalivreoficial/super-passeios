@@ -219,6 +219,7 @@
             });
         </script>
     @endif
+    @if($hasCompany)
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const revenueData = @json($revenueChartData);
@@ -251,4 +252,5 @@
             });
         });
     </script>
+    @endif
 @endpush

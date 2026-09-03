@@ -85,13 +85,13 @@ class Settings extends Component
                     : $img->scaleDown(width: 1200)->toWebp(85);
 
                 // Deleta a antiga
-                if (!empty($this->configData[$key]) && Storage::disk()->exists($this->configData[$key])) {
-                    Storage::disk()->delete($this->configData[$key]);
+                if (!empty($this->configData[$key]) && Storage::disk('public')->exists($this->configData[$key])) {
+                    Storage::disk('public')->delete($this->configData[$key]);
                 }
 
                 // Salva sempre com o mesmo nome (sobrescrevendo)
                 $path = "config/{$key}.{$extension}";
-                Storage::disk()->put($path, $encoded);
+                Storage::disk('public')->put($path, $encoded);
 
                 // Atualiza no array
                 $this->configData[$key] = $path;
@@ -258,7 +258,7 @@ class Settings extends Component
 
     public function getLogo()
     {
-        if (empty($this->configData['logo']) || !Storage::disk()->exists($this->configData['logo'])) {
+        if (empty($this->configData['logo']) || !Storage::disk('public')->exists($this->configData['logo'])) {
             return url(asset('theme/images/image.jpg'));
         }
         return Storage::url($this->configData['logo']);
@@ -266,7 +266,7 @@ class Settings extends Component
 
     public function getLogoadmin()
     {
-        if (empty($this->configData['logo_admin']) || !Storage::disk()->exists($this->configData['logo_admin'])) {
+        if (empty($this->configData['logo_admin']) || !Storage::disk('public')->exists($this->configData['logo_admin'])) {
             return url(asset('theme/images/image.jpg'));
         }
         return Storage::url($this->configData['logo_admin']);
@@ -274,7 +274,7 @@ class Settings extends Component
 
     public function getLogofooter()
     {
-        if (empty($this->configData['logo_footer']) || !Storage::disk()->exists($this->configData['logo_footer'])) {
+        if (empty($this->configData['logo_footer']) || !Storage::disk('public')->exists($this->configData['logo_footer'])) {
             return url(asset('theme/images/image.jpg'));
         }
         return Storage::url($this->configData['logo_footer']);
@@ -282,7 +282,7 @@ class Settings extends Component
 
     public function getfaveicon()
     {
-        if (empty($this->configData['favicon']) || !Storage::disk()->exists($this->configData['favicon'])) {
+        if (empty($this->configData['favicon']) || !Storage::disk('public')->exists($this->configData['favicon'])) {
             return url(asset('theme/images/image.jpg'));
         }
         return Storage::url($this->configData['favicon']);
@@ -290,7 +290,7 @@ class Settings extends Component
 
     public function getwatermark()
     {
-        if (empty($this->configData['watermark']) || !Storage::disk()->exists($this->configData['watermark'])) {
+        if (empty($this->configData['watermark']) || !Storage::disk('public')->exists($this->configData['watermark'])) {
             return url(asset('theme/images/image.jpg'));
         }
         return Storage::url($this->configData['watermark']);
@@ -298,7 +298,7 @@ class Settings extends Component
 
     public function getmetaimg()
     {
-        if (empty($this->configData['metaimg']) || !Storage::disk()->exists($this->configData['metaimg'])) {
+        if (empty($this->configData['metaimg']) || !Storage::disk('public')->exists($this->configData['metaimg'])) {
             return url(asset('theme/images/image.jpg'));
         }
         return Storage::url($this->configData['metaimg']);
@@ -306,7 +306,7 @@ class Settings extends Component
 
     public function getheadersite()
     {
-        if (empty($this->configData['imgheader']) || !Storage::disk()->exists($this->configData['imgheader'])) {
+        if (empty($this->configData['imgheader']) || !Storage::disk('public')->exists($this->configData['imgheader'])) {
             return url(asset('theme/images/image.jpg'));
         }
         return Storage::url($this->configData['imgheader']);
@@ -342,13 +342,13 @@ class Settings extends Component
                         : $img->scaleDown(width: 1200)->toWebp(85);
 
                     // Apaga a imagem antiga, se existir
-                    if (!empty($this->configData[$key]) && Storage::disk()->exists($this->configData[$key])) {
-                        Storage::disk()->delete($this->configData[$key]);
+                    if (!empty($this->configData[$key]) && Storage::disk('public')->exists($this->configData[$key])) {
+                        Storage::disk('public')->delete($this->configData[$key]);
                     }
 
                     // Salva a nova
                     $path = "config/{$key}.{$extension}";
-                    Storage::disk()->put($path, $encoded);
+                    Storage::disk('public')->put($path, $encoded);
 
                     $this->configData[$key] = $path;
                 } catch (\Throwable $e) {

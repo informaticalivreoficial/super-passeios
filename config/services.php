@@ -45,4 +45,10 @@ return [
         'client_secret' => env('PAGBANK_CLIENT_SECRET'),
         'webhook_url'  => env('PAGBANK_WEBHOOK_URL'),
     ],
+
+    'mailtrap-sdk' => [
+        'host'    => env('MAILTRAP_HOST', 'send.api.mailtrap.io'),
+        'apiKey'  => env('MAILTRAP_API_KEY'),
+        'inboxId' => env('MAILTRAP_INBOX_ID'),
+    ],
 ];

@@ -50,7 +50,12 @@ use App\Livewire\Dashboard\{
     Vessels\VesselForm,
     Vessels\Vessels,
     Newsletter\Newsletters,
-    Newsletter\NewsletterCategories
+    Newsletter\NewsletterCategories,
+    Newsletter\NewsletterForm,
+    Newsletter\NewsletterSend,
+    Newsletter\NewsletterHistory,
+    Newsletter\NewsletterCampaignShow,
+    Newsletter\NewsletterConfigPage
 };
 use App\Livewire\Dashboard\Bookings\Bookings;
 use App\Livewire\Dashboard\Companies\Companies;
@@ -215,5 +220,11 @@ Route::group(['middleware' => ['auth', 'verified', 'role:super-admin|admin'], 'p
     Route::get('financeiro-saques', WithdrawalsIndex::class)->name('withdrawals.index');
 
     Route::get('newsletter', Newsletters::class)->name('newsletter.index');
+    Route::get('newsletter/cadastrar', NewsletterForm::class)->name('newsletter.create');
+    Route::get('newsletter/{newsletter}/editar', NewsletterForm::class)->name('newsletter.edit');
+    Route::get('newsletter/enviar', NewsletterSend::class)->name('newsletter.send');
+    Route::get('newsletter/historico', NewsletterHistory::class)->name('newsletter.history');
+    Route::get('newsletter/campanha/{campaign}', NewsletterCampaignShow::class)->name('newsletter.campaign.show');
     Route::get('newsletter/categorias', NewsletterCategories::class)->name('newsletter.categories.index');
+    Route::get('newsletter/configuracoes', NewsletterConfigPage::class)->name('newsletter.config');
 });

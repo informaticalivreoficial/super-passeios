@@ -99,6 +99,12 @@
                                 <p>Categorias</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.newsletter.config') }}" class="nav-link {{ Route::is('admin.newsletter.config') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Configurações</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 

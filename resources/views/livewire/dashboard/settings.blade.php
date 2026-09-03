@@ -165,6 +165,16 @@
                                     </div>
                                 </div>   
                             </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="display_address" wire:model="configData.display_address" value="1" {{ $configData['display_address'] ?? false ? 'checked' : '' }}>
+                                            <label class="custom-control-label" for="display_address"><b>Exibir endereço no site</b></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="card">                                

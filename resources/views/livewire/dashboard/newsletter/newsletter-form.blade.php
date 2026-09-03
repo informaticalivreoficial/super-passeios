@@ -1,124 +1,157 @@
 <div>
+    @section('title', $title)
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1><i class="fas fa-envelope-open-text mr-2"></i> {{ $newsletter?->exists ? 'Editar E-mail' : 'Cadastrar E-mail' }}</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Painel de Controle</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.newsletter.index') }}">Newsletter</a></li>
+                        <li class="breadcrumb-item active">{{ $newsletter?->exists ? 'Editar' : 'Cadastrar' }}</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <form wire:submit.prevent="save" class="space-y-6">
-        <div class="p-6 bg-white rounded-xl shadow-xl">
-            <h2 class="text-2xl font-extrabold text-gray-900 mb-6 border-b pb-3">
-                {{ $this->modalTitle }}
-            </h2>
+        <div class="bg-white">
+            <div class="card-body text-muted">
+                <div class="row">
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="form-group">
+                            <label class="labelforms"><b>Nome:</b></label>
+                            <input
+                                type="text"
+                                wire:model.defer="name"
+                                placeholder="Nome (opcional)"
+                                class="form-control"
+                            >
+                            @error('name') <span class="text-danger text-sm">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="form-group">
+                            <label class="labelforms"><b>E-mail: *</b></label>
+                            <input
+                                type="email"
+                                wire:model.defer="email"
+                                placeholder="contato@exemplo.com"
+                                class="form-control"
+                            >
+                            @error('email') <span class="text-danger text-sm">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="form-group">
+                            <label class="labelforms"><b>Cidade:</b></label>
+                            <input
+                                type="text"
+                                wire:model.defer="city"
+                                placeholder="Cidade (opcional)"
+                                class="form-control"
+                            >
+                            @error('city') <span class="text-danger text-sm">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                </div>
 
-            <div class="mb-5">
-                <label for="name" class="block text-sm font-semibold text-gray-700 mb-1">Nome</label>
-                <input
-                    id="name"
-                    type="text"
-                    wire:model.defer="name"
-                    placeholder="Nome (opcional)"
-                    class="block w-full px-4 py-2 text-base text-gray-600 border border-gray-200 rounded-lg shadow-inner bg-gray-100"
-                >
-                @error('name') <span class="mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
-            </div>
+                <div class="row">
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="form-group">
+                            <label class="labelforms"><b>Instagram:</b></label>
+                            <input
+                                type="text"
+                                wire:model.defer="instagram"
+                                placeholder="@usuario"
+                                class="form-control"
+                            >
+                            @error('instagram') <span class="text-danger text-sm">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="form-group">
+                            <label class="labelforms"><b>WhatsApp:</b></label>
+                            <input
+                                type="text"
+                                x-mask="(99) 99999-9999"
+                                wire:model.defer="whatsapp"
+                                placeholder="(00) 00000-0000"
+                                class="form-control"
+                            >
+                            @error('whatsapp') <span class="text-danger text-sm">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="form-group">
+                            <label class="labelforms"><b>Site:</b></label>
+                            <input
+                                type="text"
+                                wire:model.defer="site"
+                                placeholder="https://exemplo.com"
+                                class="form-control"
+                            >
+                            @error('site') <span class="text-danger text-sm">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                </div>
 
-            <div class="mb-5">
-                <label for="email" class="block text-sm font-semibold text-gray-700 mb-1">E-mail</label>
-                <input
-                    id="email"
-                    type="email"
-                    wire:model.defer="email"
-                    placeholder="contato@exemplo.com"
-                    class="block w-full px-4 py-2 text-base text-gray-600 border border-gray-200 rounded-lg shadow-inner bg-gray-100"
-                >
-                @error('email') <span class="mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
-            </div>
+                <div class="row">
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="form-group">
+                            <label class="labelforms"><b>Categoria:</b></label>
+                            <select
+                                wire:model.defer="category_id"
+                                class="form-control"
+                            >
+                                <option value="">Sem categoria</option>
+                                @foreach($this->categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('category_id') <span class="text-danger text-sm">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="form-group">
+                            <label class="labelforms"><b>Ativo:</b></label>
+                            <div class="mt-1">
+                                <label class="inline-flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        wire:model="active"
+                                        class="w-5 h-5 rounded border-gray-300 text-green-500 focus:ring-green-500"
+                                    >
+                                    <span class="text-sm font-medium text-gray-700">Ativo</span>
+                                </label>
+                            </div>
+                            @error('active') <span class="text-danger text-sm">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                </div>
 
-            <div class="mb-5">
-                <label for="city" class="block text-sm font-semibold text-gray-700 mb-1">Cidade</label>
-                <input
-                    id="city"
-                    type="text"
-                    wire:model.defer="city"
-                    placeholder="Cidade (opcional)"
-                    class="block w-full px-4 py-2 text-base text-gray-600 border border-gray-200 rounded-lg shadow-inner bg-gray-100"
-                >
-                @error('city') <span class="mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="mb-5">
-                <label for="instagram" class="block text-sm font-semibold text-gray-700 mb-1">Instagram</label>
-                <input
-                    id="instagram"
-                    type="text"
-                    wire:model.defer="instagram"
-                    placeholder="@usuario"
-                    class="block w-full px-4 py-2 text-base text-gray-600 border border-gray-200 rounded-lg shadow-inner bg-gray-100"
-                >
-                @error('instagram') <span class="mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="mb-5">
-                <label for="whatsapp" class="block text-sm font-semibold text-gray-700 mb-1">WhatsApp</label>
-                <input
-                    id="whatsapp"
-                    type="text"
-                    wire:model.defer="whatsapp"
-                    placeholder="(00) 00000-0000"
-                    class="block w-full px-4 py-2 text-base text-gray-600 border border-gray-200 rounded-lg shadow-inner bg-gray-100"
-                >
-                @error('whatsapp') <span class="mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="mb-5">
-                <label for="site" class="block text-sm font-semibold text-gray-700 mb-1">Site</label>
-                <input
-                    id="site"
-                    type="text"
-                    wire:model.defer="site"
-                    placeholder="https://exemplo.com"
-                    class="block w-full px-4 py-2 text-base text-gray-600 border border-gray-200 rounded-lg shadow-inner bg-gray-100"
-                >
-                @error('site') <span class="mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="mb-5">
-                <label for="category_id" class="block text-sm font-semibold text-gray-700 mb-1">Categoria</label>
-                <select
-                    id="category_id"
-                    wire:model.defer="category_id"
-                    class="block w-full px-4 py-2 text-base text-gray-900 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                >
-                    <option value="">Sem categoria</option>
-                    @foreach($this->categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                    @endforeach
-                </select>
-                @error('category_id') <span class="mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="mb-6">
-                <label for="active" class="block text-sm font-semibold text-gray-700 mb-1">Ativo?</label>
-                <select
-                    id="active"
-                    wire:model.defer="active"
-                    class="block w-full px-4 py-2 text-base text-gray-900 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                >
-                    <option value="1">Sim</option>
-                    <option value="0">Não</option>
-                </select>
-                @error('active') <span class="mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="mt-8 pt-4 border-t border-gray-200 flex justify-end">
-                <button
-                    type="submit"
-                    wire:loading.attr="disabled"
-                    class="inline-flex items-center px-6 py-2.5 border border-transparent text-sm font-medium rounded-lg shadow-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
-                >
-                    <span wire:loading.remove>
-                        <i class="fas fa-save mr-2"></i>
-                        {{ $this->modalTitle }}
-                    </span>
-                    <span wire:loading>
-                        <i class="fas fa-spinner fa-spin mr-2"></i> Salvando...
-                    </span>
-                </button>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <a href="{{ route('admin.newsletter.index') }}" class="btn btn-default">
+                            <i class="fas fa-times mr-1"></i> Cancelar
+                        </a>
+                        <button
+                            type="submit"
+                            wire:loading.attr="disabled"
+                            class="btn btn-success float-right"
+                        >
+                            <span wire:loading.remove wire:target="save">
+                                <i class="fas fa-save mr-1"></i> {{ $newsletter?->exists ? 'Atualizar' : 'Salvar' }}
+                            </span>
+                            <span wire:loading wire:target="save">
+                                <i class="fas fa-spinner fa-spin mr-1"></i> Salvando...
+                            </span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </form>

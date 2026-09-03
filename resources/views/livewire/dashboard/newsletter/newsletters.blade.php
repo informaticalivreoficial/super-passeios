@@ -49,7 +49,6 @@
 
         {{-- AÇÕES / FILTROS --}}
         <div class="space-y-3 mb-6">
-            {{-- Linha 1: busca + filtros --}}
             <div class="flex flex-col lg:flex-row lg:items-center gap-3">
                 <div class="relative w-full lg:max-w-xs">
                     <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -61,31 +60,30 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-3">
-                <select wire:model.live="statusFilter"
-                    class="w-full sm:w-auto h-11 px-3 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 outline-none focus:border-blue-400 transition">
-                    <option value="">Ativos e inativos</option>
-                    <option value="active">Somente ativos</option>
-                    <option value="inactive">Somente inativos</option>
-                </select>
+                    <select wire:model.live="statusFilter"
+                        class="w-full sm:w-auto h-11 px-3 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 outline-none focus:border-blue-400 transition">
+                        <option value="">Ativos e inativos</option>
+                        <option value="active">Somente ativos</option>
+                        <option value="inactive">Somente inativos</option>
+                    </select>
 
-                <select wire:model.live="confirmedFilter"
-                    class="w-full sm:w-auto h-11 px-3 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 outline-none focus:border-blue-400 transition">
-                    <option value="">Confirmados e não confirmados</option>
-                    <option value="confirmed">Somente confirmados</option>
-                    <option value="unconfirmed">Somente não confirmados</option>
-                </select>
+                    <select wire:model.live="confirmedFilter"
+                        class="w-full sm:w-auto h-11 px-3 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 outline-none focus:border-blue-400 transition">
+                        <option value="">Confirmados e não confirmados</option>
+                        <option value="confirmed">Somente confirmados</option>
+                        <option value="unconfirmed">Somente não confirmados</option>
+                    </select>
 
-                <select wire:model.live="categoryFilter"
-                    class="w-full sm:w-auto h-11 px-3 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 outline-none focus:border-blue-400 transition">
-                    <option value="">Todas as categorias</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                    @endforeach
-                </select>
+                    <select wire:model.live="categoryFilter"
+                        class="w-full sm:w-auto h-11 px-3 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 outline-none focus:border-blue-400 transition">
+                        <option value="">Todas as categorias</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-            </div>
 
-            {{-- Linha 2: ações --}}
             <div class="flex flex-col sm:flex-row sm:flex-wrap sm:justify-end gap-3">
                 <button wire:click="exportCsv"
                     class="inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-slate-700 text-white text-sm font-bold hover:bg-slate-800 transition-colors"
@@ -97,7 +95,7 @@
                 </button>
 
                 <button wire:click="exportXls"
-                    class="inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 transition-colors"
+                    class="inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-green-600 text-white text-sm font-bold hover:bg-green-700 transition-colors"
                     title="Exportar XLS">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
@@ -114,173 +112,152 @@
                     Importar CSV
                 </button>
 
-                <button @click="$dispatch('open-newsletter-modal', { editId: null })"
+                <a href="{{ route('admin.newsletter.history') }}"
+                    class="inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-gray-600 text-white text-sm font-bold hover:bg-gray-700 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    Histórico
+                </a>
+
+                <a href="{{ route('admin.newsletter.send') }}"
+                    class="inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-purple-600 text-white text-sm font-bold hover:bg-purple-700 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                    </svg>
+                    Enviar Newsletter
+                </a>
+
+                <a href="{{ route('admin.newsletter.config') }}"
+                    class="inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-gray-600 text-white text-sm font-bold hover:bg-gray-700 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    Configurações
+                </a>
+
+                <a href="{{ route('admin.newsletter.create') }}"
                     class="inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M12 5v14M5 12h14"/>
                     </svg>
                     Cadastrar
+                </a>
+            </div>
+        </div>
+
+        {{-- CARDS --}}
+        <div class="row d-flex align-items-stretch">
+            @if($newsletters->count() > 0)
+                @foreach($newsletters as $newsletter)
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch">
+                        <div class="card bg-light w-100" style="{{ !$newsletter->active ? 'background: #fffed8 !important;' : '' }}">
+                            <div class="card-header text-muted border-bottom-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-xs text-muted">
+                                        <i class="fas fa-calendar-alt mr-1"></i> {{ $newsletter->created_at->format('d/m/Y') }}
+                                    </span>
+                                    @if($newsletter->category)
+                                        <span class="badge badge-secondary">{{ $newsletter->category->name }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="card-body pt-0">
+                                <h5 class="lead mb-1">
+                                    <b>{{ $newsletter->name ?: 'Sem nome' }}</b>
+                                </h5>
+                                <p class="text-muted text-sm mb-1">
+                                    <i class="fas fa-envelope mr-1"></i> {{ $newsletter->email }}
+                                </p>
+                                @if($newsletter->city)
+                                    <p class="text-muted text-sm mb-1">
+                                        <i class="fas fa-map-marker-alt mr-1"></i> {{ $newsletter->city }}
+                                    </p>
+                                @endif
+                                @if($newsletter->instagram)
+                                    <p class="text-muted text-sm mb-1">
+                                        <i class="fab fa-instagram mr-1"></i> {{ $newsletter->instagram }}
+                                    </p>
+                                @endif
+                                @if($newsletter->site)
+                                    <p class="text-muted text-sm mb-1">
+                                        <i class="fas fa-globe mr-1"></i>
+                                        <a href="{{ $newsletter->site }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 180px;">
+                                            {{ $newsletter->site }}
+                                        </a>
+                                    </p>
+                                @endif
+                                <div class="mt-2">
+                                    <span class="badge {{ $newsletter->confirmed_at ? 'badge-success' : 'badge-danger' }}">
+                                        {{ $newsletter->confirmed_at ? 'Confirmado' : 'Não Confirmado' }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="d-flex align-items-center gap-2">
+                                    <x-forms.switch-toggle
+                                        wire:key="newsletter-switch-{{ $newsletter->id }}"
+                                        wire:click="toggleStatus({{ $newsletter->id }})"
+                                        :checked="$newsletter->active"
+                                        size="sm"
+                                        color="green"
+                                    />
+                                    @if($newsletter->whatsapp)
+                                        <a target="_blank"
+                                            href="{{ \App\Helpers\WhatsApp::getNumZap($newsletter->whatsapp) }}"
+                                            class="btn btn-xs bg-teal"
+                                            title="WhatsApp">
+                                            <i class="fab fa-whatsapp"></i>
+                                        </a>
+                                    @endif
+                                    <a href="{{ route('admin.newsletter.edit', $newsletter->id) }}"
+                                        class="btn btn-xs btn-default"
+                                        title="Editar">
+                                        <i class="fas fa-pen"></i>
+                                    </a>
+                                    <button type="button"
+                                        class="btn btn-xs bg-danger text-white"
+                                        title="Excluir"
+                                        wire:click="setDeleteId({{ $newsletter->id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div class="col-12">
+                    <div class="bg-white rounded-2xl border border-dashed border-slate-300 py-16 text-center">
+                        <p class="text-sm font-bold text-slate-500">Nenhum e-mail encontrado!</p>
+                    </div>
+                </div>
+            @endif
+        </div>
+
+        <div class="mt-6">{{ $newsletters->links() }}</div>
+
+    </div>
+
+    <div
+        x-data="{ open: false }"
+        x-on:open-newsletter-import-modal.window="open = true"
+        x-on:newsletter-imported.window="open = false"
+        x-show="open"
+        style="display: none"
+        class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-[1050]"
+    >
+        <div class="bg-white w-full max-w-lg rounded-lg shadow-lg p-6">
+            <livewire:dashboard.newsletter.newsletter-import />
+            <div class="mt-4 text-right">
+                <button
+                    @click="open = false; Livewire.dispatch('resetNewsletterImport')"
+                    class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded">
+                    Fechar
                 </button>
             </div>
         </div>
-        </div>
-
-        {{-- TABELA --}}
-        @if($newsletters->count() > 0)
-            <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="bg-slate-50 text-left text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                                <th class="px-4 py-3">
-                                    <button wire:click="sortBy('name')" class="hover:text-slate-600 flex items-center gap-1">
-                                        Nome
-                                        @if($sortField === 'name') <span>{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span> @endif
-                                    </button>
-                                </th>
-                                <th class="px-4 py-3">
-                                    <button wire:click="sortBy('email')" class="hover:text-slate-600 flex items-center gap-1">
-                                        E-mail
-                                        @if($sortField === 'email') <span>{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span> @endif
-                                    </button>
-                                </th>
-                                <th class="px-4 py-3">Cidade</th>
-                                <th class="px-4 py-3">Instagram</th>
-                                <th class="px-4 py-3">WhatsApp</th>
-                                <th class="px-4 py-3">Site</th>
-                                <th class="px-4 py-3">Categoria</th>
-                                <th class="px-4 py-3 text-center">Status</th>
-                                <th class="px-4 py-3 text-center">Confirmado</th>
-                                <th class="px-4 py-3 text-right">
-                                    <button wire:click="sortBy('created_at')" class="hover:text-slate-600 flex items-center gap-1 ml-auto">
-                                        Cadastro
-                                        @if($sortField === 'created_at') <span>{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span> @endif
-                                    </button>
-                                </th>
-                                <th class="px-4 py-3 text-center">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            @foreach($newsletters as $newsletter)
-                                <tr class="hover:bg-slate-50/60 transition-colors">
-                                    <td class="px-4 py-3 font-bold text-slate-800 max-w-[200px] truncate">
-                                        {{ $newsletter->name ?: '—' }}
-                                    </td>
-                                    <td class="px-4 py-3 text-xs text-slate-600 max-w-[240px] truncate">
-                                        {{ $newsletter->email }}
-                                    </td>
-                                    <td class="px-4 py-3 text-xs text-slate-600 max-w-[160px] truncate">
-                                        {{ $newsletter->city ?: '—' }}
-                                    </td>
-                                    <td class="px-4 py-3 text-xs text-slate-600 max-w-[160px] truncate">
-                                        {{ $newsletter->instagram ?: '—' }}
-                                    </td>
-                                    <td class="px-4 py-3 text-xs text-slate-600 max-w-[160px] truncate">
-                                        {{ $newsletter->whatsapp ?: '—' }}
-                                    </td>
-                                    <td class="px-4 py-3 text-xs text-slate-600 max-w-[160px] truncate">
-                                        {{ $newsletter->site ?: '—' }}
-                                    </td>
-                                    <td class="px-4 py-3 text-xs font-semibold text-slate-600 max-w-[160px] truncate">
-                                        @if($newsletter->category)
-                                            <span class="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">
-                                                {{ $newsletter->category->name }}
-                                            </span>
-                                        @else
-                                            <span class="text-slate-400">—</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-4 py-3 text-center">
-                                        <button wire:click="toggleStatus({{ $newsletter->id }})"
-                                            class="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold {{ $newsletter->active ? 'bg-green-50 text-green-600' : 'bg-slate-100 text-slate-500' }}"
-                                            title="Alternar status">
-                                            {{ $newsletter->active ? 'Ativo' : 'Inativo' }}
-                                        </button>
-                                    </td>
-                                    <td class="px-4 py-3 text-center">
-                                        <span class="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold {{ $newsletter->confirmed_at ? 'bg-indigo-50 text-indigo-600' : 'bg-red-50 text-red-600' }}">
-                                            {{ $newsletter->confirmed_at ? 'Sim' : 'Não' }}
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3 text-right text-xs text-slate-500">
-                                        {{ $newsletter->created_at->format('d/m/Y') }}
-                                    </td>
-                                    <td class="px-4 py-3 text-center">
-                                        <div class="flex items-center justify-center gap-2">
-                                            <button @click="$dispatch('open-newsletter-modal', { editId: {{ $newsletter->id }} })"
-                                                class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
-                                                title="Editar">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-                                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                                                </svg>
-                                            </button>
-                                            <button wire:click="setDeleteId({{ $newsletter->id }})"
-                                                class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
-                                                title="Excluir">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                    <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m2 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="mt-6">{{ $newsletters->links() }}</div>
-
-        @else
-            <div class="bg-white rounded-2xl border border-dashed border-slate-300 py-16 text-center">
-                <p class="text-sm font-bold text-slate-500">Nenhum e-mail encontrado!</p>
-            </div>
-        @endif
-
-        <div
-            x-data="{ open: false }"
-            x-on:open-newsletter-modal.window="
-                open = true;
-                Livewire.dispatch('loadNewsletter', { payload: $event.detail })
-            "
-            x-on:newsletter-saved.window="open = false"
-            x-show="open"
-            style="display: none"
-            class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-[1050]"
-        >
-            <div class="bg-white w-full max-w-lg rounded-lg shadow-lg p-6">
-                <livewire:dashboard.newsletter.newsletter-form />
-                <div class="mt-4 text-right">
-                    <button
-                        @click="open = false; Livewire.dispatch('resetNewsletterForm')"
-                        class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded">
-                        Fechar
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div
-            x-data="{ open: false }"
-            x-on:open-newsletter-import-modal.window="open = true"
-            x-on:newsletter-imported.window="open = false"
-            x-show="open"
-            style="display: none"
-            class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-[1050]"
-        >
-            <div class="bg-white w-full max-w-lg rounded-lg shadow-lg p-6">
-                <livewire:dashboard.newsletter.newsletter-import />
-                <div class="mt-4 text-right">
-                    <button
-                        @click="open = false; Livewire.dispatch('resetNewsletterImport')"
-                        class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded">
-                        Fechar
-                    </button>
-                </div>
-            </div>
-        </div>
-
     </div>
 </div>

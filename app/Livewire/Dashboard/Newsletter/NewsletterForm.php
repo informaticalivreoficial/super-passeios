@@ -5,12 +5,11 @@ namespace App\Livewire\Dashboard\Newsletter;
 use App\Models\Newsletter;
 use App\Models\NewsletterCategory;
 use Illuminate\Validation\Rule;
-use Livewire\Attributes\On;
 use Livewire\Component;
 
 class NewsletterForm extends Component
 {
-    public ?int $id = null;
+    public ?Newsletter $newsletter = null;
 
     public ?string $name = null;
 
@@ -28,32 +27,26 @@ class NewsletterForm extends Component
 
     public int $active = 1;
 
+    public function mount(?Newsletter $newsletter = null): void
+    {
+        if ($newsletter?->exists) {
+            $this->newsletter = $newsletter;
+            $this->name = $newsletter->name;
+            $this->email = $newsletter->email;
+            $this->city = $newsletter->city;
+            $this->instagram = $newsletter->instagram;
+            $this->whatsapp = $newsletter->whatsapp;
+            $this->site = $newsletter->site;
+            $this->category_id = $newsletter->category_id;
+            $this->active = $newsletter->active ? 1 : 0;
+        }
+    }
+
     public function getCategoriesProperty()
     {
         return NewsletterCategory::where('active', true)
             ->orderBy('name')
             ->get(['id', 'name']);
-    }
-
-    #[On('loadNewsletter')]
-    public function load($payload = []): void
-    {
-        $data = $payload['payload'] ?? $payload;
-
-        if (!empty($data['editId'])) {
-            $newsletter = Newsletter::find($data['editId']);
-            if ($newsletter) {
-                $this->id = $newsletter->id;
-                $this->name = $newsletter->name;
-                $this->email = $newsletter->email;
-                $this->city = $newsletter->city;
-                $this->instagram = $newsletter->instagram;
-                $this->whatsapp = $newsletter->whatsapp;
-                $this->site = $newsletter->site;
-                $this->category_id = $newsletter->category_id;
-                $this->active = $newsletter->active ? 1 : 0;
-            }
-        }
     }
 
     public function save(): void
@@ -63,7 +56,7 @@ class NewsletterForm extends Component
             'email' => [
                 'required',
                 'email',
-                Rule::unique('newsletters', 'email')->ignore($this->id),
+                Rule::unique('newsletters', 'email')->ignore($this->newsletter?->id),
             ],
             'city' => 'nullable|string|max:255',
             'instagram' => 'nullable|string|max:255',
@@ -88,34 +81,42 @@ class NewsletterForm extends Component
             'active' => $this->active,
         ];
 
-        if (!$this->id) {
+        if (!$this->newsletter?->exists) {
             $data['confirmed_at'] = now();
             $data['unsubscribe_token'] = \Illuminate\Support\Str::random(64);
         }
 
-        Newsletter::updateOrCreate(
-            ['id' => $this->id],
+        $newsletter = Newsletter::updateOrCreate(
+            ['id' => $this->newsletter?->id],
             $data
         );
 
-        $this->dispatch('newsletter-saved');
-        $this->resetForm();
+        $this->dispatch('swal:success', [
+            'title' => 'Sucesso!',
+            'text'  => $this->newsletter?->exists && !$newsletter->wasRecentlyCreated
+                ? 'E-mail atualizado com sucesso!'
+                : 'E-mail cadastrado com sucesso!',
+            'timer' => 2000,
+            'showConfirmButton' => false,
+        ]);
+
+        if ($newsletter->wasRecentlyCreated) {
+            $this->redirect(route('admin.newsletter.edit', $newsletter));
+            return;
+        }
+
+        $this->newsletter = $newsletter;
     }
 
-    #[On('resetNewsletterForm')]
-    public function resetForm(): void
+    public function getTitleProperty(): string
     {
-        $this->reset(['id', 'name', 'email', 'city', 'instagram', 'whatsapp', 'site', 'category_id', 'active']);
-        $this->active = 1;
-    }
-
-    public function getModalTitleProperty(): string
-    {
-        return $this->id ? 'Editar E-mail' : 'Cadastrar E-mail';
+        return $this->newsletter?->exists ? 'Editar E-mail' : 'Cadastrar E-mail';
     }
 
     public function render()
     {
-        return view('livewire.dashboard.newsletter.newsletter-form');
+        return view('livewire.dashboard.newsletter.newsletter-form')->with([
+            'title' => $this->title,
+        ]);
     }
 }

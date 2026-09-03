@@ -239,9 +239,9 @@ class CompanyForm extends Component
             // Upload logo
             if ($this->logo instanceof TemporaryUploadedFile) {
                 if ($this->logoPath) {
-                    Storage::disk('r2')->delete($this->logoPath);
+                    Storage::disk()->delete($this->logoPath);
                 }
-                $this->logoPath = $this->logo->store($folder, 'public');
+                $this->logoPath = $this->logo->store($folder);
                 $this->company->update(['logo' => $this->logoPath]);
                 $this->logo = null;
             }
@@ -249,9 +249,9 @@ class CompanyForm extends Component
             // Upload watermak
             if ($this->metaimg instanceof TemporaryUploadedFile) {
                 if ($this->metaimgPath) {
-                    Storage::disk('r2')->delete($this->metaimgPath);
+                    Storage::disk()->delete($this->metaimgPath);
                 }
-                $this->metaimgPath = $this->metaimg->store($folder, 'public');
+                $this->metaimgPath = $this->metaimg->store($folder);
                 $this->company->update(['metaimg' => $this->metaimgPath]);
                 $this->metaimg = null;
             }        
@@ -289,7 +289,7 @@ class CompanyForm extends Component
                         ->scaleDown(width: 1920)
                         ->toWebp(85);
 
-                    Storage::disk('r2')->put($path, $img);
+                    Storage::disk()->put($path, $img);
 
                     CompanyGb::create([
                         'company'   => $this->company->id,

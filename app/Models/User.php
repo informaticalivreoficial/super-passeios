@@ -59,8 +59,8 @@ class User extends Authenticatable implements MustVerifyEmail
     protected static function booted()
     {
         static::deleting(function ($user) {
-            if ($user->avatar && Storage::disk('r2')->exists($user->avatar)) {
-                Storage::disk('r2')->delete($user->avatar);
+            if ($user->avatar && Storage::disk()->exists($user->avatar)) {
+                Storage::disk()->delete($user->avatar);
             }
         });
     }
@@ -106,7 +106,7 @@ class User extends Authenticatable implements MustVerifyEmail
     */
     public function getUrlAvatarAttribute(): string
     {
-        if (!empty($this->avatar) && Storage::disk('r2')->exists($this->avatar)) {
+        if (!empty($this->avatar) && Storage::disk()->exists($this->avatar)) {
             return Storage::url($this->avatar);
         }
 

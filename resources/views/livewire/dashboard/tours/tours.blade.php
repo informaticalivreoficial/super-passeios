@@ -82,7 +82,7 @@
                                         </a>                                    
                                           
                                         </button>                                  
-                                        <a href="{{route('admin.tours.edit',['tour' => $tour->id])}}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
+                                        <a href="{{route('admin.tours.edit',['tour' => $tour->uuid])}}" class="btn btn-xs btn-default"><i class="fas fa-pen"></i></a>
                                         @if (auth()->user()->isSuperAdmin())
                                             <button type="button" 
                                                     class="btn btn-xs bg-danger"

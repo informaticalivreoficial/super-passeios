@@ -144,6 +144,10 @@
                                         @if($sortField === 'email') <span>{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span> @endif
                                     </button>
                                 </th>
+                                <th class="px-4 py-3">Cidade</th>
+                                <th class="px-4 py-3">Instagram</th>
+                                <th class="px-4 py-3">WhatsApp</th>
+                                <th class="px-4 py-3">Site</th>
                                 <th class="px-4 py-3">Categoria</th>
                                 <th class="px-4 py-3 text-center">Status</th>
                                 <th class="px-4 py-3 text-center">Confirmado</th>
@@ -164,6 +168,18 @@
                                     </td>
                                     <td class="px-4 py-3 text-xs text-slate-600 max-w-[240px] truncate">
                                         {{ $newsletter->email }}
+                                    </td>
+                                    <td class="px-4 py-3 text-xs text-slate-600 max-w-[160px] truncate">
+                                        {{ $newsletter->city ?: '—' }}
+                                    </td>
+                                    <td class="px-4 py-3 text-xs text-slate-600 max-w-[160px] truncate">
+                                        {{ $newsletter->instagram ?: '—' }}
+                                    </td>
+                                    <td class="px-4 py-3 text-xs text-slate-600 max-w-[160px] truncate">
+                                        {{ $newsletter->whatsapp ?: '—' }}
+                                    </td>
+                                    <td class="px-4 py-3 text-xs text-slate-600 max-w-[160px] truncate">
+                                        {{ $newsletter->site ?: '—' }}
                                     </td>
                                     <td class="px-4 py-3 text-xs font-semibold text-slate-600 max-w-[160px] truncate">
                                         @if($newsletter->category)

@@ -126,14 +126,14 @@
 
                         {{-- AÇÕES --}}
                         <div class="flex items-center gap-2 p-4">
-                            <a href="{{ route('admin.companies.edit', ['company' => $company->id]) }}"
+                            <a href="{{ route('admin.companies.edit', ['company' => $company->uuid]) }}"
                                class="flex-1 h-10 inline-flex items-center justify-center rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-slate-200 transition-colors">
                                 <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
                                 Editar
                             </a>
-                            <a href="{{ route('admin.companies.view', ['company' => $company->id]) }}"
+                            <a href="{{ route('admin.companies.view', ['company' => $company->uuid]) }}"
                                class="h-10 w-10 inline-flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" title="Visualizar">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <circle cx="11" cy="11" r="8"/>

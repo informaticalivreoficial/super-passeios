@@ -30,6 +30,54 @@
             </div>
 
             <div class="mb-5">
+                <label for="city" class="block text-sm font-semibold text-gray-700 mb-1">Cidade</label>
+                <input
+                    id="city"
+                    type="text"
+                    wire:model.defer="city"
+                    placeholder="Cidade (opcional)"
+                    class="block w-full px-4 py-2 text-base text-gray-600 border border-gray-200 rounded-lg shadow-inner bg-gray-100"
+                >
+                @error('city') <span class="mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
+            </div>
+
+            <div class="mb-5">
+                <label for="instagram" class="block text-sm font-semibold text-gray-700 mb-1">Instagram</label>
+                <input
+                    id="instagram"
+                    type="text"
+                    wire:model.defer="instagram"
+                    placeholder="@usuario"
+                    class="block w-full px-4 py-2 text-base text-gray-600 border border-gray-200 rounded-lg shadow-inner bg-gray-100"
+                >
+                @error('instagram') <span class="mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
+            </div>
+
+            <div class="mb-5">
+                <label for="whatsapp" class="block text-sm font-semibold text-gray-700 mb-1">WhatsApp</label>
+                <input
+                    id="whatsapp"
+                    type="text"
+                    wire:model.defer="whatsapp"
+                    placeholder="(00) 00000-0000"
+                    class="block w-full px-4 py-2 text-base text-gray-600 border border-gray-200 rounded-lg shadow-inner bg-gray-100"
+                >
+                @error('whatsapp') <span class="mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
+            </div>
+
+            <div class="mb-5">
+                <label for="site" class="block text-sm font-semibold text-gray-700 mb-1">Site</label>
+                <input
+                    id="site"
+                    type="text"
+                    wire:model.defer="site"
+                    placeholder="https://exemplo.com"
+                    class="block w-full px-4 py-2 text-base text-gray-600 border border-gray-200 rounded-lg shadow-inner bg-gray-100"
+                >
+                @error('site') <span class="mt-1 text-sm text-red-600">{{ $message }}</span> @enderror
+            </div>
+
+            <div class="mb-5">
                 <label for="category_id" class="block text-sm font-semibold text-gray-700 mb-1">Categoria</label>
                 <select
                     id="category_id"

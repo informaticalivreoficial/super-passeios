@@ -125,7 +125,7 @@ class VesselForm extends Component
             })
             ->orderBy('alias_name')
             ->get();
-    }   
+    }
 
     public function save(string $mode = 'draft')
     {

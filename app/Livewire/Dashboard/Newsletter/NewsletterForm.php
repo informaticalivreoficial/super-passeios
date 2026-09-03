@@ -16,6 +16,14 @@ class NewsletterForm extends Component
 
     public ?string $email = null;
 
+    public ?string $city = null;
+
+    public ?string $instagram = null;
+
+    public ?string $whatsapp = null;
+
+    public ?string $site = null;
+
     public ?int $category_id = null;
 
     public int $active = 1;
@@ -38,6 +46,10 @@ class NewsletterForm extends Component
                 $this->id = $newsletter->id;
                 $this->name = $newsletter->name;
                 $this->email = $newsletter->email;
+                $this->city = $newsletter->city;
+                $this->instagram = $newsletter->instagram;
+                $this->whatsapp = $newsletter->whatsapp;
+                $this->site = $newsletter->site;
                 $this->category_id = $newsletter->category_id;
                 $this->active = $newsletter->active ? 1 : 0;
             }
@@ -53,6 +65,10 @@ class NewsletterForm extends Component
                 'email',
                 Rule::unique('newsletters', 'email')->ignore($this->id),
             ],
+            'city' => 'nullable|string|max:255',
+            'instagram' => 'nullable|string|max:255',
+            'whatsapp' => 'nullable|string|max:255',
+            'site' => 'nullable|string|max:255',
             'category_id' => 'nullable|exists:newsletter_categories,id',
             'active' => 'required|boolean',
         ], [
@@ -64,6 +80,10 @@ class NewsletterForm extends Component
         $data = [
             'name' => $this->name,
             'email' => $this->email,
+            'city' => $this->city,
+            'instagram' => $this->instagram,
+            'whatsapp' => $this->whatsapp,
+            'site' => $this->site,
             'category_id' => $this->category_id,
             'active' => $this->active,
         ];
@@ -85,7 +105,7 @@ class NewsletterForm extends Component
     #[On('resetNewsletterForm')]
     public function resetForm(): void
     {
-        $this->reset(['id', 'name', 'email', 'category_id', 'active']);
+        $this->reset(['id', 'name', 'email', 'city', 'instagram', 'whatsapp', 'site', 'category_id', 'active']);
         $this->active = 1;
     }
 

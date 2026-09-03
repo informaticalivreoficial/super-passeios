@@ -128,12 +128,16 @@ class Newsletters extends Component
         return response()->streamDownload(function () use ($newsletters) {
             $handle = fopen('php://output', 'w');
             fwrite($handle, "\xEF\xBB\xBF");
-            fputcsv($handle, ['Nome', 'E-mail', 'Categoria', 'Ativo', 'Confirmado', 'Cadastro']);
+            fputcsv($handle, ['Nome', 'E-mail', 'Cidade', 'Instagram', 'WhatsApp', 'Site', 'Categoria', 'Ativo', 'Confirmado', 'Cadastro']);
 
             foreach ($newsletters as $newsletter) {
                 fputcsv($handle, [
                     $newsletter->name,
                     $newsletter->email,
+                    $newsletter->city,
+                    $newsletter->instagram,
+                    $newsletter->whatsapp,
+                    $newsletter->site,
                     $newsletter->category?->name ?? '',
                     $newsletter->active ? 'Sim' : 'Não',
                     $newsletter->confirmed_at ? 'Sim' : 'Não',
@@ -162,12 +166,16 @@ class Newsletters extends Component
     protected function xlsXml($newsletters): string
     {
         $rows = [];
-        $rows[] = ['Nome', 'E-mail', 'Categoria', 'Ativo', 'Confirmado', 'Cadastro'];
+        $rows[] = ['Nome', 'E-mail', 'Cidade', 'Instagram', 'WhatsApp', 'Site', 'Categoria', 'Ativo', 'Confirmado', 'Cadastro'];
 
         foreach ($newsletters as $newsletter) {
             $rows[] = [
                 $newsletter->name ?? '',
                 $newsletter->email,
+                $newsletter->city ?? '',
+                $newsletter->instagram ?? '',
+                $newsletter->whatsapp ?? '',
+                $newsletter->site ?? '',
                 $newsletter->category?->name ?? '',
                 $newsletter->active ? 'Sim' : 'Não',
                 $newsletter->confirmed_at ? 'Sim' : 'Não',
@@ -201,7 +209,10 @@ class Newsletters extends Component
             ->when($this->search, function ($q) {
                 $q->where(function ($q) {
                     $q->where('email', 'like', "%{$this->search}%")
-                        ->orWhere('name', 'like', "%{$this->search}%");
+                        ->orWhere('name', 'like', "%{$this->search}%")
+                        ->orWhere('city', 'like', "%{$this->search}%")
+                        ->orWhere('instagram', 'like', "%{$this->search}%")
+                        ->orWhere('whatsapp', 'like', "%{$this->search}%");
                 });
             })
             ->when($this->statusFilter !== '', fn ($q) => $q->where('active', $this->statusFilter === 'active'))

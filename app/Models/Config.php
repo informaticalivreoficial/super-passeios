@@ -67,7 +67,7 @@ class Config extends Model
     */    
     public function getmetaimg()
     {
-        if(empty($this->metaimg) || !Storage::disk('r2')->exists($this->metaimg)) {
+        if(empty($this->metaimg) || !Storage::disk()->exists($this->metaimg)) {
             return url(asset('theme/images/image.jpg'));
         } 
         return Storage::url($this->metaimg);
@@ -75,7 +75,7 @@ class Config extends Model
     
     public function getlogo()
     {
-        if (empty($this->logo) || !Storage::disk('r2')->exists($this->logo)) {
+        if (empty($this->logo) || !Storage::disk()->exists($this->logo)) {
             return asset('theme/images/image.jpg');
         }
 
@@ -84,7 +84,7 @@ class Config extends Model
     
     public function getlogoadmin()
     {
-        if (empty($this->logo_admin) || !Storage::disk('r2')->exists($this->logo_admin)) {
+        if (empty($this->logo_admin) || !Storage::disk()->exists($this->logo_admin)) {
             return asset('theme/images/image.jpg');
         }
 
@@ -93,7 +93,7 @@ class Config extends Model
     
     public function getfaveicon()
     {
-        if(empty($this->favicon) || !Storage::disk('r2')->exists($this->favicon)) {
+        if(empty($this->favicon) || !Storage::disk()->exists($this->favicon)) {
             return url(asset('theme/images/image.jpg'));
         } 
         return Storage::url($this->favicon);
@@ -101,7 +101,7 @@ class Config extends Model
     
     public function getwatermark()
     {
-        if(empty($this->watermark) || !Storage::disk('r2')->exists($this->watermark)) {
+        if(empty($this->watermark) || !Storage::disk()->exists($this->watermark)) {
             return url(asset('theme/images/image.jpg'));
         } 
         return Storage::url($this->watermark);
@@ -109,7 +109,7 @@ class Config extends Model
     
     public function getheadersite()
     {
-        if(empty($this->imgheader) || !Storage::disk('r2')->exists($this->imgheader)) {
+        if(empty($this->imgheader) || !Storage::disk()->exists($this->imgheader)) {
             return url(asset('theme/images/image.jpg'));
         } 
         return Storage::url($this->imgheader);
@@ -117,7 +117,7 @@ class Config extends Model
 
     public function getlogofooter()
     {
-        if(empty($this->logo_footer) || !Storage::disk('r2')->exists($this->logo_footer)) {
+        if(empty($this->logo_footer) || !Storage::disk()->exists($this->logo_footer)) {
             return url(asset('theme/images/image.jpg'));
         } 
         return Storage::url($this->logo_footer);

@@ -10,6 +10,8 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class Form extends Component
 {
@@ -18,10 +20,9 @@ class Form extends Component
     public User $user;
 
     public $userId;  
-      
 
-    public $foto; // Propriedade para armazenar a foto temporariamente
-    public $fotoUrl; // Propriedade para armazenar o caminho da foto após o upload
+    public $foto;
+    public $fotoUrl;
 
     public $roles;
     public array $roleLabels = [
@@ -102,10 +103,12 @@ class Form extends Component
         try {
             $this->authorize('create', User::class);
 
+            $fotoFile = $this->foto;
+
             $validated = $this->validate($this->rulesCreate());
 
-            if ($this->foto) {
-                $validated['avatar'] = $this->foto->store('user', 'public');
+            if ($fotoFile) {
+                $validated['avatar'] = $this->convertAndStore($fotoFile);
             }
 
             $validated['password'] = Hash::make($this->code);
@@ -125,7 +128,7 @@ class Form extends Component
             $user = User::create($validated);
             $user->syncRoles([$this->roleSelected]);
 
-            $this->reset(['code', 'code_confirmation', 'foto']);
+            $this->reset(['code', 'code_confirmation', 'foto', 'fotoUrl']);
 
             $this->dispatch('swal', [
                 'title'             => 'Sucesso!',
@@ -147,17 +150,19 @@ class Form extends Component
     public function update(): void
     {
         try {
+            $fotoFile = $this->foto;
+
             $validated = $this->validate($this->rulesUpdate());
 
             $user = User::findOrFail($this->userId);
 
             $this->authorize('update', $user);
 
-            if ($this->foto) {
-                if ($user->avatar && Storage::disk('r2')->exists($user->avatar)) {
-                    Storage::disk('r2')->delete($user->avatar);
+            if ($fotoFile) {
+                if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                    Storage::disk('public')->delete($user->avatar);
                 }
-                $validated['avatar'] = $this->foto->store('user', 'public');
+                $validated['avatar'] = $this->convertAndStore($fotoFile);
             }
 
             $user->update(array_merge($validated, [
@@ -184,7 +189,7 @@ class Form extends Component
 
             $user->syncRoles([$this->roleSelected]);
 
-            $this->reset(['code', 'code_confirmation', 'foto']);
+            $this->reset(['code', 'code_confirmation', 'foto', 'fotoUrl']);
 
             $this->dispatch('swal', [
                 'title'             => 'Sucesso!',
@@ -225,12 +230,34 @@ class Form extends Component
             'foto' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
         ]);
 
-        $this->fotoUrl = $this->foto->temporaryUrl();
-    }    
+        if ($this->foto) {
+            $this->fotoUrl = $this->foto->temporaryUrl();
+        } else {
+            $this->fotoUrl = null;
+        }
+    }
+
+    protected function convertAndStore($file): string
+    {
+        $manager = new ImageManager(new Driver());
+
+        $image = $manager->read($file->getRealPath());
+
+        $filename = uniqid('user_', true) . '.webp';
+        $directory = 'user';
+        $path = $directory . '/' . $filename;
+        $fullPath = storage_path('app/public/' . $path);
+
+        $image->resizeDown(800, 800, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        })->toWebp(85)->save($fullPath);
+
+        return $path;
+    }
 
     public function render()
     {
         return view('livewire.dashboard.users.form')->with('title', $this->userId ? 'Editar Usuário' : 'Cadastrar Usuário');
     }
-
 }

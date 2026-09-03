@@ -4,13 +4,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1><i class="fas fa-industry mr-2"></i> {{ $tour->exists ? 'Editar' : 'Cadastrar' }}</h1>
+                    <h1><i class="fas fa-hiking mr-2"></i> {{ $tour->exists ? 'Editar Passeio' : 'Cadastrar Passeio' }}</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Painel de Controle</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.vessels.index') }}">Passeios</a>
-                        </li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.tours.index') }}">Passeios</a></li>
                         <li class="breadcrumb-item active">{{ $tour->exists ? 'Editar' : 'Cadastrar' }}</li>
                     </ol>
                 </div>
@@ -45,182 +44,105 @@
             <div class="bg-white">
                 <div class="card-body text-muted">
                     <div class="row">
-                        <div class="col-12 col-sm-6 col-md-6 col-lg-6">
-                            <x-forms.input
-                                label="Embarcação"
-                                name="name"
-                            />
-                        </div>
                         <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                             <x-forms.select
                                 name="company_id"
                                 label="Operadora"
                             >
                                 <option value="">Selecione uma operadora</option>
-
                                 @foreach($companies as $company)
-                                    <option value="{{ $company->id }}">
+                                    <option value="{{ $company->id }}" {{ $company_id == $company->id ? 'selected' : '' }}>
                                         {{ $company->alias_name }}
                                     </option>
                                 @endforeach
                             </x-forms.select>
                         </div>
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
-                            <x-forms.input
-                                label="Capacidade"
-                                name="capacity"
-                            />
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-4">
+                            <x-forms.select
+                                name="vessel_id"
+                                label="Embarcação"
+                            >
+                                <option value="">{{ $company_id ? 'Selecione' : 'Primeiro selecione a operadora' }}</option>
+                                @foreach($vessels as $vessel)
+                                    <option value="{{ $vessel->id }}" {{ $vessel_id == $vessel->id ? 'selected' : '' }}>
+                                        {{ $vessel->name }}
+                                    </option>
+                                @endforeach
+                            </x-forms.select>
                         </div>
                         <div class="col-12 col-sm-6 col-md-4 col-lg-2">
-                            <x-forms.input
-                                label="Ano"
-                                name="year"
-                            />                                        
-                        </div> 
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
-                            <x-forms.input
-                                label="Tamanho (m)"
-                                name="size"
-                            />
-                        </div>  
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
-                            <x-forms.input
-                                label="Banheiros"
-                                name="bathroom"
-                            />
-                        </div>  
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                             <x-forms.select
-                                name="type"
+                                name="tour_type"
                                 label="Tipo"
                             >
                                 <option value="">Selecione</option>
-                                <option value="Lancha">Lancha</option>
-                                <option value="Iate">Iate</option>
-                                <option value="Catamarã">Catamarã</option>
-                                <option value="Escuna">Escuna</option>
-                                <option value="Veleiro">Veleiro</option>
-                                <option value="Jet Ski">Jet Ski</option>
+                                @foreach(\App\Enums\TourTypeEnum::cases() as $type)
+                                    <option value="{{ $type->value }}" {{ $tour_type == $type->value ? 'selected' : '' }}>
+                                        {{ $type->label() }}
+                                    </option>
+                                @endforeach
                             </x-forms.select>
-                        </div>                     
-                    </div> 
-                    
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            {{-- CARD: COMODIDADES --}}
-                            <div class="bg-white rounded-2xl overflow-hidden" style="border: 1px solid #e8e4d8;">
-
-                                <div
-                                    class="flex items-center gap-3 px-6 py-4"
-                                    style="border-bottom: 1px solid #f0ece4;"
-                                >
-
-                                    <div
-                                        class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                                        style="background-color: rgba(22,163,183,0.1);"
-                                    >
-                                        <svg
-                                            class="w-5 h-5"
-                                            style="color: #16a3b7;"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path d="M9 12l2 2 4-4"/>
-                                            <path d="M21 12c0 1.66-.67 3.16-1.76 4.24A5.98 5.98 0 0115 18H9a6 6 0 110-12h6a6 6 0 016 6z"/>
-                                        </svg>
-                                    </div>
-
-                                    <div>
-                                        <h2 class="text-sm font-bold" style="color: #051e34;">
-                                            Comodidades
-                                        </h2>
-
-                                        <p class="text-xs" style="color: #87c2c0;">
-                                            Recursos disponíveis na embarcação.
-                                        </p>
-                                    </div>
-
-                                </div>
-
-                                <div class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-
-                                    {{-- CHURRASQUEIRA --}}
-                                    <label
-                                        class="flex items-center gap-3 rounded-xl border px-4 py-3 cursor-pointer transition"
-                                        style="border-color: #e8e4d8;"
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            wire:model="barbecue"
-                                            class="rounded border-gray-300 text-cyan-500 focus:ring-cyan-500"
-                                        >
-
-                                        <span class="text-sm font-medium" style="color: #051e34;">
-                                            🍖 Churrasqueira
-                                        </span>
-                                    </label>
-
-                                    {{-- SUITE --}}
-                                    <label
-                                        class="flex items-center gap-3 rounded-xl border px-4 py-3 cursor-pointer transition"
-                                        style="border-color: #e8e4d8;"
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            wire:model="suite"
-                                            class="rounded border-gray-300 text-cyan-500 focus:ring-cyan-500"
-                                        >
-
-                                        <span class="text-sm font-medium" style="color: #051e34;">
-                                            🛏 Suíte
-                                        </span>
-                                    </label>
-
-                                    {{-- SOM --}}
-                                    <label
-                                        class="flex items-center gap-3 rounded-xl border px-4 py-3 cursor-pointer transition"
-                                        style="border-color: #e8e4d8;"
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            wire:model="sound_system"
-                                            class="rounded border-gray-300 text-cyan-500 focus:ring-cyan-500"
-                                        >
-
-                                        <span class="text-sm font-medium" style="color: #051e34;">
-                                            🎵 Som
-                                        </span>
-                                    </label>
-
-                                    {{-- COZINHA --}}
-                                    <label
-                                        class="flex items-center gap-3 rounded-xl border px-4 py-3 cursor-pointer transition"
-                                        style="border-color: #e8e4d8;"
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            wire:model="kitchen"
-                                            class="rounded border-gray-300 text-cyan-500 focus:ring-cyan-500"
-                                        >
-
-                                        <span class="text-sm font-medium" style="color: #051e34;">
-                                            🍳 Cozinha
-                                        </span>
-                                    </label>
-
-                                </div>
-
-                            </div>
                         </div>
-                    </div>                    
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-6">
+                            <x-forms.input
+                                label="Título"
+                                name="title"
+                                placeholder="Ex: Passeio Ilha Anchieta Premium"
+                            />
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                            <x-forms.input
+                                label="Preço (R$)"
+                                name="price"
+                                placeholder="Ex: 150.00"
+                                inputmode="decimal"
+                            />
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                            <x-forms.input
+                                label="Duração"
+                                name="duration"
+                                placeholder="Ex: 7 horas"
+                            />
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4 col-lg-6">
+                            <x-forms.input
+                                label="Local de Embarque"
+                                name="boarding_place"
+                                placeholder="Ex: Marina Saco da Ribeira"
+                            />
+                        </div>
+                    </div>
 
                     <div class="row">
-                        <div class="col-12 mb-1"> 
+                        <div class="col-12 mb-1">
                             <div class="form-group">
-                                <label class="labelforms"><b>Informações Adicionais:</b></label>
-                                <textarea class="form-control" rows="5" wire:model="description">{{ $description ?? '' }}</textarea>
+                                <label class="labelforms"><b>Descrição:</b></label>
+                                <textarea class="form-control" rows="5" wire:model="description" placeholder="Descreva os diferenciais do passeio...">{{ $description ?? '' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 mb-1">
+                            <div class="form-group">
+                                <label class="labelforms"><b>Regras:</b></label>
+                                <textarea class="form-control" rows="3" wire:model="rules" placeholder="Ex: Não permitido som externo...">{{ $rules ?? '' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="inline-flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        wire:model="active"
+                                        class="w-5 h-5 rounded border-gray-300 text-cyan-500 focus:ring-cyan-500"
+                                    >
+                                    <span class="text-sm font-bold" style="color: #051e34;">Passeio ativo</span>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -233,7 +155,7 @@
         <div x-show="tab === 'imagens'" x-transition class="relative">
             <div
                 wire:loading
-                wire:target="images"
+                wire:target="photos"
                 class="absolute inset-0 bg-white/80 flex items-center justify-center z-[10000]"
             >
                 <div class="flex flex-col items-center gap-2">
@@ -254,16 +176,16 @@
             <div class="bg-white p-4">                
 
                 <label class="block font-semibold mb-2 mt-2 text-muted">📁 Upload de Imagens:</label>
-                <input type="file" wire:model="images" class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4
+                <input type="file" wire:model="photos" class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4
                     file:rounded-full file:border-0 file:text-sm file:font-semibold
                     file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" multiple/>
 
-                @error('images')
+                @error('photos.*')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
 
                 <!-- Informação sobre ordenação -->
-                @if(count($tour->images ?? []) > 1)
+                @if($tour->exists && count($tour->images ?? []) > 1)
                     <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
                         <p class="text-sm text-blue-800">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -308,14 +230,14 @@
 
                                 {{-- Botão de excluir --}}
                                 <button type="button"
-                                        wire:click="removeSavedImage({{ $savedImage->id }})"
+                                        wire:click="deleteImage({{ $savedImage->id }})"
                                         class="absolute top-1 right-1 w-6 h-6 flex items-center justify-center bg-red-500 text-white rounded-full text-xs hover:bg-red-600">
                                     ✕
                                 </button>
 
                                 {{-- Botão de definir/remover capa --}}
                                 <button type="button"
-                                        wire:click="toggleCover({{ $savedImage->id }})"
+                                        wire:click="setCover({{ $savedImage->id }})"
                                         class="absolute bottom-1 left-1 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded hover:bg-black">
                                     {{ $savedImage->cover ? 'Remover capa' : 'Definir capa' }}
                                 </button>                                                                   
@@ -323,10 +245,10 @@
                         @endforeach
 
                         {{-- Imagens recém-uploadadas via Livewire --}}
-                        @foreach ($images as $index => $image)
+                        @foreach ($photos as $index => $photo)
                             <div class="relative">
-                                <img src="{!! $image->temporaryUrl() !!}" class="w-32 h-32 object-cover rounded border cursor-pointer opacity-70"
-                                    @click="showModal = true; imageUrl = '{!! $image->temporaryUrl() !!}'">
+                                <img src="{!! $photo->temporaryUrl() !!}" class="w-32 h-32 object-cover rounded border cursor-pointer opacity-70"
+                                    @click="showModal = true; imageUrl = '{!! $photo->temporaryUrl() !!}'">
                                 
                                 {{-- Badge de nova imagem --}}
                                 <div class="absolute top-1 left-1 bg-yellow-500 text-white text-xs px-2 py-1 rounded font-bold">
@@ -334,7 +256,7 @@
                                 </div>
                                 
                                 <button type="button"
-                                        wire:click="removeTempImage({{ $index }})"
+                                        wire:click="removePhoto({{ $index }})"
                                         class="absolute top-1 right-1 w-6 h-6 flex items-center justify-center bg-red-500 text-white rounded-full text-xs hover:bg-red-600">
                                     ✕
                                 </button>
@@ -363,17 +285,14 @@
 
         <div class="row text-right p-4 bg-white">
             <div class="col-12 mb-4">
+                <a href="{{ route('admin.tours.index') }}" class="btn btn-default">
+                    <i class="fas fa-times mr-1"></i> Cancelar
+                </a>
                 <button 
                     wire:loading.attr="disabled"
-                    wire:target="images"
+                    wire:target="photos"
                     type="button" 
-                    wire:click="save('draft')" class="btn btn-info"><i class="nav-icon fas fa-check mr-2"></i>{{ $tour->exists ? 'Atualizar Rascunho' : 'Salvar Rascunho' }}</button>
-                <button 
-                    wire:loading.attr="disabled"
-                    wire:target="images"
-                    type="button" 
-                    wire:click="save('published')" 
-                class="btn btn-success"><i class="nav-icon fas fa-check mr-2"></i>{{ $tour->exists ? 'Atualizar e Publicar' : 'Salvar e Publicar' }}</button>
+                    wire:click="save" class="btn btn-success"><i class="nav-icon fas fa-check mr-2"></i>{{ $tour->exists ? 'Atualizar Passeio' : 'Salvar Passeio' }}</button>
             </div>
         </div>
 
@@ -395,23 +314,6 @@
                 }, 100);
             });
         });
-
-        function tagInputComponent(tagsBinding) {
-            return {
-                tags: tagsBinding,
-                input: '',
-                addTag() {
-                    const trimmed = this.input.trim();
-                    if (trimmed && !this.tags.includes(trimmed)) {
-                        this.tags.push(trimmed);
-                    }
-                    this.input = '';
-                },
-                removeTag(index) {
-                    this.tags.splice(index, 1);
-                }
-            };
-        }
 
         function imageGallery() {
             return {
@@ -475,10 +377,8 @@
                         order.push({ id: parseInt(id), position: index + 1 });
                     });
                     
-                    // Envia a nova ordem para o Livewire
                     @this.call('updateImageOrder', order);
                     
-                    // Feedback visual
                     this.showSuccessMessage();
                 },
                 

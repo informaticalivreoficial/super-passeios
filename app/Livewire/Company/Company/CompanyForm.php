@@ -181,6 +181,10 @@ class CompanyForm extends Component
             // Regras dinâmicas — remove validação de arquivo se não foi enviado novo
             $rules = $this->rules();
 
+            $logoSnapshot = $this->logo;
+            $metaimgSnapshot = $this->metaimg;
+            $imagesSnapshot = $this->images;
+
             if (! $this->logo instanceof TemporaryUploadedFile) {
                 unset($rules['logo']);
             } 
@@ -237,27 +241,27 @@ class CompanyForm extends Component
             $folder = 'company/' . $this->company->uuid;
 
             // Upload logo
-            if ($this->logo instanceof TemporaryUploadedFile) {
+            if ($logoSnapshot instanceof TemporaryUploadedFile) {
                 if ($this->logoPath) {
-                    Storage::disk('public')->delete($this->logoPath);
+                    Storage::disk()->delete($this->logoPath);
                 }
-                $this->logoPath = $this->logo->store($folder, 'public');
+                $this->logoPath = $logoSnapshot->store($folder, 'public');
                 $this->company->update(['logo' => $this->logoPath]);
                 $this->logo = null;
             }
 
             // Upload watermak
-            if ($this->metaimg instanceof TemporaryUploadedFile) {
+            if ($metaimgSnapshot instanceof TemporaryUploadedFile) {
                 if ($this->metaimgPath) {
-                    Storage::disk('public')->delete($this->metaimgPath);
+                    Storage::disk()->delete($this->metaimgPath);
                 }
-                $this->metaimgPath = $this->metaimg->store($folder, 'public');
+                $this->metaimgPath = $metaimgSnapshot->store($folder, 'public');
                 $this->company->update(['metaimg' => $this->metaimgPath]);
                 $this->metaimg = null;
             }        
 
             // Upload galeria
-            if (!empty($this->images)) {
+            if (!empty($imagesSnapshot)) {
                 $this->validate([
                     'images.*' => 'image|mimes:jpeg,jpg,png,webp|max:2048',
                 ]);
@@ -266,7 +270,7 @@ class CompanyForm extends Component
                 $existingCount = $this->company->images()->count();
                 $allowed       = $maxImages - $existingCount;
 
-                if (count($this->images) > $allowed) {
+                if (count($imagesSnapshot) > $allowed) {
                     $this->dispatch('swal:warning', [
                         'title'             => 'Atenção!',
                         'text'              => "Limite de {$maxImages} imagens atingido.",
@@ -279,7 +283,7 @@ class CompanyForm extends Component
                 $manager  = new ImageManager(new Driver());
                 $maxOrder = CompanyGb::where('company', $this->company->id)->max('order_img') ?? 0;
 
-                foreach ($this->images as $index => $image) {
+                foreach ($imagesSnapshot as $index => $image) {
                     if ($index >= $allowed) break;
 
                     $filename = uniqid() . '.webp';
@@ -289,7 +293,7 @@ class CompanyForm extends Component
                         ->scaleDown(width: 1920)
                         ->toWebp(85);
 
-                    Storage::disk('public')->put($path, $img);
+                    Storage::disk()->put($path, $img);
 
                     CompanyGb::create([
                         'company'   => $this->company->id,

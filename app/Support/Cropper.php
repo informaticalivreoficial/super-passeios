@@ -13,15 +13,15 @@ class Cropper
         $filename  = md5($uri . $width . $height) . '.webp';
         $cachePath = 'cache/' . $filename;
 
-        if (Storage::disk('public')->exists($cachePath)) {
+        if (Storage::disk()->exists($cachePath)) {
             return $cachePath;
         }
 
-        if (!Storage::disk('public')->exists($uri)) {
+        if (!Storage::disk()->exists($uri)) {
             return '';
         }
 
-        $contents = Storage::disk('public')->get($uri);
+        $contents = Storage::disk()->get($uri);
 
         $manager = new ImageManager(new Driver());
         $image   = $manager->read($contents);
@@ -34,7 +34,7 @@ class Cropper
 
         $temp = tempnam(sys_get_temp_dir(), 'crop') . '.webp';
         $image->toWebp(80)->save($temp);
-        Storage::disk('public')->put($cachePath, file_get_contents($temp));
+        Storage::disk()->put($cachePath, file_get_contents($temp));
         unlink($temp);
 
         return $cachePath;
@@ -44,13 +44,13 @@ class Cropper
     {
         if (!empty($path)) {
             $hash = md5($path);
-            foreach (Storage::disk('public')->files('cache') as $file) {
+            foreach (Storage::disk()->files('cache') as $file) {
                 if (str_contains($file, $hash)) {
-                    Storage::disk('public')->delete($file);
+                    Storage::disk()->delete($file);
                 }
             }
         } else {
-            Storage::disk('public')->deleteDirectory('cache');
+            Storage::disk()->deleteDirectory('cache');
         }
     }
 }

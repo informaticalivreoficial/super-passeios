@@ -73,7 +73,7 @@ class Customer extends Authenticatable
 
     public function getUrlAvatarAttribute(): string
     {
-        if (!empty($this->avatar) && Storage::disk('public')->exists($this->avatar)) {
+        if (!empty($this->avatar) && Storage::disk()->exists($this->avatar)) {
             return Storage::url($this->avatar);
         }
 

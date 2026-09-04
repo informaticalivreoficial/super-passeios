@@ -150,6 +150,7 @@ class PostForm extends Component
 
     public function save(string $mode = 'draft')
     {
+        $imagesSnapshot = $this->images;
         $validated = $this->validate();
         $validated['status'] = $mode === 'published' ? 1 : 0;
         
@@ -180,7 +181,7 @@ class PostForm extends Component
             $maxImages = config('app.max_images');
             $existingImages = $this->post->images()->count();
             $allowed = $maxImages - $existingImages;
-            if (count($this->images ?? []) > $allowed) {
+            if (count($imagesSnapshot ?? []) > $allowed) {
                 $this->dispatch('swal:warning', [
                     'title' => 'Atenção!',
                     'text' => "Limite de {$maxImages} imagens atingido.",
@@ -193,7 +194,7 @@ class PostForm extends Component
             // Salvar imagens
             $manager = new ImageManager(new Driver());
 
-            foreach ($this->images as $index => $image) {
+            foreach ($imagesSnapshot as $index => $image) {
                 if ($index >= $allowed) break;
 
                 $filename = uniqid() . '.webp';
@@ -203,7 +204,7 @@ class PostForm extends Component
                 $img->scaleDown(width: 1920);
                 $encoded = $img->toWebp(85);
 
-                Storage::disk('public')->put($path, $encoded);
+                Storage::disk()->put($path, $encoded);
 
                 // Primeira imagem é capa se não tiver nenhuma
                 $hasCover = PostGb::where('post', $this->post->id)
@@ -253,7 +254,7 @@ class PostForm extends Component
     {
         $image = PostGb::find($id);
         if ($image) {
-            Storage::disk('public')->delete($image->path);
+            Storage::disk()->delete($image->path);
             $image->delete();
             $this->savedImages = collect($this->savedImages)->filter(fn ($img) => $img->id !== $id);
             $this->post->refresh(); // Para garantir que os dados estejam atualizados

@@ -145,6 +145,8 @@ class VesselForm extends Component
     {
         try {                  
 
+            $imagesSnapshot = $this->images;
+
             $this->validate($this->rules(), $this->messages());
     
             $company = Auth::guard('customer')->user()->company;
@@ -187,7 +189,7 @@ class VesselForm extends Component
             $folder = 'company/' . $company->uuid . '/vessels/' . $this->vessel->uuid;                  
 
             // Upload galeria
-            if (!empty($this->images)) {
+            if (!empty($imagesSnapshot)) {
                 $this->validate([
                     'images.*' => 'image|mimes:jpeg,jpg,png,webp|max:2048',
                 ]);
@@ -196,7 +198,7 @@ class VesselForm extends Component
                 $existingCount = $this->vessel->images()->count();
                 $allowed       = $maxImages - $existingCount;
 
-                if (count($this->images) > $allowed) {
+                if (count($imagesSnapshot) > $allowed) {
                     $this->dispatch('swal:warning', [
                         'title'             => 'Atenção!',
                         'text'              => "Limite de {$maxImages} imagens atingido.",
@@ -209,7 +211,7 @@ class VesselForm extends Component
                 $manager  = new ImageManager(new Driver());
                 $maxOrder = VesselGb::where('vessel_id', $this->vessel->id)->max('order_img') ?? 0;
 
-                foreach ($this->images as $index => $image) {
+                foreach ($imagesSnapshot as $index => $image) {
                     if ($index >= $allowed) break;
 
                     $filename = uniqid() . '.webp';
@@ -219,7 +221,7 @@ class VesselForm extends Component
                         ->scaleDown(width: 1920)
                         ->toWebp(85);
 
-                    Storage::disk('public')->put($path, $img);
+                    Storage::disk()->put($path, $img);
 
                     VesselGb::create([
                         'vessel_id'   => $this->vessel->id,
@@ -257,7 +259,7 @@ class VesselForm extends Component
 
         $this->authorize('update', $this->vessel);
 
-        Storage::disk('public')->delete($image->path);
+        Storage::disk()->delete($image->path);
 
         $image->delete();
 

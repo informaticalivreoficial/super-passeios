@@ -117,6 +117,7 @@ class TourForm extends Component
     public function save()
     {
         try {
+            $photosSnapshot = $this->photos;
             $this->validate($this->rules(), $this->messages());
 
             $company = Auth::guard('customer')->user()->company;
@@ -154,7 +155,7 @@ class TourForm extends Component
             $folder = 'company/' . $company->uuid . '/tours/' . $this->tour->uuid;
 
             // Upload galeria
-            if (!empty($this->photos)) {
+            if (!empty($photosSnapshot)) {
                 $this->validate([
                     'photos.*' => 'image|mimes:jpeg,jpg,png,webp|max:2048',
                 ]);
@@ -163,7 +164,7 @@ class TourForm extends Component
                 $existingCount = $this->tour->images()->count();
                 $allowed       = $maxImages - $existingCount;
 
-                if (count($this->photos) > $allowed) {
+                if (count($photosSnapshot) > $allowed) {
                     $this->dispatch('swal:warning', [
                         'title'             => 'Atenção!',
                         'text'              => "Limite de {$maxImages} imagens atingido.",
@@ -176,7 +177,7 @@ class TourForm extends Component
                 $manager  = new ImageManager(new Driver());
                 $maxOrder = TourGb::where('tour_id', $this->tour->id)->max('order_img') ?? 0;
 
-                foreach ($this->photos as $index => $image) {
+                foreach ($photosSnapshot as $index => $image) {
                     if ($index >= $allowed) break;
 
                     $filename = uniqid() . '.webp';
@@ -186,7 +187,7 @@ class TourForm extends Component
                         ->scaleDown(width: 1920)
                         ->toWebp(85);
 
-                    Storage::disk('public')->put($path, $img);
+                    Storage::disk()->put($path, $img);
 
                     TourGb::create([
                         'tour_id'   => $this->tour->id,
@@ -227,7 +228,7 @@ class TourForm extends Component
     {
         $image = TourGb::findOrFail($id);
         $this->authorize('update', $this->tour);
-        Storage::disk('public')->delete($image->path);
+        Storage::disk()->delete($image->path);
         $image->delete();
 
         $this->savedImages = $this->tour

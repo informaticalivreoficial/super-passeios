@@ -149,6 +149,7 @@ class UserForm extends Component
     public function save(): void
     {
         try {
+            $avatarSnapshot = $this->avatar;
             $this->validate($this->rules(), $this->messages());
 
             $data = [
@@ -176,12 +177,12 @@ class UserForm extends Component
                 'twitter'          => $this->twitter,
             ];
 
-            if ($this->avatar) {
+            if ($avatarSnapshot) {
                 if ($this->customer?->avatar) {
-                    Storage::disk('public')->delete($this->customer->avatar);
+                    Storage::disk()->delete($this->customer->avatar);
                 }
 
-                $data['avatar'] = $this->avatar->store(
+                $data['avatar'] = $avatarSnapshot->store(
                     'company/' . $this->customer->company->uuid . '/customers',
                     'public'
                 );

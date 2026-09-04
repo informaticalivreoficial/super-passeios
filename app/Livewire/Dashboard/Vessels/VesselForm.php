@@ -132,6 +132,8 @@ class VesselForm extends Component
         // 🔹 Regras dinâmicas
         $rules = $this->rules();       
 
+        $imagesSnapshot = $this->images;
+
         // 🔹 Validação
         $validated = $this->validate($rules);
 
@@ -177,7 +179,7 @@ class VesselForm extends Component
         $existingImages = $this->vessel->images()->count();
         $allowed = $maxImages - $existingImages;
 
-        if (count($this->images ?? []) > $allowed) {
+        if (count($imagesSnapshot ?? []) > $allowed) {
             $this->dispatch('swal:warning', [
                 'title' => 'Atenção!',
                 'text' => "Limite de {$maxImages} imagens atingido.",
@@ -189,7 +191,7 @@ class VesselForm extends Component
 
         $manager = new ImageManager(new Driver());
 
-        foreach ($this->images as $index => $image) {
+        foreach ($imagesSnapshot as $index => $image) {
 
             if ($index >= $allowed) break;
 
@@ -200,7 +202,7 @@ class VesselForm extends Component
                 ->scaleDown(width: 1920)
                 ->toWebp(85);
 
-            Storage::disk('r2')->put($path, $img);
+            Storage::disk()->put($path, $img);
 
             $maxOrder = VesselGb::where('vessel_id', $this->vessel->id)->max('order_img') ?? 0;
 
@@ -243,7 +245,7 @@ class VesselForm extends Component
     {
         $image = VesselGb::find($id);
         if ($image) {
-            Storage::disk('r2')->delete($image->path);
+            Storage::disk()->delete($image->path);
             $image->delete();
             $this->savedImages = collect($this->savedImages)->filter(fn ($img) => $img->id !== $id);
             $this->vessel->refresh(); // Para garantir que os dados estejam atualizados

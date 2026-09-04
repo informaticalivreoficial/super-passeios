@@ -31,6 +31,8 @@ class UserForm extends Component
 
     // docs
     public $cpf;
+    public $rg;
+    public $naturalness;
 
     // contatos
     public $phone;
@@ -110,6 +112,8 @@ class UserForm extends Component
                 'birthday',
                 'civil_status',
                 'cpf',
+                'rg',
+                'naturalness',
                 'phone',
                 'cell_phone',
                 'whatsapp',
@@ -158,6 +162,8 @@ class UserForm extends Component
                 'birthday'         => $this->birthday,
                 'civil_status'     => $this->civil_status,
                 'cpf'              => $this->cpf,
+                'rg'               => $this->rg,
+                'naturalness'      => $this->naturalness,
                 'phone'            => $this->phone,
                 'cell_phone'       => $this->cell_phone,
                 'whatsapp'         => $this->whatsapp,

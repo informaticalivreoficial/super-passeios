@@ -17,6 +17,7 @@ use App\Livewire\Company\Finance\Dashboard as FinanceDashboard;
 use App\Livewire\Company\Finance\Reports;
 use App\Livewire\Company\Finance\Withdrawals;
 use App\Livewire\Company\Notifications\NotificationIndex;
+use App\Livewire\Company\Privacy\PrivacyForm as PrivacyPrivacyForm;
 use App\Livewire\Company\Tours\TourDates;
 use App\Livewire\Company\Tours\TourForm as ToursTourForm;
 use App\Livewire\Company\Tours\TourIndex;
@@ -111,6 +112,7 @@ Route::name('web.')->group(function () {
         ->name('newsletter.unsubscribe.email');
 
     Route::get('/passeios', [SiteController::class, 'tours'])->name('site.tours');
+    Route::get('/passeios/load-more', [SiteController::class, 'toursLoadMore'])->name('site.tours.load-more');
 
     Route::get('/pesquisar', [SiteController::class, 'search'])->name('site.search');
 
@@ -160,11 +162,11 @@ Route::group([
 
     Route::get('/notificacoes', NotificationIndex::class)->name('notifications.index');
 
+    Route::get('/privacidade', PrivacyPrivacyForm::class)->name('privacy');
+
     Route::prefix('financeiro')->name('finance.')->group(function () {
         Route::get('/', FinanceDashboard::class)->name('index');
         Route::get('/meus-bancos', BankAccounts::class)->name('banks');
-        // Route::get('/relatorios', FinancialReports::class)->name('reports');
-        // Route::get('/contratos', Contracts::class)->name('contracts');
         Route::get('/saques', Withdrawals::class)->name('drawals');
         Route::get('/relatorios', Reports::class)->name('reports.index');
     });

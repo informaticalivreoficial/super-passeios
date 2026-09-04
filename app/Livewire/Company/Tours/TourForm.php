@@ -200,6 +200,21 @@ class TourForm extends Component
 
                 $this->reset('photos');
                 $this->savedImages = $this->tour->images()->orderBy('order_img')->get();
+
+                $hasCover = TourGb::where('tour_id', $this->tour->id)
+                    ->where('cover', true)
+                    ->exists();
+
+                if (!$hasCover) {
+                    $lastImage = TourGb::where('tour_id', $this->tour->id)
+                        ->orderByDesc('order_img')
+                        ->first();
+
+                    if ($lastImage) {
+                        $lastImage->update(['cover' => true]);
+                        $this->savedImages = $this->tour->images()->orderBy('order_img')->get();
+                    }
+                }
             }
 
             $this->dispatch('swal:success', [

@@ -32,8 +32,9 @@ class ArticleController extends Controller
             ->orderByDesc('created_at')
             ->paginate(18);
 
-        $head = $this->seo->render('Blog - ' . $this->config->app_name . '' ?? config('app.name'),
-            'Blog - ' . $this->config->app_name . '' ?? config('app.name'),
+        $head = $this->seo->render(
+            'Blog - ' . ($this->config->app_name ?? config('app.name')),
+            'Blog - ' . ($this->config->app_name ?? config('app.name')),
             route('web.home'),
             $this->config->getmetaimg() ?? url(asset('theme/images/image.jpg'))
         );
@@ -64,8 +65,9 @@ class ArticleController extends Controller
             ->take(3)
             ->get();
         
-        $head = $this->seo->render($article->title . ' - ' . $this->config->app_name . '' ?? config('app.name'),
-            $article->metaDescription ?? $article->excerpt,
+        $head = $this->seo->render(
+            $article->title . ' - ' . ($this->config->app_name ?? config('app.name')),
+            $article->metaDescription ?? $article->excerpt ?? $article->title ?? '',
             route('web.blog.show', ['slug' => $article->slug]),
             $article->cover() ?? $this->config->getmetaimg() ?? url(asset('theme/images/image.jpg'))
         );
@@ -102,8 +104,9 @@ class ArticleController extends Controller
             ->Postson()
             ->firstOrFail();
 
-        $head = $this->seo->render($page->title . ' - ' . $this->config->app_name . '' ?? config('app.name'),
-            $page->metaDescription ?? $page->excerpt,
+        $head = $this->seo->render(
+            $page->title . ' - ' . ($this->config->app_name ?? config('app.name')),
+            $page->metaDescription ?? $page->excerpt ?? $page->title ?? '',
             route('web.blog.page', ['slug' => $page->slug]),
             $page->cover() ?? $this->config->getmetaimg() ?? url(asset('theme/images/image.jpg'))
         ); 

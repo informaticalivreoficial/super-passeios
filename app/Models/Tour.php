@@ -101,9 +101,11 @@ class Tour extends Model
 
     public function cover()
     {
-        $images = $this->images();
-        $cover = $images->where('cover', 1)->first(['path']) ??
-                $images->first(['path']);
+        $cover = $this->images()->where('cover', 1)->first(['path']);
+
+        if (!$cover) {
+            $cover = $this->images()->first(['path']);
+        }
 
         if (!$cover || empty($cover->path)) {
             return asset('theme/images/image.jpg');
@@ -114,10 +116,11 @@ class Tour extends Model
 
     public function nocover()
     {
-        $images = $this->images();
+        $cover = $this->images()->where('cover', 1)->first(['path']);
 
-        $cover = $images->where('cover', 1)->first(['path'])
-            ?? $images->first(['path']);
+        if (!$cover) {
+            $cover = $this->images()->first(['path']);
+        }
 
         if (empty($cover['path']) || !Storage::disk()->exists($cover['path'])) {
             return asset('theme/images/image.jpg');

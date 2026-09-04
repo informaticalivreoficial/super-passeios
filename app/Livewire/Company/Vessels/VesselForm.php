@@ -234,6 +234,21 @@ class VesselForm extends Component
 
                 $this->reset('images');
                 $this->savedImages = $this->vessel->images()->orderBy('order_img')->get();
+
+                $hasCover = VesselGb::where('vessel_id', $this->vessel->id)
+                    ->where('cover', true)
+                    ->exists();
+
+                if (!$hasCover) {
+                    $lastImage = VesselGb::where('vessel_id', $this->vessel->id)
+                        ->orderByDesc('order_img')
+                        ->first();
+
+                    if ($lastImage) {
+                        $lastImage->update(['cover' => true]);
+                        $this->savedImages = $this->vessel->images()->orderBy('order_img')->get();
+                    }
+                }
             }
 
             $this->dispatch('swal:success', [

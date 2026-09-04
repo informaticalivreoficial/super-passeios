@@ -20,25 +20,32 @@ class RegisterCompany extends Component
     public ?string $password = null;
     public ?string $password_confirmation = null;
 
+    public bool $aceite_termos = false;
+    public bool $aceite_privacidade = false;
+
     protected function rules(): array
     {
         return [
-            'name'       => ['required', 'string', 'max:255'],
-            'email'      => ['required', 'email', 'max:255', 'unique:customers,email'],
-            'cell_phone' => ['required', 'string', 'max:20'],
-            'password'   => ['required', 'confirmed', 'min:6'],
+            'name'              => ['required', 'string', 'max:255'],
+            'email'             => ['required', 'email', 'max:255', 'unique:customers,email'],
+            'cell_phone'        => ['required', 'string', 'max:20'],
+            'password'          => ['required', 'confirmed', 'min:6'],
+            'aceite_termos'     => ['accepted'],
+            'aceite_privacidade' => ['accepted'],
         ];
     }
 
     protected $messages = [
-        'name.required'       => 'Informe seu nome.',
-        'email.required'      => 'Informe seu email.',
-        'email.email'         => 'Informe um email válido.',
-        'email.unique'        => 'Este email já está em uso.',
-        'cell_phone.required' => 'Informe seu telefone.',
-        'password.required'   => 'Informe uma senha.',
-        'password.confirmed'  => 'As senhas não conferem.',
-        'password.min'        => 'A senha deve ter pelo menos 6 caracteres.',
+        'name.required'              => 'Informe seu nome.',
+        'email.required'             => 'Informe seu email.',
+        'email.email'                => 'Informe um email válido.',
+        'email.unique'               => 'Este email já está em uso.',
+        'cell_phone.required'        => 'Informe seu telefone.',
+        'password.required'          => 'Informe uma senha.',
+        'password.confirmed'         => 'As senhas não conferem.',
+        'password.min'               => 'A senha deve ter pelo menos 6 caracteres.',
+        'aceite_termos.accepted'     => 'Você precisa aceitar os Termos de Uso.',
+        'aceite_privacidade.accepted' => 'Você precisa aceitar a Política de Privacidade.',
     ];
 
     public function save()

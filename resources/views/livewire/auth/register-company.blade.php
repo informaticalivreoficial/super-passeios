@@ -247,13 +247,181 @@
                     </button>
                 </div>
 
-                {{-- Termos --}}
-                <p class="text-xs text-center" style="color: #b0a98a;">
-                    Ao criar uma conta você concorda com nossos
-                    <a href="#" style="color: #16a3b7;">Termos de Uso</a>
-                    e
-                    <a href="{{ route('web.privacy') }}" target="_blank" style="color: #16a3b7;">Política de Privacidade</a>.
-                </p>
+                {{-- Aceites --}}
+                <div class="space-y-3 pt-2">
+
+                    {{-- Termos de Uso --}}
+                    <div class="flex items-start gap-3" x-data="{ open: false, content: '', loading: false }">
+                        <input
+                            type="checkbox"
+                            wire:model="aceite_termos"
+                            id="aceite_termos"
+                            class="mt-0.5 h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 shrink-0"
+                            style="accent-color: #16a3b7;"
+                        >
+                        <label for="aceite_termos" class="text-xs leading-relaxed" style="color: #5a5a5a;">
+                            Li e concordo com os
+                            <button
+                                type="button"
+                                @click="
+                                    open = true;
+                                    if (!content) {
+                                        loading = true;
+                                        fetch('{{ route("web.blog.page", ["slug" => "termos-de-uso-para-operadores"]) }}')
+                                            .then(r => r.text())
+                                            .then(html => {
+                                                const parser = new DOMParser();
+                                                const doc = parser.parseFromString(html, 'text/html');
+                                                const article = doc.querySelector('article') || doc.querySelector('.prose') || doc.querySelector('main');
+                                                content = article ? article.innerHTML : '<p>Conteúdo não disponível.</p>';
+                                                loading = false;
+                                            })
+                                            .catch(() => { content = '<p>Erro ao carregar conteúdo.</p>'; loading = false; });
+                                    }
+                                "
+                                class="font-bold inline"
+                                style="color: #16a3b7; text-decoration: underline; text-underline-offset: 2px;"
+                            >Termos de Uso do Operador</button>
+                        </label>
+
+                        {{-- Modal Termos --}}
+                        <div
+                            x-show="open"
+                            x-cloak
+                            class="fixed inset-0 z-50 flex items-center justify-center p-4"
+                            style="background: rgba(5,30,52,0.6); backdrop-filter: blur(4px);"
+                            @click.self="open = false"
+                            x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0"
+                            x-transition:enter-end="opacity-100"
+                            x-transition:leave="transition ease-in duration-150"
+                            x-transition:leave-start="opacity-100"
+                            x-transition:leave-end="opacity-0"
+                        >
+                            <div
+                                class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col"
+                                x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="opacity-0 scale-95"
+                                x-transition:enter-end="opacity-100 scale-100"
+                            >
+                                <div class="flex items-center justify-between px-6 py-4" style="border-bottom: 1px solid #e8e4d8;">
+                                    <h3 class="text-lg font-bold" style="color: #051e34; font-family: 'Syne', sans-serif;">Termos de Uso do Operador</h3>
+                                    <button @click="open = false" class="p-2 rounded-lg hover:bg-gray-100 transition">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                                    </button>
+                                </div>
+                                <div class="px-6 py-4 overflow-y-auto prose prose-sm max-w-none" style="color: #333;">
+                                    <template x-if="loading">
+                                        <div class="flex items-center justify-center py-12">
+                                            <svg class="animate-spin w-6 h-6" style="color: #16a3b7;" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+                                        </div>
+                                    </template>
+                                    <template x-if="!loading">
+                                        <div x-html="content"></div>
+                                    </template>
+                                </div>
+                                <div class="px-6 py-3 flex justify-end" style="border-top: 1px solid #e8e4d8;">
+                                    <button
+                                        type="button"
+                                        @click="open = false"
+                                        class="px-5 py-2 rounded-xl text-sm font-bold transition"
+                                        style="background: #16a3b7; color: white;"
+                                    >Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Política de Privacidade --}}
+                    <div class="flex items-start gap-3" x-data="{ open: false, content: '', loading: false }">
+                        <input
+                            type="checkbox"
+                            wire:model="aceite_privacidade"
+                            id="aceite_privacidade"
+                            class="mt-0.5 h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500 shrink-0"
+                            style="accent-color: #16a3b7;"
+                        >
+                        <label for="aceite_privacidade" class="text-xs leading-relaxed" style="color: #5a5a5a;">
+                            Li e estou ciente da
+                            <button
+                                type="button"
+                                @click="
+                                    open = true;
+                                    if (!content) {
+                                        loading = true;
+                                        fetch('{{ route("web.blog.page", ["slug" => "politica-de-privacidade-para-operadores"]) }}')
+                                            .then(r => r.text())
+                                            .then(html => {
+                                                const parser = new DOMParser();
+                                                const doc = parser.parseFromString(html, 'text/html');
+                                                const article = doc.querySelector('article') || doc.querySelector('.prose') || doc.querySelector('main');
+                                                content = article ? article.innerHTML : '<p>Conteúdo não disponível.</p>';
+                                                loading = false;
+                                            })
+                                            .catch(() => { content = '<p>Erro ao carregar conteúdo.</p>'; loading = false; });
+                                    }
+                                "
+                                class="font-bold inline"
+                                style="color: #16a3b7; text-decoration: underline; text-underline-offset: 2px;"
+                            >Política de Privacidade</button>
+                        </label>
+
+                        {{-- Modal Privacidade --}}
+                        <div
+                            x-show="open"
+                            x-cloak
+                            class="fixed inset-0 z-50 flex items-center justify-center p-4"
+                            style="background: rgba(5,30,52,0.6); backdrop-filter: blur(4px);"
+                            @click.self="open = false"
+                            x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0"
+                            x-transition:enter-end="opacity-100"
+                            x-transition:leave="transition ease-in duration-150"
+                            x-transition:leave-start="opacity-100"
+                            x-transition:leave-end="opacity-0"
+                        >
+                            <div
+                                class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col"
+                                x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="opacity-0 scale-95"
+                                x-transition:enter-end="opacity-100 scale-100"
+                            >
+                                <div class="flex items-center justify-between px-6 py-4" style="border-bottom: 1px solid #e8e4d8;">
+                                    <h3 class="text-lg font-bold" style="color: #051e34; font-family: 'Syne', sans-serif;">Política de Privacidade</h3>
+                                    <button @click="open = false" class="p-2 rounded-lg hover:bg-gray-100 transition">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                                    </button>
+                                </div>
+                                <div class="px-6 py-4 overflow-y-auto prose prose-sm max-w-none" style="color: #333;">
+                                    <template x-if="loading">
+                                        <div class="flex items-center justify-center py-12">
+                                            <svg class="animate-spin w-6 h-6" style="color: #16a3b7;" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+                                        </div>
+                                    </template>
+                                    <template x-if="!loading">
+                                        <div x-html="content"></div>
+                                    </template>
+                                </div>
+                                <div class="px-6 py-3 flex justify-end" style="border-top: 1px solid #e8e4d8;">
+                                    <button
+                                        type="button"
+                                        @click="open = false"
+                                        class="px-5 py-2 rounded-xl text-sm font-bold transition"
+                                        style="background: #16a3b7; color: white;"
+                                    >Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @error('aceite_termos')
+                        <p class="text-xs" style="color: #e53e3e;">{{ $message }}</p>
+                    @enderror
+                    @error('aceite_privacidade')
+                        <p class="text-xs" style="color: #e53e3e;">{{ $message }}</p>
+                    @enderror
+
+                </div>
 
             </form>
 

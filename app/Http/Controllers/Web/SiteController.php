@@ -227,6 +227,39 @@ class SiteController extends Controller
         ]);
     }
 
+    public function toursLoadMore(Request $request)
+    {
+        $tours = Tour::with([
+                'company',
+                'images' => fn($q) => $q->limit(1),
+                'dates'  => fn($q) => $q->where('active', true)
+                                        ->where('status', 'OPEN')
+                                        ->where('date', '>=', now())
+                                        ->orderBy('date')
+                                        ->limit(1),
+            ])
+            ->where('active', true)
+            ->whereHas('company', fn($q) => $q->where('status', true))
+            ->whereHas('dates', fn($q) => $q->where('active', true)
+                                            ->where('status', 'OPEN')
+                                            ->where('date', '>=', now()))
+            ->when($request->cidade, fn($q) => $q->whereHas('company', fn($cq) => $cq->where('city', $request->cidade)))
+            ->when($request->tipo, fn($q) => $q->where('tour_type', $request->tipo))
+            ->when($request->preco_max, fn($q) => $q->where('price', '<=', $request->preco_max))
+            ->when($request->preco_min, fn($q) => $q->where('price', '>=', $request->preco_min))
+            ->orderByDesc('views')
+            ->paginate(12, ['*'], 'page', $request->page);
+
+        $html = view('web.'.$this->config->template.'.tours.partials.tour-card', [
+            'tours' => $tours,
+        ])->render();
+
+        return response()->json([
+            'html'     => $html,
+            'has_more' => $tours->hasMorePages(),
+        ]);
+    }
+
     public function contact()
     {
         return view('web.'.$this->config->template.'.contact',[

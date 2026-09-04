@@ -241,12 +241,62 @@
                             Relatórios
                         </a>
 
-                        
+                    </div>
+                </div>
+
+                {{-- PRIVACIDADE COM SUBMENU --}}
+                <div x-data="{ open: {{ request()->routeIs('company.privacy*') ? 'true' : 'false' }} }">
+
+                    <button
+                        @click="open = !open"
+                        @class([
+                            'w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-bold transition',
+                            'nav-active' => request()->routeIs('company.privacy*'),
+                            'nav-inactive' => !request()->routeIs('company.privacy*'),
+                        ])
+                    >
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                        <span class="flex-1 text-left">Privacidade</span>
+                        <svg
+                            class="w-3.5 h-3.5 shrink-0 transition-transform duration-200"
+                            :class="open ? 'rotate-180' : ''"
+                            fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"
+                        >
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+                    </button>
+
+                    <div
+                        x-show="open"
+                        x-transition:enter="transition ease-out duration-150"
+                        x-transition:enter-start="opacity-0 -translate-y-1"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-100"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 -translate-y-1"
+                        class="mt-0.5 ml-3 pl-4 space-y-0.5"
+                        style="border-left: 2px solid rgba(135,194,192,0.3);"
+                    >
+
+                        <a    href="{{ route('company.privacy') }}"
+                            @class([
+                                'flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition',
+                                'nav-active' => request()->routeIs('company.privacy'),
+                                'nav-inactive' => !request()->routeIs('company.privacy'),
+                            ])
+                        >
+                            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            Exclusão de Conta
+                        </a>
+
                         <a    href="#"
                             @class([
-                                'flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition',
-                                'nav-active' => request()->routeIs('company.finance.contracts'),
-                                'nav-inactive' => !request()->routeIs('company.finance.contracts'),
+                                'flex items-center gap-2.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition',
+                                'nav-inactive',
                             ])
                         >
                             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

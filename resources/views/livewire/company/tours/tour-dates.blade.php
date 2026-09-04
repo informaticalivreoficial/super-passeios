@@ -466,34 +466,125 @@
                     </div>
 
                     {{-- PREÇO --}}
-                    <div>
+                    <div
+                        x-data="{
+                            display: '',
+
+                            init() {
+                                this.sync()
+
+                                window.addEventListener('tour-date-edit', () => {
+                                    this.$nextTick(() => this.sync())
+                                })
+
+                                window.addEventListener('tour-date-reset', () => {
+                                    this.display = ''
+                                })
+                            },
+
+                            sync() {
+                                if ($wire.price) {
+                                    this.display = this.format($wire.price.toString())
+                                } else {
+                                    this.display = ''
+                                }
+                            },
+
+                            format(value) {
+                                value = value.replace(/\D/g, '')
+
+                                value = (Number(value) / 100).toFixed(2) + ''
+
+                                value = value.replace('.', ',')
+
+                                value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+
+                                return 'R$ ' + value
+                            }
+                        }"
+                    >
 
                         <label class="mb-1 block text-sm font-semibold">
                             Preço
                         </label>
 
                         <input
-                            type="number"
-                            step="0.01"
-                            wire:model.live="price"
+                            type="text"
+                            x-model="display"
+                            x-on:input="
+                                display = format($event.target.value)
+
+                                let numeric = display
+                                    .replace('R$ ', '')
+                                    .replace(/\./g, '')
+                                    .replace(',', '.')
+
+                                $wire.set('price', numeric)
+                            "
+                            placeholder="R$ 0,00"
                             class="w-full rounded-xl border px-3 py-2"
                         >
 
                     </div>
 
                     {{-- PREÇO MEIA ENTRADA (CRIANÇAS 6 A 10) --}}
-                    <div>
+                    <div
+                        x-data="{
+                            display: '',
+
+                            init() {
+                                this.sync()
+
+                                window.addEventListener('tour-date-edit', () => {
+                                    this.$nextTick(() => this.sync())
+                                })
+
+                                window.addEventListener('tour-date-reset', () => {
+                                    this.display = ''
+                                })
+                            },
+
+                            sync() {
+                                if ($wire.half_price) {
+                                    this.display = this.format($wire.half_price.toString())
+                                } else {
+                                    this.display = ''
+                                }
+                            },
+
+                            format(value) {
+                                value = value.replace(/\D/g, '')
+
+                                value = (Number(value) / 100).toFixed(2) + ''
+
+                                value = value.replace('.', ',')
+
+                                value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+
+                                return 'R$ ' + value
+                            }
+                        }"
+                    >
 
                         <label class="mb-1 block text-sm font-semibold">
                             Preço meia entrada (crianças 6 a 10)
                         </label>
 
                         <input
-                            type="number"
-                            step="0.01"
-                            wire:model.live="half_price"
+                            type="text"
+                            x-model="display"
+                            x-on:input="
+                                display = format($event.target.value)
+
+                                let numeric = display
+                                    .replace('R$ ', '')
+                                    .replace(/\./g, '')
+                                    .replace(',', '.')
+
+                                $wire.set('half_price', numeric)
+                            "
+                            placeholder="R$ 0,00"
                             class="w-full rounded-xl border px-3 py-2"
-                            placeholder="Opcional"
                         >
 
                         <p class="mt-1 text-xs text-slate-400">

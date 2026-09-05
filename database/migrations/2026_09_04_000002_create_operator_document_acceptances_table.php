@@ -24,7 +24,7 @@ return new class extends Migration
             $table->index('customer_id');
             $table->index('document_id');
             $table->index('version');
-            $table->index('accepted_at');
+            $table->index('accepted_at'); 
         });
     }
 

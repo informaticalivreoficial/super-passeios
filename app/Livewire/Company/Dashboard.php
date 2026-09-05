@@ -8,6 +8,7 @@ use App\Models\Booking;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use App\Services\Wallet\FinancialDashboardService;
+use App\Services\OperatorDocumentService;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Company;
 use App\Models\TourDate;

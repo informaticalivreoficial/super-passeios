@@ -25,6 +25,29 @@
 
     @else
 
+        @php
+            $pendingDocs = app(\App\Services\OperatorDocumentService::class)->getPendingRequiredCount(auth('customer')->user());
+        @endphp
+
+        @if($pendingDocs > 0)
+            <a href="{{ route('company.documents.index') }}"
+               class="flex items-center gap-3 rounded-2xl px-5 py-4 transition hover:shadow-md"
+               style="border: 1px solid #fde68a; background-color: #fffbeb;">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background-color: rgba(245,158,11,0.1);">
+                    <svg class="w-5 h-5" style="color: #d97706;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-bold" style="color: #92400e;">
+                        ⚠️ Você possui {{ $pendingDocs }} {{ Str::plural('documento obrigatório aguardando aceite', $pendingDocs) }}.
+                    </p>
+                    <p class="text-xs" style="color: #a16207;">Clique aqui para visualizar e aceitar.</p>
+                </div>
+                <svg class="w-4 h-4 shrink-0" style="color: #d97706;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+            </a>
+        @endif
+
         {{-- CARDS DE SALDO --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-4">
 

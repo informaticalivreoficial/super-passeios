@@ -173,8 +173,8 @@
                 text: data.text ?? '',
                 icon: data.icon ?? 'warning',
                 showCancelButton: true,
-                confirmButtonText: data.confirmButtonText ?? 'Confirmar',
-                cancelButtonText: data.cancelButtonText ?? 'Cancelar',
+                confirmButtonText: data.confirmText ?? data.confirmButtonText ?? 'Confirmar',
+                cancelButtonText: data.cancelText ?? data.cancelButtonText ?? 'Cancelar',
             }).then((result) => {
                 if (result.isConfirmed && data.confirmEvent) {
                     Livewire.dispatch(data.confirmEvent, data.confirmParams ?? []);

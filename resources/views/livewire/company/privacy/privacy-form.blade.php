@@ -73,23 +73,106 @@
         </div>
     @endif
 
-    {{-- CARD: CONTRATOS --}}
+    {{-- CARD: DADOS ARMAZENADOS --}}
     <div class="bg-white rounded-2xl overflow-hidden" style="border: 1px solid #e8e4d8;">
 
         <div class="flex items-center gap-3 px-6 py-4" style="border-bottom: 1px solid #f0ece4;">
             <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background-color: rgba(51,123,188,0.1);">
                 <svg class="w-5 h-5" style="color: #337bbc;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    <path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
                 </svg>
             </div>
             <div>
-                <h2 class="text-sm font-bold" style="color: #051e34;">Contratos</h2>
-                <p class="text-xs" style="color: #87c2c0;">Gerencie seus contratos e termos de uso.</p>
+                <h2 class="text-sm font-bold" style="color: #051e34;">Dados Armazenados</h2>
+                <p class="text-xs" style="color: #87c2c0;">Informações que mantemos sobre sua conta.</p>
             </div>
         </div>
 
         <div class="p-6">
-            <p class="text-sm" style="color: #b0a98a;">Em breve.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="flex items-start gap-3 p-3 rounded-xl" style="background-color: #f8fafc;">
+                    <svg class="w-4 h-4 mt-0.5 shrink-0" style="color: #337bbc;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    <div>
+                        <p class="text-xs font-bold" style="color: #051e34;">Dados pessoais</p>
+                        <p class="text-xs" style="color: #b0a98a;">Nome, e-mail, telefone, CPF/CNPJ</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 p-3 rounded-xl" style="background-color: #f8fafc;">
+                    <svg class="w-4 h-4 mt-0.5 shrink-0" style="color: #337bbc;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                    <div>
+                        <p class="text-xs font-bold" style="color: #051e34;">Dados bancários</p>
+                        <p class="text-xs" style="color: #b0a98a;">Conta e agência para repasse</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 p-3 rounded-xl" style="background-color: #f8fafc;">
+                    <svg class="w-4 h-4 mt-0.5 shrink-0" style="color: #337bbc;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <div>
+                        <p class="text-xs font-bold" style="color: #051e34;">Contratos</p>
+                        <p class="text-xs" style="color: #b0a98a;">Termos aceitos e versões</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 p-3 rounded-xl" style="background-color: #f8fafc;">
+                    <svg class="w-4 h-4 mt-0.5 shrink-0" style="color: #337bbc;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    <div>
+                        <p class="text-xs font-bold" style="color: #051e34;">Passeios e reservas</p>
+                        <p class="text-xs" style="color: #b0a98a;">Embarcações, tours e bookings</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    {{-- CARD: O QUE ACONTECE AO EXCLUIR --}}
+    <div class="bg-white rounded-2xl overflow-hidden" style="border: 1px solid #e8e4d8;">
+
+        <div class="flex items-center gap-3 px-6 py-4" style="border-bottom: 1px solid #f0ece4;">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background-color: rgba(245,158,11,0.1);">
+                <svg class="w-5 h-5" style="color: #f59e0b;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+            </div>
+            <div>
+                <h2 class="text-sm font-bold" style="color: #051e34;">Ao solicitar a exclusão</h2>
+                <p class="text-xs" style="color: #87c2c0;">O que acontece com seus dados.</p>
+            </div>
+        </div>
+
+        <div class="p-6 space-y-3">
+            <div class="flex items-start gap-3">
+                <div class="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style="background-color: rgba(229,62,62,0.1);">
+                    <svg class="w-3 h-3" style="color: #e53e3e;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+                </div>
+                <div>
+                    <p class="text-xs font-bold" style="color: #051e34;">Seus passeios serão removidos</p>
+                    <p class="text-xs" style="color: #b0a98a;">Tours, embarcações e datas serão excluídos permanentemente.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-3">
+                <div class="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style="background-color: rgba(229,62,62,0.1);">
+                    <svg class="w-3 h-3" style="color: #e53e3e;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+                </div>
+                <div>
+                    <p class="text-xs font-bold" style="color: #051e34;">Reservas ativas serão afetadas</p>
+                    <p class="text-xs" style="color: #b0a98a;">Clientes não conseguirão mais acessar reservas futuras vinculadas.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-3">
+                <div class="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style="background-color: rgba(229,62,62,0.1);">
+                    <svg class="w-3 h-3" style="color: #e53e3e;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+                </div>
+                <div>
+                    <p class="text-xs font-bold" style="color: #051e34;">Saldo pendente será cancelado</p>
+                    <p class="text-xs" style="color: #b0a98a;">Valores não sacados serão perdidos. solicite o saque antes.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-3">
+                <div class="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style="background-color: rgba(229,62,62,0.1);">
+                    <svg class="w-3 h-3" style="color: #e53e3e;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+                </div>
+                <div>
+                    <p class="text-xs font-bold" style="color: #051e34;">Dados financeiros serão apagados</p>
+                    <p class="text-xs" style="color: #b0a98a;">Transações, saques e dados bancários serão removidos.</p>
+                </div>
+            </div>
         </div>
 
     </div>

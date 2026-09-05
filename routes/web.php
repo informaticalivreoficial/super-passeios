@@ -17,6 +17,8 @@ use App\Livewire\Company\Finance\Dashboard as FinanceDashboard;
 use App\Livewire\Company\Finance\Reports;
 use App\Livewire\Company\Finance\Withdrawals;
 use App\Livewire\Company\Notifications\NotificationIndex;
+use App\Livewire\Company\Documents\DocumentIndex as CompanyDocumentIndex;
+use App\Livewire\Company\Documents\DocumentShow as CompanyDocumentShow;
 use App\Livewire\Company\Privacy\PrivacyForm as PrivacyPrivacyForm;
 use App\Livewire\Company\Tours\TourDates;
 use App\Livewire\Company\Tours\TourForm as ToursTourForm;
@@ -24,6 +26,9 @@ use App\Livewire\Company\Tours\TourIndex;
 use App\Livewire\Company\User\UserForm;
 use App\Livewire\Company\Vessels\VesselForm as VesselsVesselForm;
 use App\Livewire\Company\Vessels\VesselIndex;
+use App\Livewire\Dashboard\Documents\DocumentIndex as AdminDocumentIndex;
+use App\Livewire\Dashboard\Documents\DocumentForm as AdminDocumentForm;
+use App\Livewire\Dashboard\Documents\DocumentAcceptances as AdminDocumentAcceptances;
 use App\Livewire\Dashboard\{
     Bookings\BookingForm,
     Companies\CompanyForm,
@@ -164,6 +169,11 @@ Route::group([
 
     Route::get('/privacidade', PrivacyPrivacyForm::class)->name('privacy');
 
+    Route::prefix('documentos')->name('documents.')->group(function () {
+        Route::get('/', CompanyDocumentIndex::class)->name('index');
+        Route::get('/{document}', CompanyDocumentShow::class)->name('show');
+    });
+
     Route::prefix('financeiro')->name('finance.')->group(function () {
         Route::get('/', FinanceDashboard::class)->name('index');
         Route::get('/meus-bancos', BankAccounts::class)->name('banks');
@@ -229,4 +239,11 @@ Route::group(['middleware' => ['auth', 'verified', 'role:super-admin|admin'], 'p
     Route::get('newsletter/campanha/{campaign}', NewsletterCampaignShow::class)->name('newsletter.campaign.show');
     Route::get('newsletter/categorias', NewsletterCategories::class)->name('newsletter.categories.index');
     Route::get('newsletter/configuracoes', NewsletterConfigPage::class)->name('newsletter.config');
+
+    Route::prefix('documentos')->name('documents.')->group(function () {
+        Route::get('/', AdminDocumentIndex::class)->name('index');
+        Route::get('/cadastrar', AdminDocumentForm::class)->name('create');
+        Route::get('/{document}/editar', AdminDocumentForm::class)->name('edit');
+        Route::get('/{document}/aceites', AdminDocumentAcceptances::class)->name('acceptances');
+    });
 });

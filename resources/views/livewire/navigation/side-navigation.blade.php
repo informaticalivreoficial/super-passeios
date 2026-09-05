@@ -108,6 +108,14 @@
                     </ul>
                 </li>
 
+                {{-- Contratos e Documentos --}}
+                <li class="nav-item">
+                    <a href="{{ route('admin.documents.index') }}" class="nav-link {{ Route::is('admin.documents.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-file-contract"></i>
+                        <p>Contratos e Documentos</p>
+                    </a>
+                </li>
+
                 {{-- Financeiro --}}
                 <li class="nav-item">
                     <a href="{{ route('admin.withdrawals.index') }}" class="nav-link {{ Route::is('admin.withdrawals.index') ? 'active' : '' }}">

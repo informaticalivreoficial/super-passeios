@@ -262,9 +262,7 @@ class SiteController extends Controller
 
     public function contact()
     {
-        return view('web.'.$this->config->template.'.contact',[
-            'success' => false
-        ]);
+        return view('web.'.$this->config->template.'.contact');
     }
 
     public function search()

@@ -100,7 +100,8 @@ class ContactFormTest extends TestCase
 
         $this->get(route('web.contact'))
             ->assertOk()
-            ->assertSee('Fale com a gente')
+            ->assertSee('Fale direto com a gente')
+            ->assertSee('Envie sua mensagem')
             ->assertSee('Enviar mensagem');
     }
 }

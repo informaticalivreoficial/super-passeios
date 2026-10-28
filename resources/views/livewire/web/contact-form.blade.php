@@ -26,7 +26,7 @@
         <form wire:submit="submit" autocomplete="off" novalidate class="space-y-6">
 
             {{-- Honeypot: invisível para pessoas, atrativo para bots --}}
-            <div class="hp-wrapper" aria-hidden="true" tabindex="-1">
+            <div class="hp-wrapper" aria-hidden="true" tabindex="-1" style="display: none !important;">
                 <input type="text" id="hp-a" name="hp_campo_a" tabindex="-1" autocomplete="off"
                     data-lpignore="true" data-1p-ignore data-bwignore data-form-type="other" wire:model="hp_campo_a">
                 <input type="text" id="hp-b" name="hp_campo_b" tabindex="-1" autocomplete="off"
@@ -188,12 +188,7 @@
 
         <style>
             .contact-form .hp-wrapper {
-                position: absolute !important;
-                left: -9999px !important;
-                top: auto !important;
-                width: 1px !important;
-                height: 1px !important;
-                overflow: hidden !important;
+                display: none !important;
             }
         </style>
     @endif
